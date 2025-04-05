@@ -1,4 +1,3 @@
-
 import React, { createContext, useState, useEffect, useContext } from 'react';
 import { initializeApp } from 'firebase/app';
 import {
@@ -60,7 +59,7 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<FirebaseUser | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [encryptionKey, setEncryptionKey] = useState<CryptoKey | null>(null);
@@ -242,7 +241,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
-  // Simulate demo mode for all auth methods when Firebase is not configured
   const simulateDemoMode = async () => {
     try {
       setIsLoading(true);
