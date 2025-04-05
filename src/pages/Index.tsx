@@ -1,157 +1,105 @@
 
 import React from 'react';
-import { Button } from '@/components/ui/button';
-import { ArrowRight, Calculator, ShieldCheck, Lock } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { Button } from '@/components/ui/button';
 import { useAuth } from '@/components/auth/AuthProvider';
 
 const Index = () => {
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, signInAnonymously } = useAuth();
+
+  const handleTryDemo = async () => {
+    await signInAnonymously();
+  };
 
   return (
     <div className="min-h-screen flex flex-col">
       {/* Hero Section */}
-      <section className="py-12 md:py-20 px-4">
-        <div className="container mx-auto max-w-6xl">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-20 items-center">
-            <div className="space-y-6">
-              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight">
-                Manage Your Auction Properties Securely
-              </h1>
-              <p className="text-xl text-gray-600">
-                Calculate profits, simulate taxes, and track investments with complete data privacy.
-                All your data is encrypted and stored only on your device.
-              </p>
-              <div className="flex flex-col sm:flex-row gap-4 pt-4">
-                {isAuthenticated ? (
-                  <>
-                    <Link to="/dashboard">
-                      <Button size="lg" className="w-full sm:w-auto">
-                        Go to Dashboard <ArrowRight className="ml-2 h-4 w-4" />
-                      </Button>
-                    </Link>
-                    <Link to="/calculator">
-                      <Button variant="outline" size="lg" className="w-full sm:w-auto">
-                        Start New Calculation
-                      </Button>
-                    </Link>
-                  </>
-                ) : (
-                  <>
-                    <Link to="/auth?mode=signup">
-                      <Button size="lg" className="w-full sm:w-auto">
-                        Get Started <ArrowRight className="ml-2 h-4 w-4" />
-                      </Button>
-                    </Link>
-                    <Link to="/auth?mode=login">
-                      <Button variant="outline" size="lg" className="w-full sm:w-auto">
-                        Sign In
-                      </Button>
-                    </Link>
-                  </>
-                )}
+      <div className="flex-1 flex flex-col justify-center px-4 py-12 sm:px-6 lg:px-8">
+        <div className="text-center">
+          <h1 className="text-4xl font-extrabold tracking-tight text-gray-900 sm:text-5xl md:text-6xl">
+            <span className="block">Auction Estate Guardian</span>
+          </h1>
+          <p className="mt-3 max-w-md mx-auto text-base text-gray-500 sm:text-lg md:mt-5 md:text-xl md:max-w-3xl">
+            Secure, private, and powerful auction property management.
+            All your data is encrypted and stored only on your device.
+          </p>
+          <div className="mt-5 max-w-md mx-auto sm:flex sm:justify-center md:mt-8">
+            {isAuthenticated ? (
+              <Button asChild className="w-full sm:w-auto">
+                <Link to="/dashboard">Go to Dashboard</Link>
+              </Button>
+            ) : (
+              <div className="space-y-4 sm:space-y-0 sm:mx-auto sm:inline-grid sm:grid-cols-2 sm:gap-5">
+                <Button asChild variant="default">
+                  <Link to="/auth?mode=signup">Get Started</Link>
+                </Button>
+                <Button variant="outline" onClick={handleTryDemo}>
+                  Try Demo
+                </Button>
               </div>
-            </div>
-            <div className="hidden lg:block rounded-lg shadow-2xl overflow-hidden bg-white">
-              <img
-                src="https://images.unsplash.com/photo-1560518883-ce09059eeffa?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1073&q=80"
-                alt="Real estate properties"
-                className="w-full h-auto object-cover"
-              />
-            </div>
+            )}
           </div>
         </div>
-      </section>
+      </div>
 
       {/* Features Section */}
-      <section className="py-12 md:py-20 px-4 bg-gray-50">
-        <div className="container mx-auto max-w-6xl">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold mb-4">
-              Everything You Need for Real Estate Auctions
+      <div className="bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-3xl mx-auto space-y-8">
+          <div className="text-center">
+            <h2 className="text-3xl font-extrabold text-gray-900">
+              Key Features
             </h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              Our app helps you make informed decisions about auction properties with powerful calculation tools
-              and secure data management.
+            <p className="mt-4 text-lg text-gray-500">
+              Everything you need to manage your auction property investments
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {/* Feature 1 */}
-            <div className="bg-white p-6 rounded-lg shadow-md">
-              <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mb-4">
-                <Calculator className="h-6 w-6 text-primary" />
-              </div>
-              <h3 className="font-bold text-xl mb-2">Profit & Tax Calculator</h3>
-              <p className="text-gray-600">
-                Accurately calculate potential profits and tax implications for your auction properties,
-                including capital gains tax with Brazilian progressive rates.
+          <div className="grid grid-cols-1 gap-8 sm:grid-cols-2">
+            <div className="bg-white shadow rounded-lg p-6">
+              <h3 className="text-lg font-medium text-gray-900">Profit Calculator</h3>
+              <p className="mt-2 text-sm text-gray-500">
+                Calculate potential profits from your auction property investments
               </p>
             </div>
-
-            {/* Feature 2 */}
-            <div className="bg-white p-6 rounded-lg shadow-md">
-              <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mb-4">
-                <Lock className="h-6 w-6 text-primary" />
-              </div>
-              <h3 className="font-bold text-xl mb-2">Offline & Encrypted</h3>
-              <p className="text-gray-600">
-                All your data is stored only on your device using AES-256 encryption.
-                Use the app offline with complete peace of mind.
+            <div className="bg-white shadow rounded-lg p-6">
+              <h3 className="text-lg font-medium text-gray-900">Tax Simulator</h3>
+              <p className="mt-2 text-sm text-gray-500">
+                Simulate capital gains tax implications for your property sales
               </p>
             </div>
-
-            {/* Feature 3 */}
-            <div className="bg-white p-6 rounded-lg shadow-md">
-              <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mb-4">
-                <ShieldCheck className="h-6 w-6 text-primary" />
-              </div>
-              <h3 className="font-bold text-xl mb-2">LGPD Compliant</h3>
-              <p className="text-gray-600">
-                Fully compliant with Brazilian General Data Protection Law (LGPD).
-                Your privacy is our priority.
+            <div className="bg-white shadow rounded-lg p-6">
+              <h3 className="text-lg font-medium text-gray-900">Secure & Private</h3>
+              <p className="mt-2 text-sm text-gray-500">
+                All your data is encrypted with AES-256 and stored only on your device
+              </p>
+            </div>
+            <div className="bg-white shadow rounded-lg p-6">
+              <h3 className="text-lg font-medium text-gray-900">Works Offline</h3>
+              <p className="mt-2 text-sm text-gray-500">
+                Full functionality without an internet connection
               </p>
             </div>
           </div>
-        </div>
-      </section>
 
-      {/* CTA Section */}
-      <section className="py-12 md:py-20 px-4">
-        <div className="container mx-auto max-w-6xl">
-          <div className="bg-primary rounded-2xl overflow-hidden shadow-lg">
-            <div className="px-6 py-12 md:p-12 text-center text-white">
-              <h2 className="text-3xl font-bold mb-4">
-                Ready to Optimize Your Real Estate Investments?
-              </h2>
-              <p className="text-xl opacity-90 mb-8 max-w-3xl mx-auto">
-                Join now to access all features and start managing your auction properties with confidence.
-              </p>
-              <div className="flex flex-col sm:flex-row justify-center gap-4">
-                {isAuthenticated ? (
-                  <Link to="/calculator">
-                    <Button
-                      size="lg"
-                      className="w-full sm:w-auto bg-white text-primary hover:bg-gray-100"
-                    >
-                      Start a New Calculation
-                    </Button>
-                  </Link>
-                ) : (
-                  <Link to="/auth?mode=signup">
-                    <Button
-                      size="lg"
-                      className="w-full sm:w-auto bg-white text-primary hover:bg-gray-100"
-                    >
-                      Create a Free Account
-                    </Button>
-                  </Link>
-                )}
-              </div>
-            </div>
+          <div className="text-center pt-4">
+            <Button asChild variant="outline">
+              <Link to="/institutional">Learn More</Link>
+            </Button>
           </div>
         </div>
-      </section>
+      </div>
+
+      {/* Footer */}
+      <footer className="bg-white py-6">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <p className="text-center text-sm text-gray-500">
+            &copy; {new Date().getFullYear()} Auction Estate Guardian. All rights reserved.
+            <Link to="/privacy-policy" className="ml-2 text-primary hover:underline">
+              Privacy Policy
+            </Link>
+          </p>
+        </div>
+      </footer>
     </div>
   );
 };
