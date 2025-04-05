@@ -2,13 +2,12 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
+import { Plus, Search } from 'lucide-react';
 import { useAuth } from '@/components/auth/AuthProvider';
 import { retrieveAllData, deleteData } from '@/lib/storage';
-import { formatCurrency, formatPercentage } from '@/lib/calculations';
 import { useToast } from '@/hooks/use-toast';
+import PropertyTable from './PropertyTable';
 import { 
   AlertDialog,
   AlertDialogAction,
@@ -31,10 +30,32 @@ interface SimulationData {
   };
 }
 
+// Converting simulation data to property format for display
+const mapSimulationToProperty = (simulation: SimulationData) => {
+  // Extract address from name or use default
+  const nameParts = simulation.name.split(' - ');
+  const address = nameParts[0] || simulation.name;
+  const cityState = nameParts[1]?.split(', ') || ['São Paulo', 'SP'];
+  
+  return {
+    id: simulation.id,
+    name: simulation.name,
+    address: address,
+    city: cityState[0] || 'São Paulo',
+    state: cityState[1] || 'SP',
+    type: 'Apartamento',
+    status: 'Ativo',
+    purchaseDate: new Date(simulation.date).toLocaleDateString('pt-BR'),
+    purchasePrice: simulation.results.netProfit * 2, // Placeholder calculation
+    estimatedValue: simulation.results.netProfit * 3, // Placeholder calculation
+  };
+};
+
 const PropertyList: React.FC = () => {
   const [simulations, setSimulations] = useState<SimulationData[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
+  const [activeFilter, setActiveFilter] = useState('Todos');
   const [simulationToDelete, setSimulationToDelete] = useState<string | null>(null);
   const { encryptionKey } = useAuth();
   const { toast } = useToast();
@@ -54,8 +75,8 @@ const PropertyList: React.FC = () => {
     } catch (error) {
       console.error('Failed to load simulations:', error);
       toast({
-        title: "Error Loading Data",
-        description: "Failed to load your saved simulations.",
+        title: "Erro ao Carregar Dados",
+        description: "Falha ao carregar suas simulações salvas.",
         variant: "destructive",
       });
     } finally {
@@ -68,14 +89,14 @@ const PropertyList: React.FC = () => {
       await deleteData('simulations', id);
       setSimulations(simulations.filter(sim => sim.id !== id));
       toast({
-        title: "Simulation Deleted",
-        description: "The simulation has been successfully deleted.",
+        title: "Simulação Excluída",
+        description: "A simulação foi excluída com sucesso.",
       });
     } catch (error) {
       console.error('Failed to delete simulation:', error);
       toast({
-        title: "Delete Error",
-        description: "Failed to delete the simulation.",
+        title: "Erro ao Excluir",
+        description: "Falha ao excluir a simulação.",
         variant: "destructive",
       });
     } finally {
@@ -83,12 +104,21 @@ const PropertyList: React.FC = () => {
     }
   };
 
-  const filteredSimulations = searchTerm
-    ? simulations.filter(sim => 
-        sim.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        (sim.notes && sim.notes.toLowerCase().includes(searchTerm.toLowerCase()))
+  const properties = simulations.map(mapSimulationToProperty);
+  
+  // Apply search filter
+  const searchFilteredProperties = searchTerm
+    ? properties.filter(property => 
+        property.address.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        property.city.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        property.type.toLowerCase().includes(searchTerm.toLowerCase())
       )
-    : simulations;
+    : properties;
+    
+  // Apply status filter
+  const filteredProperties = activeFilter !== 'Todos'
+    ? searchFilteredProperties.filter(property => property.status === activeFilter)
+    : searchFilteredProperties;
 
   const newCalculation = () => {
     navigate('/calculator');
@@ -96,123 +126,92 @@ const PropertyList: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-        <div>
-          <h1 className="text-3xl font-bold">Your Properties</h1>
-          <p className="text-gray-500 mt-1">
-            Manage your auction property investments and simulations
-          </p>
-        </div>
-        <div className="flex-shrink-0">
-          <Button onClick={newCalculation}>
-            New Simulation
-          </Button>
-        </div>
-      </div>
-
-      <div className="w-full max-w-sm">
-        <Label htmlFor="search" className="sr-only">Search</Label>
-        <Input
-          id="search"
-          placeholder="Search properties..."
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          className="w-full"
-        />
-      </div>
-
-      {isLoading ? (
-        <div className="py-12 text-center">
-          <p className="text-gray-500">Loading your simulations...</p>
-        </div>
-      ) : filteredSimulations.length === 0 ? (
-        <Card>
-          <CardHeader>
-            <CardTitle>No Simulations Found</CardTitle>
-            <CardDescription>
-              {searchTerm 
-                ? "No simulations match your search criteria." 
-                : "You haven't created any property simulations yet."}
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <p className="text-center py-8 text-gray-500">
-              {searchTerm 
-                ? "Try a different search term or clear the search."
-                : "Get started by creating a new simulation."}
-            </p>
-          </CardContent>
-          <CardFooter className="flex justify-center">
-            <Button onClick={newCalculation}>
-              Create Your First Simulation
-            </Button>
-          </CardFooter>
-        </Card>
-      ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredSimulations.map((simulation) => (
-            <Card key={simulation.id} className="overflow-hidden">
-              <CardHeader className="pb-3">
-                <CardTitle className="text-lg">{simulation.name}</CardTitle>
-                <CardDescription>
-                  Created on {new Date(simulation.date).toLocaleDateString()}
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-3">
-                  <div className="flex justify-between">
-                    <span className="text-sm text-gray-500">Net Profit:</span>
-                    <span className={`font-medium ${simulation.results.netProfit >= 0 ? 'text-green-600' : 'text-red-600'}`}>
-                      {formatCurrency(simulation.results.netProfit)}
-                    </span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-sm text-gray-500">ROI:</span>
-                    <span className={`font-medium ${simulation.results.roi >= 0 ? 'text-green-600' : 'text-red-600'}`}>
-                      {formatPercentage(simulation.results.roi)}
-                    </span>
-                  </div>
-                  {simulation.notes && (
-                    <div className="mt-3 pt-3 border-t text-sm text-gray-500">
-                      <p className="line-clamp-3">{simulation.notes}</p>
-                    </div>
-                  )}
-                </div>
-              </CardContent>
-              <CardFooter className="flex justify-between border-t bg-gray-50 px-6 py-3">
-                <Button variant="ghost" size="sm">
-                  View Details
-                </Button>
-                <Button 
-                  variant="ghost" 
-                  size="sm"
-                  onClick={() => setSimulationToDelete(simulation.id)}
-                  className="text-red-600 hover:text-red-700 hover:bg-red-50"
+      <div className="border rounded-lg p-6">
+        <div className="flex flex-col space-y-6">
+          <div className="flex justify-between items-center">
+            <h2 className="text-2xl font-bold">Gerenciar Imóveis</h2>
+            <div className="w-full max-w-sm">
+              <div className="relative">
+                <Search className="absolute left-2 top-1/2 transform -translate-y-1/2 text-gray-500 h-4 w-4" />
+                <Input
+                  placeholder="Pesquisar imóveis..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="pl-8"
+                />
+              </div>
+            </div>
+          </div>
+          
+          <div className="border rounded-lg">
+            <div className="flex border-b p-0.5">
+              {['Todos', 'Ativos', 'Em Processo', 'Vendidos'].map((filter) => (
+                <button
+                  key={filter}
+                  onClick={() => setActiveFilter(filter)}
+                  className={`px-6 py-2 text-sm font-medium rounded-lg transition-colors ${
+                    activeFilter === filter
+                      ? 'bg-primary text-primary-foreground'
+                      : 'bg-background text-muted-foreground hover:bg-muted'
+                  }`}
                 >
-                  Delete
+                  {filter}
+                </button>
+              ))}
+            </div>
+            
+            {isLoading ? (
+              <div className="py-12 text-center">
+                <p className="text-gray-500">Carregando suas propriedades...</p>
+              </div>
+            ) : filteredProperties.length === 0 ? (
+              <div className="py-12 text-center">
+                <p className="text-gray-500">
+                  {searchTerm 
+                    ? "Nenhuma propriedade encontrada com os critérios de busca." 
+                    : "Você ainda não possui imóveis cadastrados."}
+                </p>
+                <Button onClick={newCalculation} className="mt-4">
+                  Adicionar Imóvel
                 </Button>
-              </CardFooter>
-            </Card>
-          ))}
+              </div>
+            ) : (
+              <PropertyTable 
+                properties={filteredProperties}
+                onView={(id) => navigate(`/property/${id}`)}
+                onDelete={(id) => setSimulationToDelete(id)}
+              />
+            )}
+          </div>
         </div>
-      )}
+      </div>
+
+      <div className="fixed bottom-10 right-10">
+        <Button
+          onClick={newCalculation}
+          size="lg"
+          className="rounded-full h-14 w-14 p-0 bg-blue-600 hover:bg-blue-700"
+        >
+          <Plus className="h-6 w-6" />
+        </Button>
+      </div>
 
       <AlertDialog open={!!simulationToDelete} onOpenChange={() => setSimulationToDelete(null)}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+            <AlertDialogTitle>Tem certeza?</AlertDialogTitle>
             <AlertDialogDescription>
-              This action cannot be undone. This will permanently delete the
-              simulation and remove the data from your device.
+              Esta ação não pode ser desfeita. Isso excluirá permanentemente a
+              propriedade e removerá os dados do seu dispositivo.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogCancel>Cancelar</AlertDialogCancel>
             <AlertDialogAction
               onClick={() => simulationToDelete && handleDelete(simulationToDelete)}
               className="bg-red-600 hover:bg-red-700"
             >
-              Delete
+              Excluir
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

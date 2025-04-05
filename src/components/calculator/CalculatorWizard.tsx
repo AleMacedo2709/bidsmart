@@ -675,9 +675,8 @@ const CalculatorWizard: React.FC = () => {
             totalSteps={5}
             onPrevious={goToPreviousStep}
             onNext={goToNextStep}
-            canAdvance={isCurrentStepValid()}
-            isLastStep={currentStep === 5}
-            onSubmit={calculateAndShowResults}
+            canGoNext={isCurrentStepValid()}
+            onComplete={calculateAndShowResults}
           />
         </>
       ) : (
