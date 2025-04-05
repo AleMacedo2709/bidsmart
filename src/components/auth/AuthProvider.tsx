@@ -10,7 +10,7 @@ import {
   GoogleAuthProvider,
   GithubAuthProvider,
   FacebookAuthProvider,
-  signInAnonymously,
+  signInAnonymously as firebaseSignInAnonymously,
   signOut as firebaseSignOut,
   User as FirebaseUser
 } from 'firebase/auth';
@@ -203,7 +203,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const signInAnonymously = async () => {
     try {
       setIsLoading(true);
-      await signInAnonymously(auth);
+      await firebaseSignInAnonymously(auth);
       const tempKey = await generateTempKey();
       setEncryptionKey(tempKey);
       setIsLocalPasswordSet(true);

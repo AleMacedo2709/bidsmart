@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import StepNavigation from './StepNavigation';
@@ -36,6 +35,7 @@ const CalculatorWizard: React.FC = () => {
   const [simulationNotes, setSimulationNotes] = useState('');
   const [showResults, setShowResults] = useState(false);
   const [showBreakdown, setShowBreakdown] = useState(false);
+  const [isProcessing, setIsProcessing] = useState(false);
   
   const [initialValues, setInitialValues] = useState<InitialValuesType>({
     auctionPrice: 0,
@@ -164,7 +164,6 @@ const CalculatorWizard: React.FC = () => {
     });
   };
   
-  // Check if form is valid for current step
   const isCurrentStepValid = () => {
     switch (currentStep) {
       case 1:
@@ -174,13 +173,13 @@ const CalculatorWizard: React.FC = () => {
           initialValues.resalePrice > 0
         );
       case 2:
-        return true; // All acquisition costs can be 0
+        return true;
       case 3:
         return maintenanceCosts.holdingPeriod > 0;
       case 4:
-        return true; // All sale costs can be 0
+        return true;
       case 5:
-        return true; // All capital gains fields are optional
+        return true;
       default:
         return false;
     }
@@ -647,7 +646,7 @@ const CalculatorWizard: React.FC = () => {
                   key={index}
                   value={`step-${index + 1}`}
                   onClick={() => setCurrentStep(index + 1)}
-                  disabled={isLoading}
+                  disabled={isProcessing}
                   className="text-xs md:text-sm"
                 >
                   {title}
