@@ -2,13 +2,13 @@
 import React from 'react';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
-import { Copy, Trash2 } from 'lucide-react';
+import { Eye, Trash2 } from 'lucide-react';
 import { formatCurrency } from '@/lib/calculations';
 
 interface PropertyTableProps {
   properties: {
     id: string;
-    name: string;
+    name?: string;
     address: string;
     city: string;
     state: string;
@@ -68,7 +68,7 @@ const PropertyTable: React.FC<PropertyTableProps> = ({ properties, onView, onDel
               <TableCell>
                 <div className="flex justify-center gap-2">
                   <Button variant="ghost" size="icon" onClick={() => onView(property.id)}>
-                    <Copy className="h-4 w-4" />
+                    <Eye className="h-4 w-4" />
                   </Button>
                   <Button variant="ghost" size="icon" onClick={() => onDelete(property.id)} className="text-red-500">
                     <Trash2 className="h-4 w-4" />

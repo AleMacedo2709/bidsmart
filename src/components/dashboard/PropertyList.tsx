@@ -19,64 +19,46 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 
-interface SimulationData {
+interface PropertyData {
   id: string;
   name: string;
-  date: string;
+  address: string;
+  city: string;
+  state: string;
+  type: string;
+  status: string;
+  purchaseDate: string;
+  purchasePrice: number;
+  estimatedValue: number;
   notes?: string;
-  results: {
-    netProfit: number;
-    roi: number;
-  };
 }
 
-// Converting simulation data to property format for display
-const mapSimulationToProperty = (simulation: SimulationData) => {
-  // Extract address from name or use default
-  const nameParts = simulation.name.split(' - ');
-  const address = nameParts[0] || simulation.name;
-  const cityState = nameParts[1]?.split(', ') || ['São Paulo', 'SP'];
-  
-  return {
-    id: simulation.id,
-    name: simulation.name,
-    address: address,
-    city: cityState[0] || 'São Paulo',
-    state: cityState[1] || 'SP',
-    type: 'Apartamento',
-    status: 'Ativo',
-    purchaseDate: new Date(simulation.date).toLocaleDateString('pt-BR'),
-    purchasePrice: simulation.results.netProfit * 2, // Placeholder calculation
-    estimatedValue: simulation.results.netProfit * 3, // Placeholder calculation
-  };
-};
-
 const PropertyList: React.FC = () => {
-  const [simulations, setSimulations] = useState<SimulationData[]>([]);
+  const [properties, setProperties] = useState<PropertyData[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [activeFilter, setActiveFilter] = useState('Todos');
-  const [simulationToDelete, setSimulationToDelete] = useState<string | null>(null);
+  const [propertyToDelete, setPropertyToDelete] = useState<string | null>(null);
   const { encryptionKey } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
 
   useEffect(() => {
-    loadSimulations();
+    loadProperties();
   }, [encryptionKey]);
 
-  const loadSimulations = async () => {
+  const loadProperties = async () => {
     if (!encryptionKey) return;
 
     try {
       setIsLoading(true);
-      const data = await retrieveAllData<SimulationData>('simulations', encryptionKey);
-      setSimulations(data);
+      const data = await retrieveAllData<PropertyData>('properties', encryptionKey);
+      setProperties(data);
     } catch (error) {
-      console.error('Failed to load simulations:', error);
+      console.error('Falha ao carregar imóveis:', error);
       toast({
         title: "Erro ao Carregar Dados",
-        description: "Falha ao carregar suas simulações salvas.",
+        description: "Falha ao carregar seus imóveis salvos.",
         variant: "destructive",
       });
     } finally {
@@ -86,25 +68,23 @@ const PropertyList: React.FC = () => {
 
   const handleDelete = async (id: string) => {
     try {
-      await deleteData('simulations', id);
-      setSimulations(simulations.filter(sim => sim.id !== id));
+      await deleteData('properties', id);
+      setProperties(properties.filter(prop => prop.id !== id));
       toast({
-        title: "Simulação Excluída",
-        description: "A simulação foi excluída com sucesso.",
+        title: "Imóvel Excluído",
+        description: "O imóvel foi excluído com sucesso.",
       });
     } catch (error) {
-      console.error('Failed to delete simulation:', error);
+      console.error('Falha ao excluir imóvel:', error);
       toast({
         title: "Erro ao Excluir",
-        description: "Falha ao excluir a simulação.",
+        description: "Falha ao excluir o imóvel.",
         variant: "destructive",
       });
     } finally {
-      setSimulationToDelete(null);
+      setPropertyToDelete(null);
     }
   };
-
-  const properties = simulations.map(mapSimulationToProperty);
   
   // Apply search filter
   const searchFilteredProperties = searchTerm
@@ -120,8 +100,8 @@ const PropertyList: React.FC = () => {
     ? searchFilteredProperties.filter(property => property.status === activeFilter)
     : searchFilteredProperties;
 
-  const newCalculation = () => {
-    navigate('/calculator');
+  const addNewProperty = () => {
+    navigate('/add-property');
   };
 
   return (
@@ -145,7 +125,7 @@ const PropertyList: React.FC = () => {
           
           <div className="border rounded-lg">
             <div className="flex border-b p-0.5">
-              {['Todos', 'Ativos', 'Em Processo', 'Vendidos'].map((filter) => (
+              {['Todos', 'Ativo', 'Em Processo', 'Vendido'].map((filter) => (
                 <button
                   key={filter}
                   onClick={() => setActiveFilter(filter)}
@@ -162,16 +142,16 @@ const PropertyList: React.FC = () => {
             
             {isLoading ? (
               <div className="py-12 text-center">
-                <p className="text-gray-500">Carregando suas propriedades...</p>
+                <p className="text-gray-500">Carregando seus imóveis...</p>
               </div>
             ) : filteredProperties.length === 0 ? (
               <div className="py-12 text-center">
                 <p className="text-gray-500">
                   {searchTerm 
-                    ? "Nenhuma propriedade encontrada com os critérios de busca." 
+                    ? "Nenhum imóvel encontrado com os critérios de busca." 
                     : "Você ainda não possui imóveis cadastrados."}
                 </p>
-                <Button onClick={newCalculation} className="mt-4">
+                <Button onClick={addNewProperty} className="mt-4">
                   Adicionar Imóvel
                 </Button>
               </div>
@@ -179,7 +159,7 @@ const PropertyList: React.FC = () => {
               <PropertyTable 
                 properties={filteredProperties}
                 onView={(id) => navigate(`/property/${id}`)}
-                onDelete={(id) => setSimulationToDelete(id)}
+                onDelete={(id) => setPropertyToDelete(id)}
               />
             )}
           </div>
@@ -188,7 +168,7 @@ const PropertyList: React.FC = () => {
 
       <div className="fixed bottom-10 right-10">
         <Button
-          onClick={newCalculation}
+          onClick={addNewProperty}
           size="lg"
           className="rounded-full h-14 w-14 p-0 bg-blue-600 hover:bg-blue-700"
         >
@@ -196,19 +176,19 @@ const PropertyList: React.FC = () => {
         </Button>
       </div>
 
-      <AlertDialog open={!!simulationToDelete} onOpenChange={() => setSimulationToDelete(null)}>
+      <AlertDialog open={!!propertyToDelete} onOpenChange={() => setPropertyToDelete(null)}>
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>Tem certeza?</AlertDialogTitle>
             <AlertDialogDescription>
-              Esta ação não pode ser desfeita. Isso excluirá permanentemente a
-              propriedade e removerá os dados do seu dispositivo.
+              Esta ação não pode ser desfeita. Isso excluirá permanentemente o
+              imóvel e removerá os dados do seu dispositivo.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Cancelar</AlertDialogCancel>
             <AlertDialogAction
-              onClick={() => simulationToDelete && handleDelete(simulationToDelete)}
+              onClick={() => propertyToDelete && handleDelete(propertyToDelete)}
               className="bg-red-600 hover:bg-red-700"
             >
               Excluir

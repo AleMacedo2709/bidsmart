@@ -98,10 +98,10 @@ const CalculatorWizard: React.FC = () => {
       setResults(calculatedResults);
       setShowResults(true);
     } catch (error) {
-      console.error('Calculation error:', error);
+      console.error('Erro no cálculo:', error);
       toast({
-        title: "Calculation Error",
-        description: "There was an error calculating the results. Please check your inputs.",
+        title: "Erro no Cálculo",
+        description: "Houve um erro ao calcular os resultados. Por favor, verifique os dados informados.",
         variant: "destructive",
       });
     }
@@ -110,8 +110,8 @@ const CalculatorWizard: React.FC = () => {
   const saveSimulation = async () => {
     if (!encryptionKey) {
       toast({
-        title: "Authentication Required",
-        description: "Please set up your encryption password to save simulations.",
+        title: "Autenticação Necessária",
+        description: "Por favor, configure sua senha de criptografia para salvar simulações.",
         variant: "destructive",
       });
       return;
@@ -119,8 +119,8 @@ const CalculatorWizard: React.FC = () => {
     
     if (!results) {
       toast({
-        title: "No Results",
-        description: "Please calculate results before saving.",
+        title: "Sem Resultados",
+        description: "Por favor, calcule os resultados antes de salvar.",
         variant: "destructive",
       });
       return;
@@ -128,7 +128,7 @@ const CalculatorWizard: React.FC = () => {
     
     try {
       const simulation = {
-        name: simulationName || `Simulation ${new Date().toLocaleString()}`,
+        name: simulationName || `Simulação ${new Date().toLocaleString()}`,
         notes: simulationNotes,
         date: new Date(),
         inputs: {
@@ -144,14 +144,14 @@ const CalculatorWizard: React.FC = () => {
       await storeData('simulations', simulation, encryptionKey);
       
       toast({
-        title: "Simulation Saved",
-        description: "Your simulation has been saved successfully.",
+        title: "Simulação Salva",
+        description: "Sua simulação foi salva com sucesso.",
       });
     } catch (error) {
-      console.error('Error saving simulation:', error);
+      console.error('Erro ao salvar simulação:', error);
       toast({
-        title: "Save Error",
-        description: "There was an error saving your simulation.",
+        title: "Erro ao Salvar",
+        description: "Houve um erro ao salvar sua simulação.",
         variant: "destructive",
       });
     }
@@ -195,7 +195,7 @@ const CalculatorWizard: React.FC = () => {
             <CardContent className="pt-6">
               <div className="space-y-4">
                 <div className="space-y-2">
-                  <Label htmlFor="auctioneerCommission">Auctioneer Commission (%)</Label>
+                  <Label htmlFor="auctioneerCommission">Custo do Corretor (%)</Label>
                   <Input
                     id="auctioneerCommission"
                     type="number"
@@ -208,7 +208,7 @@ const CalculatorWizard: React.FC = () => {
                 </div>
                 
                 <div className="space-y-2">
-                  <Label htmlFor="itbiTax">ITBI (Property Transfer Tax) (%)</Label>
+                  <Label htmlFor="itbiTax">ITBI (Taxa de Transferência de Propriedade) (%)</Label>
                   <Input
                     id="itbiTax"
                     type="number"
@@ -221,7 +221,7 @@ const CalculatorWizard: React.FC = () => {
                 </div>
                 
                 <div className="space-y-2">
-                  <Label htmlFor="registryFees">Registry Fees (R$)</Label>
+                  <Label htmlFor="registryFees">Taxa de Registro (R$)</Label>
                   <Input
                     id="registryFees"
                     type="number"
@@ -234,7 +234,7 @@ const CalculatorWizard: React.FC = () => {
                 </div>
                 
                 <div className="space-y-2">
-                  <Label htmlFor="possessionOfficer">Judicial Possession Officer (R$)</Label>
+                  <Label htmlFor="possessionOfficer">Judicial Possessão (R$)</Label>
                   <Input
                     id="possessionOfficer"
                     type="number"
@@ -260,7 +260,7 @@ const CalculatorWizard: React.FC = () => {
                 </div>
                 
                 <div className="space-y-2">
-                  <Label htmlFor="legalFees">Legal/Attorney Fees (R$)</Label>
+                  <Label htmlFor="legalFees">Fees Legais/Advogados (R$)</Label>
                   <Input
                     id="legalFees"
                     type="number"
@@ -281,7 +281,7 @@ const CalculatorWizard: React.FC = () => {
             <CardContent className="pt-6">
               <div className="space-y-4">
                 <div className="space-y-2">
-                  <Label htmlFor="renovation">Renovation Costs (R$)</Label>
+                  <Label htmlFor="renovation">Custos de Renovação (R$)</Label>
                   <Input
                     id="renovation"
                     type="number"
@@ -294,7 +294,7 @@ const CalculatorWizard: React.FC = () => {
                 </div>
                 
                 <div className="space-y-2">
-                  <Label htmlFor="monthlyIptu">Monthly IPTU (Property Tax) (R$)</Label>
+                  <Label htmlFor="monthlyIptu">IPTU Mensal (Taxa de Propriedade) (R$)</Label>
                   <Input
                     id="monthlyIptu"
                     type="number"
@@ -307,7 +307,7 @@ const CalculatorWizard: React.FC = () => {
                 </div>
                 
                 <div className="space-y-2">
-                  <Label htmlFor="otherMonthlyExpenses">Other Monthly Expenses (R$)</Label>
+                  <Label htmlFor="otherMonthlyExpenses">Outros Custos Mensais (R$)</Label>
                   <Input
                     id="otherMonthlyExpenses"
                     type="number"
@@ -320,7 +320,7 @@ const CalculatorWizard: React.FC = () => {
                 </div>
                 
                 <div className="space-y-2">
-                  <Label htmlFor="holdingPeriod">Expected Holding Period (months)</Label>
+                  <Label htmlFor="holdingPeriod">Período de Manutenção Esperado (meses)</Label>
                   <Input
                     id="holdingPeriod"
                     type="number"
@@ -341,7 +341,7 @@ const CalculatorWizard: React.FC = () => {
             <CardContent className="pt-6">
               <div className="space-y-4">
                 <div className="space-y-2">
-                  <Label htmlFor="brokerCommission">Broker Commission (%)</Label>
+                  <Label htmlFor="brokerCommission">Comissão do Corretor (%)</Label>
                   <Input
                     id="brokerCommission"
                     type="number"
@@ -354,7 +354,7 @@ const CalculatorWizard: React.FC = () => {
                 </div>
                 
                 <div className="space-y-2">
-                  <Label htmlFor="appraisalFees">Appraisal or Report Fees (R$)</Label>
+                  <Label htmlFor="appraisalFees">Fees de Avaliação ou Relatório (R$)</Label>
                   <Input
                     id="appraisalFees"
                     type="number"
@@ -375,7 +375,7 @@ const CalculatorWizard: React.FC = () => {
             <CardContent className="pt-6">
               <div className="space-y-4">
                 <div className="space-y-2">
-                  <Label htmlFor="acquisitionDate">Acquisition Date</Label>
+                  <Label htmlFor="acquisitionDate">Data de Aquisição</Label>
                   <Popover>
                     <PopoverTrigger asChild>
                       <Button
@@ -407,7 +407,7 @@ const CalculatorWizard: React.FC = () => {
                 </div>
                 
                 <div className="space-y-2">
-                  <Label htmlFor="deedCost">Deed Cost (R$)</Label>
+                  <Label htmlFor="deedCost">Custo do Deed (R$)</Label>
                   <Input
                     id="deedCost"
                     type="number"
@@ -428,7 +428,7 @@ const CalculatorWizard: React.FC = () => {
                       isOnlyProperty: !!checked
                     })}
                   />
-                  <Label htmlFor="isOnlyProperty">Is this your only property?</Label>
+                  <Label htmlFor="isOnlyProperty">É sua única propriedade?</Label>
                 </div>
                 
                 <div className="flex items-center space-x-2">
@@ -440,7 +440,7 @@ const CalculatorWizard: React.FC = () => {
                       willReinvest: !!checked
                     })}
                   />
-                  <Label htmlFor="willReinvest">Will reinvest into another residential property within 180 days?</Label>
+                  <Label htmlFor="willReinvest">Reinvestirá em outra propriedade residencial dentro de 180 dias?</Label>
                 </div>
               </div>
             </CardContent>
@@ -458,13 +458,13 @@ const CalculatorWizard: React.FC = () => {
       <div className="space-y-8 animate-fade-in">
         <Card>
           <CardHeader>
-            <CardTitle>Summary Results</CardTitle>
+            <CardTitle>Resumo dos Resultados</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-4">
                 <div>
-                  <h3 className="text-sm font-medium text-gray-500">Gross Profit</h3>
+                  <h3 className="text-sm font-medium text-gray-500">Lucro Bruto</h3>
                   <p className={cn(
                     "text-2xl font-semibold",
                     results.grossProfit >= 0 ? "text-green-600" : "text-red-600"
@@ -474,7 +474,7 @@ const CalculatorWizard: React.FC = () => {
                 </div>
                 
                 <div>
-                  <h3 className="text-sm font-medium text-gray-500">Net Profit</h3>
+                  <h3 className="text-sm font-medium text-gray-500">Lucro Líquido</h3>
                   <p className={cn(
                     "text-2xl font-semibold",
                     results.netProfit >= 0 ? "text-green-600" : "text-red-600"
@@ -484,7 +484,7 @@ const CalculatorWizard: React.FC = () => {
                 </div>
                 
                 <div>
-                  <h3 className="text-sm font-medium text-gray-500">Return on Investment</h3>
+                  <h3 className="text-sm font-medium text-gray-500">Retorno sobre Investimento</h3>
                   <p className={cn(
                     "text-2xl font-semibold",
                     results.roi >= 0 ? "text-green-600" : "text-red-600"
@@ -496,25 +496,25 @@ const CalculatorWizard: React.FC = () => {
               
               <div className="space-y-4">
                 <div>
-                  <h3 className="text-sm font-medium text-gray-500">Capital Gain</h3>
+                  <h3 className="text-sm font-medium text-gray-500">Ganho de Capital</h3>
                   <p className="text-xl font-semibold">{formatCurrency(results.capitalGain)}</p>
                 </div>
                 
                 <div>
-                  <h3 className="text-sm font-medium text-gray-500">Capital Gains Tax Due</h3>
+                  <h3 className="text-sm font-medium text-gray-500">Imposto de Capital Ganhado</h3>
                   <p className="text-xl font-semibold">{formatCurrency(results.capitalGainsTaxDue)}</p>
                 </div>
                 
                 {results.taxDueDate && (
                   <div>
-                    <h3 className="text-sm font-medium text-gray-500">Tax Due Date</h3>
+                    <h3 className="text-sm font-medium text-gray-500">Data de Imposto de Capital</h3>
                     <p className="text-xl font-semibold">{formatDate(results.taxDueDate)}</p>
                   </div>
                 )}
                 
                 {results.taxExemptionReason && (
                   <div>
-                    <h3 className="text-sm font-medium text-gray-500">Tax Exemption Reason</h3>
+                    <h3 className="text-sm font-medium text-gray-500">Motivo de Isenção de Imposto de Capital</h3>
                     <p className="text-base">{results.taxExemptionReason}</p>
                   </div>
                 )}
@@ -525,36 +525,36 @@ const CalculatorWizard: React.FC = () => {
         
         <div className="space-y-4">
           <Button variant="outline" onClick={() => setShowBreakdown(!showBreakdown)}>
-            {showBreakdown ? "Hide" : "Show"} Calculation Breakdown
+            {showBreakdown ? "Hide" : "Show"} Cálculo Detalhado
           </Button>
           
           {showBreakdown && (
             <Card className="animate-fade-in">
               <CardHeader>
-                <CardTitle>Detailed Breakdown</CardTitle>
+                <CardTitle>Detalhes Detalhados</CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
                   <div>
-                    <h3 className="font-medium">Costs Breakdown</h3>
+                    <h3 className="font-medium">Custo Breakdown</h3>
                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-2">
                       <div className="p-4 bg-gray-50 rounded-lg">
-                        <h4 className="text-sm font-medium text-gray-500">Acquisition Costs</h4>
+                        <h4 className="text-sm font-medium text-gray-500">Custos de Aquisição</h4>
                         <p className="text-xl font-semibold text-red-600">{formatCurrency(results.totalAcquisitionCosts)}</p>
                       </div>
                       <div className="p-4 bg-gray-50 rounded-lg">
-                        <h4 className="text-sm font-medium text-gray-500">Maintenance Costs</h4>
+                        <h4 className="text-sm font-medium text-gray-500">Custos de Manutenção</h4>
                         <p className="text-xl font-semibold text-red-600">{formatCurrency(results.totalMaintenanceCosts)}</p>
                       </div>
                       <div className="p-4 bg-gray-50 rounded-lg">
-                        <h4 className="text-sm font-medium text-gray-500">Sale Costs</h4>
+                        <h4 className="text-sm font-medium text-gray-500">Custos de Venda</h4>
                         <p className="text-xl font-semibold text-red-600">{formatCurrency(results.totalSaleCosts)}</p>
                       </div>
                     </div>
                   </div>
                   
                   <div>
-                    <h3 className="font-medium">Line Item Breakdown</h3>
+                    <h3 className="font-medium">Item Breakdown</h3>
                     <div className="mt-2 border rounded-lg divide-y">
                       {results.breakdownItems.map((item, index) => (
                         <div key={index} className="flex justify-between p-3">
@@ -577,25 +577,25 @@ const CalculatorWizard: React.FC = () => {
         
         <Card>
           <CardHeader>
-            <CardTitle>Save This Simulation</CardTitle>
+            <CardTitle>Salvar Esta Simulação</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="simulationName">Name (Optional)</Label>
+                <Label htmlFor="simulationName">Nome (Opcional)</Label>
                 <Input
                   id="simulationName"
-                  placeholder="e.g., Downtown Apartment"
+                  placeholder="e.g., Apartamento Downtown"
                   value={simulationName}
                   onChange={(e) => setSimulationName(e.target.value)}
                 />
               </div>
               
               <div className="space-y-2">
-                <Label htmlFor="simulationNotes">Notes (Optional)</Label>
+                <Label htmlFor="simulationNotes">Notas (Opcional)</Label>
                 <Input
                   id="simulationNotes"
-                  placeholder="Add any notes about this property"
+                  placeholder="Adicione notas sobre esta propriedade"
                   value={simulationNotes}
                   onChange={(e) => setSimulationNotes(e.target.value)}
                 />
@@ -603,11 +603,11 @@ const CalculatorWizard: React.FC = () => {
               
               <div className="flex flex-wrap gap-3">
                 <Button onClick={saveSimulation}>
-                  Save Simulation
+                  Salvar Simulação
                 </Button>
                 
                 <Button variant="outline" onClick={exportToPdf}>
-                  Export as PDF
+                  Exportar como PDF
                 </Button>
                 
                 <Button
@@ -617,7 +617,7 @@ const CalculatorWizard: React.FC = () => {
                     setCurrentStep(1);
                   }}
                 >
-                  New Calculation
+                  Nova Cálculo
                 </Button>
               </div>
             </div>
@@ -628,11 +628,11 @@ const CalculatorWizard: React.FC = () => {
   };
   
   const stepTitles = [
-    "Initial Values",
-    "Auction Acquisition Costs",
-    "Maintenance Costs",
-    "Sale Costs",
-    "Capital Gains"
+    "Valores Iniciais",
+    "Custos de Aquisição",
+    "Custos de Manutenção",
+    "Custos de Venda",
+    "Ganho de Capital"
   ];
   
   return (
@@ -658,11 +658,11 @@ const CalculatorWizard: React.FC = () => {
               <TabsContent key={index} value={`step-${index + 1}`} className="mt-6">
                 <h2 className="text-2xl font-bold mb-4">{title}</h2>
                 <p className="text-gray-500 mb-6">
-                  {index === 0 && "Enter the basic property values."}
-                  {index === 1 && "Enter all costs associated with acquiring the property."}
-                  {index === 2 && "Enter all costs for maintaining the property."}
-                  {index === 3 && "Enter all costs associated with selling the property."}
-                  {index === 4 && "Enter details for capital gains tax calculation."}
+                  {index === 0 && "Entre com os valores básicos da propriedade."}
+                  {index === 1 && "Entre com todos os custos associados à aquisição da propriedade."}
+                  {index === 2 && "Entre com todos os custos para manter a propriedade."}
+                  {index === 3 && "Entre com todos os custos associados à venda da propriedade."}
+                  {index === 4 && "Entre com detalhes para cálculo de imposto de capital ganho."}
                 </p>
                 
                 {renderStepContent()}
