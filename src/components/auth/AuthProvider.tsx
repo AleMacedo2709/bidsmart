@@ -18,17 +18,28 @@ import { deriveKey, generateTempKey } from '@/lib/encryption';
 import { storeSettings, retrieveSettings } from '@/lib/storage';
 import { toast } from '@/hooks/use-toast';
 
-// TODO: Replace with your Firebase config
+// Firebase config with environment variables
 const firebaseConfig = {
-  apiKey: import.meta.env.VITE_FIREBASE_API_KEY || "demo-mode-api-key",
-  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN || "demo-mode",
-  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID || "demo-mode",
-  appId: import.meta.env.VITE_FIREBASE_APP_ID || "demo-mode"
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+  appId: import.meta.env.VITE_FIREBASE_APP_ID
 };
 
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
+// Check if we have valid Firebase credentials
+const isFirebaseConfigured = !!firebaseConfig.apiKey && 
+  !firebaseConfig.apiKey.includes('demo-mode') && 
+  !!firebaseConfig.authDomain &&
+  !!firebaseConfig.projectId;
+
+// Initialize Firebase only if properly configured
+let auth;
+let app;
+
+if (isFirebaseConfigured) {
+  app = initializeApp(firebaseConfig);
+  auth = getAuth(app);
+}
 
 // Auth context type
 interface AuthContextType {
@@ -56,6 +67,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [isLocalPasswordSet, setIsLocalPasswordSet] = useState(false);
 
   useEffect(() => {
+    // Skip Firebase auth if not configured
+    if (!isFirebaseConfigured) {
+      setIsLoading(false);
+      return;
+    }
+
     const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
       setUser(currentUser);
       
@@ -90,6 +107,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   }, []);
 
   const signIn = async (email: string, password: string) => {
+    if (!isFirebaseConfigured) {
+      simulateDemoMode();
+      return;
+    }
+
     try {
       setIsLoading(true);
       await signInWithEmailAndPassword(auth, email, password);
@@ -114,6 +136,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const signUp = async (email: string, password: string) => {
+    if (!isFirebaseConfigured) {
+      simulateDemoMode();
+      return;
+    }
+
     try {
       setIsLoading(true);
       await createUserWithEmailAndPassword(auth, email, password);
@@ -138,6 +165,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const signInWithGoogle = async () => {
+    if (!isFirebaseConfigured) {
+      simulateDemoMode();
+      return;
+    }
+
     try {
       setIsLoading(true);
       const provider = new GoogleAuthProvider();
@@ -159,6 +191,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const signInWithGithub = async () => {
+    if (!isFirebaseConfigured) {
+      simulateDemoMode();
+      return;
+    }
+
     try {
       setIsLoading(true);
       const provider = new GithubAuthProvider();
@@ -180,6 +217,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const signInWithFacebook = async () => {
+    if (!isFirebaseConfigured) {
+      simulateDemoMode();
+      return;
+    }
+
     try {
       setIsLoading(true);
       const provider = new FacebookAuthProvider();
@@ -200,7 +242,47 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
+  // Simulate demo mode for all auth methods when Firebase is not configured
+  const simulateDemoMode = async () => {
+    try {
+      setIsLoading(true);
+      // Create a fake anonymous user
+      const demoUser = {
+        uid: 'demo-user-' + Date.now(),
+        isAnonymous: true,
+        email: null,
+        displayName: 'Demo User'
+      } as unknown as FirebaseUser;
+      
+      setUser(demoUser);
+      
+      // Generate temporary encryption key
+      const tempKey = await generateTempKey();
+      setEncryptionKey(tempKey);
+      setIsLocalPasswordSet(true);
+      
+      toast({
+        title: "Demo Mode Activated",
+        description: "You're now using the app in demo mode. Your data will only be stored on this device.",
+      });
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to start demo mode",
+        variant: "destructive",
+      });
+      throw error;
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const signInAnonymously = async () => {
+    if (!isFirebaseConfigured) {
+      simulateDemoMode();
+      return;
+    }
+
     try {
       setIsLoading(true);
       await firebaseSignInAnonymously(auth);
@@ -225,9 +307,16 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const signOut = async () => {
     try {
-      await firebaseSignOut(auth);
+      if (isFirebaseConfigured && user) {
+        await firebaseSignOut(auth);
+      } else {
+        // For demo mode, just clear the state
+        setUser(null);
+      }
+      
       setEncryptionKey(null);
       setIsLocalPasswordSet(false);
+      
       toast({
         title: "Signed out",
         description: "You have been signed out successfully",
