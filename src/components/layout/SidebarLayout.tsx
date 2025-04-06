@@ -72,7 +72,7 @@ const SidebarLayout: React.FC<SidebarLayoutProps> = ({ children }) => {
                   
                   <SidebarMenuItem>
                     <SidebarMenuButton asChild isActive={isActive('/financas')}>
-                      <Link to="/dashboard" className="flex items-center gap-2 text-white">
+                      <Link to="/financas" className="flex items-center gap-2 text-white">
                         <DollarSign className="h-5 w-5" />
                         <span>Finanças</span>
                       </Link>
