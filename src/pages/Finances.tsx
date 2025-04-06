@@ -6,36 +6,39 @@ import InvestmentChart from '@/components/finances/InvestmentChart';
 import PortfolioPieChart from '@/components/finances/PortfolioPieChart';
 import ROIBarChart from '@/components/finances/ROIBarChart';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 const Finances: React.FC = () => {
+  const isMobile = useIsMobile();
+  
   return (
     <SidebarLayout>
-      <div className="container mx-auto px-4 py-6 min-h-screen">
-        <div className="mb-6">
-          <h1 className="text-3xl font-bold">Finanças</h1>
-          <p className="text-gray-500 mt-2">
+      <div className="container mx-auto px-2 sm:px-4 py-4 sm:py-6 min-h-screen">
+        <div className="mb-4 sm:mb-6">
+          <h1 className="text-2xl sm:text-3xl font-bold">Finanças</h1>
+          <p className="text-gray-500 mt-1 sm:mt-2 text-sm sm:text-base">
             Análise financeira dos seus investimentos em imóveis
           </p>
         </div>
 
         <FinancialMetrics />
         
-        <Tabs defaultValue="overview" className="mt-8">
-          <TabsList>
-            <TabsTrigger value="overview">Visão Geral</TabsTrigger>
-            <TabsTrigger value="roi">ROI</TabsTrigger>
-            <TabsTrigger value="portfolio">Portfólio</TabsTrigger>
+        <Tabs defaultValue="overview" className="mt-6 sm:mt-8">
+          <TabsList className="w-full max-w-md grid grid-cols-3">
+            <TabsTrigger value="overview" className="text-xs sm:text-sm">Visão Geral</TabsTrigger>
+            <TabsTrigger value="roi" className="text-xs sm:text-sm">ROI</TabsTrigger>
+            <TabsTrigger value="portfolio" className="text-xs sm:text-sm">Portfólio</TabsTrigger>
           </TabsList>
           
-          <TabsContent value="overview" className="mt-4">
-            <InvestmentChart className="mb-6" />
+          <TabsContent value="overview" className="mt-3 sm:mt-4">
+            <InvestmentChart className="mb-4 sm:mb-6" />
           </TabsContent>
           
-          <TabsContent value="roi" className="mt-4">
+          <TabsContent value="roi" className="mt-3 sm:mt-4">
             <ROIBarChart />
           </TabsContent>
           
-          <TabsContent value="portfolio" className="mt-4">
+          <TabsContent value="portfolio" className="mt-3 sm:mt-4">
             <PortfolioPieChart />
           </TabsContent>
         </Tabs>

@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { mockFinancialData } from '@/data/mockData';
 import { DollarSign, TrendingUp, BarChart3, Percent } from 'lucide-react';
 
@@ -44,18 +44,18 @@ const FinancialMetrics = () => {
   ];
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-4">
       {metrics.map((metric, index) => (
-        <Card key={index}>
-          <CardContent className="pt-6">
+        <Card key={index} className="overflow-hidden">
+          <CardContent className="p-3 sm:p-4 md:pt-6">
             <div className="flex items-start justify-between">
               <div>
-                <p className="text-sm font-medium text-muted-foreground mb-1">{metric.title}</p>
-                <p className="text-3xl font-bold">{metric.value}</p>
-                <p className="text-xs text-muted-foreground mt-1">{metric.description}</p>
+                <p className="text-xs sm:text-sm font-medium text-muted-foreground mb-1">{metric.title}</p>
+                <p className="text-lg sm:text-xl md:text-3xl font-bold">{metric.value}</p>
+                <p className="text-xs text-muted-foreground mt-1 hidden sm:block">{metric.description}</p>
               </div>
-              <div className={`p-2 rounded-full ${metric.color}`}>
-                <metric.icon className="h-6 w-6" />
+              <div className={`p-1.5 sm:p-2 rounded-full ${metric.color}`}>
+                <metric.icon className="h-4 w-4 sm:h-5 sm:w-5 md:h-6 md:w-6" />
               </div>
             </div>
           </CardContent>

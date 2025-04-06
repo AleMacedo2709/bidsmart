@@ -4,12 +4,15 @@ import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContaine
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart';
 import { mockProperties } from '@/data/mockData';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 interface ROIBarChartProps {
   className?: string;
 }
 
 const ROIBarChart: React.FC<ROIBarChartProps> = ({ className }) => {
+  const isMobile = useIsMobile();
+  
   // Calcular o ROI para cada propriedade
   const data = mockProperties
     .filter(property => property.purchasePrice > 0)
@@ -18,7 +21,8 @@ const ROIBarChart: React.FC<ROIBarChartProps> = ({ className }) => {
       const roi = (investmentGain / property.purchasePrice) * 100;
       
       return {
-        name: property.name,
+        name: isMobile ? property.name.substring(0, 10) + (property.name.length > 10 ? '...' : '') : property.name,
+        fullName: property.name,
         roi: parseFloat(roi.toFixed(2)),
         gain: investmentGain
       };
@@ -32,22 +36,48 @@ const ROIBarChart: React.FC<ROIBarChartProps> = ({ className }) => {
     }
   };
 
+  const CustomTooltip = ({ active, payload }: any) => {
+    if (active && payload && payload.length) {
+      return (
+        <div className="bg-white p-2 border rounded shadow text-sm">
+          <p className="font-medium">{payload[0].payload.fullName || payload[0].payload.name}</p>
+          <p>ROI: {payload[0].value}%</p>
+        </div>
+      );
+    }
+    return null;
+  };
+
   return (
     <Card className={className}>
-      <CardHeader>
-        <CardTitle>ROI por Imóvel</CardTitle>
-        <CardDescription>
+      <CardHeader className="pb-2">
+        <CardTitle className="text-lg sm:text-xl">ROI por Imóvel</CardTitle>
+        <CardDescription className="text-xs sm:text-sm">
           Retorno sobre o investimento (%) para cada imóvel
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <div className="h-[300px]">
+        <div className="h-[250px] sm:h-[300px]">
           <ChartContainer config={chartConfig}>
-            <BarChart data={data} layout="vertical" margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
+            <BarChart 
+              data={data} 
+              layout="vertical" 
+              margin={{ 
+                top: 5, 
+                right: isMobile ? 10 : 30, 
+                left: isMobile ? 50 : 20, 
+                bottom: 5 
+              }}
+            >
               <CartesianGrid strokeDasharray="3 3" />
               <XAxis type="number" />
-              <YAxis type="category" dataKey="name" width={80} />
-              <ChartTooltip content={<ChartTooltipContent />} />
+              <YAxis 
+                type="category" 
+                dataKey="name" 
+                width={isMobile ? 60 : 80}
+                tick={{ fontSize: isMobile ? 10 : 12 }}
+              />
+              <Tooltip content={<CustomTooltip />} />
               <Bar dataKey="roi" fill="#F43F5E" radius={[0, 4, 4, 0]} />
             </BarChart>
           </ChartContainer>
