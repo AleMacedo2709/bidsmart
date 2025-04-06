@@ -11,8 +11,6 @@ import Index from "./pages/Index";
 import Auth from "./pages/Auth";
 import Dashboard from "./pages/Dashboard";
 import Calculator from "./pages/Calculator";
-import Institutional from "./pages/Institutional";
-import PrivacyPolicy from "./pages/PrivacyPolicy";
 import NotFound from "./pages/NotFound";
 import About from "./pages/About";
 import Settings from "./pages/Settings";
@@ -34,8 +32,6 @@ const App = () => (
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/calculator" element={<Calculator />} />
             <Route path="/imoveis" element={<Properties />} />
-            <Route path="/institutional" element={<Institutional />} />
-            <Route path="/privacy-policy" element={<PrivacyPolicy />} />
             <Route path="/about" element={<About />} />
             <Route path="/settings" element={<Settings />} />
             <Route path="*" element={<NotFound />} />
