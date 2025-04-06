@@ -1,13 +1,12 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Plus, Search } from 'lucide-react';
-import { useAuth } from '@/components/auth/AuthProvider';
-import { retrieveAllData } from '@/lib/storage';
 import { useToast } from '@/hooks/use-toast';
 import PropertiesTable from './PropertiesTable';
+import { mockProperties } from '@/data/mockData';
 
 interface PropertyData {
   id: string;
@@ -25,44 +24,13 @@ interface PropertyData {
 }
 
 const PropertyManager: React.FC = () => {
-  const [properties, setProperties] = useState<PropertyData[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const [properties] = useState<PropertyData[]>(mockProperties);
+  const [isLoading, setIsLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [activeFilter, setActiveFilter] = useState('Todos');
-  const { encryptionKey } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
 
-  useEffect(() => {
-    loadProperties();
-  }, [encryptionKey]);
-
-  const loadProperties = async () => {
-    if (!encryptionKey) return;
-
-    try {
-      setIsLoading(true);
-      let data = await retrieveAllData<PropertyData>('properties', encryptionKey);
-      
-      // Add saleValue if not present (for backward compatibility)
-      data = data.map(property => ({
-        ...property,
-        saleValue: property.saleValue || property.estimatedValue
-      }));
-      
-      setProperties(data);
-    } catch (error) {
-      console.error('Falha ao carregar imóveis:', error);
-      toast({
-        title: "Erro ao Carregar Dados",
-        description: "Falha ao carregar seus imóveis salvos.",
-        variant: "destructive",
-      });
-    } finally {
-      setIsLoading(false);
-    }
-  };
-  
   // Apply search filter
   const searchFilteredProperties = searchTerm
     ? properties.filter(property => 
@@ -83,6 +51,24 @@ const PropertyManager: React.FC = () => {
 
   const addNewProperty = () => {
     navigate('/add-property');
+    toast({
+      title: "Função em desenvolvimento",
+      description: "A adição de imóveis será implementada em breve.",
+    });
+  };
+
+  const handleView = (id: string) => {
+    toast({
+      title: "Visualizando imóvel",
+      description: `Visualizando detalhes do imóvel ${id}`,
+    });
+  };
+
+  const handleDelete = (id: string) => {
+    toast({
+      title: "Função em desenvolvimento",
+      description: "A exclusão de imóveis será implementada em breve.",
+    });
   };
 
   return (
@@ -144,8 +130,8 @@ const PropertyManager: React.FC = () => {
         <div className="overflow-x-auto">
           <PropertiesTable 
             properties={filteredProperties}
-            onView={(id) => navigate(`/property/${id}`)}
-            onDelete={(id) => navigate(`/property/${id}`)}
+            onView={handleView}
+            onDelete={handleDelete}
           />
         </div>
       )}
