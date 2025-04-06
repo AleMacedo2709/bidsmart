@@ -16,8 +16,9 @@ import {
 import { deriveKey, generateTempKey } from '@/lib/encryption';
 import { storeSettings, retrieveSettings } from '@/lib/storage';
 import { toast } from '@/hooks/use-toast';
+import { trackAuthAttempt, checkSecurityStatus, verifyDatabaseIntegrity, rotateEncryptionKey } from '@/lib/storage';
+import { calculatePasswordStrength } from '@/lib/encryption';
 
-// Firebase config with environment variables
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
   authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
@@ -25,13 +26,11 @@ const firebaseConfig = {
   appId: import.meta.env.VITE_FIREBASE_APP_ID
 };
 
-// Check if we have valid Firebase credentials
 const isFirebaseConfigured = !!firebaseConfig.apiKey && 
   !firebaseConfig.apiKey.includes('demo-mode') && 
   !!firebaseConfig.authDomain &&
   !!firebaseConfig.projectId;
 
-// Initialize Firebase only if properly configured
 let auth;
 let app;
 
@@ -40,7 +39,6 @@ if (isFirebaseConfigured) {
   auth = getAuth(app);
 }
 
-// Auth context type
 interface AuthContextType {
   user: FirebaseUser | null;
   isLoading: boolean;
@@ -55,6 +53,9 @@ interface AuthContextType {
   signInAnonymously: () => Promise<void>;
   signOut: () => Promise<void>;
   setLocalPassword: (password: string) => Promise<void>;
+  rotateKey: (currentPassword: string, newPassword: string) => Promise<void>;
+  verifyDataIntegrity: () => Promise<{ valid: boolean; issues: any[] }>;
+  calculatePasswordStrength: (password: string) => number;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -64,9 +65,29 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [encryptionKey, setEncryptionKey] = useState<CryptoKey | null>(null);
   const [isLocalPasswordSet, setIsLocalPasswordSet] = useState(false);
+  const [securityStatus, setSecurityStatus] = useState<{ locked: boolean; reason?: string }>({ locked: false });
 
   useEffect(() => {
-    // Skip Firebase auth if not configured
+    const checkSecurity = async () => {
+      const status = await checkSecurityStatus();
+      setSecurityStatus(status);
+      
+      if (status.locked) {
+        toast({
+          title: "Account Temporarily Locked",
+          description: `Too many failed attempts. Try again in ${Math.round((status.unlockTime || 0 - Date.now()) / 60000)} minutes.`,
+          variant: "destructive",
+        });
+      }
+    };
+    
+    checkSecurity();
+    
+    const interval = setInterval(checkSecurity, 60000);
+    return () => clearInterval(interval);
+  }, []);
+
+  useEffect(() => {
     if (!isFirebaseConfigured) {
       setIsLoading(false);
       return;
@@ -75,7 +96,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
       setUser(currentUser);
       
-      // If user signs out, clear encryption key
       if (!currentUser) {
         setEncryptionKey(null);
         setIsLocalPasswordSet(false);
@@ -84,16 +104,21 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       }
       
       try {
-        // Check if there are any settings (to determine if local password is set)
         if (currentUser.isAnonymous) {
-          // For anonymous users, generate a temporary key
           const tempKey = await generateTempKey();
           setEncryptionKey(tempKey);
           setIsLocalPasswordSet(true);
         } else {
-          // For regular users, try to retrieve settings to see if a local password is set
           const settings = await retrieveSettings(await deriveKey(currentUser.uid, 'temporary'));
           setIsLocalPasswordSet(!!settings.passwordSet);
+          
+          if (settings._keyRotationRecommended) {
+            toast({
+              title: "Security Recommendation",
+              description: "For enhanced security, consider updating your encryption password.",
+              duration: 10000,
+            });
+          }
         }
       } catch (error) {
         setIsLocalPasswordSet(false);
@@ -111,14 +136,29 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       return;
     }
 
+    const status = await checkSecurityStatus();
+    if (status.locked) {
+      toast({
+        title: "Account Temporarily Locked",
+        description: `Too many failed attempts. Try again in ${Math.round((status.unlockTime || 0 - Date.now()) / 60000)} minutes.`,
+        variant: "destructive",
+      });
+      return;
+    }
+
     try {
       setIsLoading(true);
       await signInWithEmailAndPassword(auth, email, password);
+      
+      await trackAuthAttempt(true);
+      
       toast({
         title: "Login successful",
         description: "Welcome back!",
       });
     } catch (error: any) {
+      await trackAuthAttempt(false);
+      
       let message = "Failed to sign in";
       if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password') {
         message = "Invalid email or password";
@@ -244,7 +284,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const simulateDemoMode = async () => {
     try {
       setIsLoading(true);
-      // Create a fake anonymous user
       const demoUser = {
         uid: 'demo-user-' + Date.now(),
         isAnonymous: true,
@@ -254,7 +293,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       
       setUser(demoUser);
       
-      // Generate temporary encryption key
       const tempKey = await generateTempKey();
       setEncryptionKey(tempKey);
       setIsLocalPasswordSet(true);
@@ -308,7 +346,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       if (isFirebaseConfigured && user) {
         await firebaseSignOut(auth);
       } else {
-        // For demo mode, just clear the state
         setUser(null);
       }
       
@@ -334,14 +371,26 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       throw new Error('No user is signed in');
     }
 
+    const strengthScore = calculatePasswordStrength(password);
+    if (strengthScore < 50) {
+      toast({
+        title: "Weak Password",
+        description: "Please use a stronger password with a mix of uppercase, lowercase, numbers and special characters.",
+        variant: "destructive",
+      });
+      throw new Error('Password is too weak');
+    }
+
     try {
-      // Generate a key using the user's UID and the provided password
       const key = await deriveKey(user.uid, password);
       setEncryptionKey(key);
       setIsLocalPasswordSet(true);
 
-      // Store a flag indicating that the user has set a password
-      await storeSettings({ passwordSet: true }, key);
+      await storeSettings({ 
+        passwordSet: true,
+        passwordStrength: strengthScore,
+        passwordSetAt: Date.now() 
+      }, key);
 
       toast({
         title: "Security Setup Complete",
@@ -354,6 +403,97 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         variant: "destructive",
       });
       throw error;
+    }
+  };
+
+  const rotateKey = async (currentPassword: string, newPassword: string) => {
+    if (!user) {
+      throw new Error('No user is signed in');
+    }
+
+    try {
+      setIsLoading(true);
+      
+      const currentKey = await deriveKey(user.uid, currentPassword);
+      
+      try {
+        await retrieveSettings(currentKey);
+      } catch (error) {
+        toast({
+          title: "Incorrect Password",
+          description: "Your current password is incorrect",
+          variant: "destructive",
+        });
+        throw new Error('Current password verification failed');
+      }
+      
+      const strengthScore = calculatePasswordStrength(newPassword);
+      if (strengthScore < 70) {
+        toast({
+          title: "Weak New Password",
+          description: "Please use a stronger password. Your new password should be at least as strong as your previous one.",
+          variant: "destructive",
+        });
+        throw new Error('New password is too weak');
+      }
+      
+      const newKey = await deriveKey(user.uid, newPassword);
+      
+      await rotateEncryptionKey(currentKey, newKey);
+      
+      setEncryptionKey(newKey);
+      
+      toast({
+        title: "Key Rotation Complete",
+        description: "Your encryption key has been updated successfully. All data has been re-encrypted.",
+      });
+    } catch (error) {
+      if ((error as Error).message !== 'Current password verification failed' && 
+          (error as Error).message !== 'New password is too weak') {
+        toast({
+          title: "Key Rotation Failed",
+          description: "An error occurred while updating your encryption key.",
+          variant: "destructive",
+        });
+      }
+      throw error;
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const verifyDataIntegrity = async () => {
+    if (!encryptionKey) {
+      throw new Error('No encryption key available');
+    }
+    
+    try {
+      setIsLoading(true);
+      const result = await verifyDatabaseIntegrity(encryptionKey);
+      
+      if (result.valid) {
+        toast({
+          title: "Data Integrity Verified",
+          description: "All your data is intact and has not been tampered with.",
+        });
+      } else {
+        toast({
+          title: "Data Integrity Issues Found",
+          description: `${result.issues.length} integrity issues detected. Please restore from backup.`,
+          variant: "destructive",
+        });
+      }
+      
+      return result;
+    } catch (error) {
+      toast({
+        title: "Verification Failed",
+        description: "Could not complete data integrity verification.",
+        variant: "destructive",
+      });
+      throw error;
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -370,7 +510,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     signInWithFacebook,
     signInAnonymously,
     signOut,
-    setLocalPassword
+    setLocalPassword,
+    rotateKey,
+    verifyDataIntegrity,
+    calculatePasswordStrength
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
