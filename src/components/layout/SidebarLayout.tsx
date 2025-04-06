@@ -112,7 +112,7 @@ const SidebarLayout: React.FC<SidebarLayoutProps> = ({ children }) => {
           </SidebarContent>
         </Sidebar>
         
-        <main className="flex-1 overflow-auto">
+        <main className="flex-1 overflow-auto h-screen">
           {children}
         </main>
       </div>
