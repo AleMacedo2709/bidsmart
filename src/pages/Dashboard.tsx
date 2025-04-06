@@ -6,8 +6,8 @@ import AppLayout from '@/components/layout/AppLayout';
 const Dashboard = () => {
   return (
     <AppLayout>
-      <div className="container mx-auto px-8 py-6">
-        <h1 className="text-4xl font-bold mb-8">Imóveis</h1>
+      <div className="h-full">
+        <h1 className="text-4xl font-bold mb-6 px-8 pt-6">Imóveis</h1>
         <PropertyList />
       </div>
     </AppLayout>

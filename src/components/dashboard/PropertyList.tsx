@@ -105,8 +105,8 @@ const PropertyList: React.FC = () => {
   };
 
   return (
-    <div className="space-y-6">
-      <div className="mb-8 flex justify-end">
+    <div className="h-full">
+      <div className="absolute top-6 right-8">
         <Button
           onClick={addNewProperty}
           className="rounded-md flex items-center gap-2"
@@ -116,7 +116,7 @@ const PropertyList: React.FC = () => {
         </Button>
       </div>
 
-      <div className="bg-white border rounded-lg">
+      <div className="bg-white border rounded-lg mx-8">
         <div className="p-6 border-b flex justify-between items-center">
           <h2 className="text-2xl font-semibold">Gerenciar Imóveis</h2>
           <div className="w-full max-w-xs">
@@ -137,11 +137,13 @@ const PropertyList: React.FC = () => {
             <button
               key={filter}
               onClick={() => setActiveFilter(filter === 'Ativos' ? 'Ativo' : 
-                               filter === 'Vendidos' ? 'Vendido' : filter)}
+                              filter === 'Em Processo' ? 'Em Processo' :
+                              filter === 'Vendidos' ? 'Vendido' : filter)}
               className={`px-6 py-2 text-sm font-medium rounded-md transition-colors ${
                 (activeFilter === filter || 
-                 (filter === 'Ativos' && activeFilter === 'Ativo') ||
-                 (filter === 'Vendidos' && activeFilter === 'Vendido'))
+                (filter === 'Ativos' && activeFilter === 'Ativo') ||
+                (filter === 'Em Processo' && activeFilter === 'Em Processo') ||
+                (filter === 'Vendidos' && activeFilter === 'Vendido'))
                   ? 'bg-blue-600 text-white'
                   : 'text-gray-700 hover:bg-gray-100'
               }`}
