@@ -106,74 +106,75 @@ const PropertyList: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      <div className="border rounded-lg p-6">
-        <div className="flex flex-col space-y-6">
-          <div className="flex justify-between items-center">
-            <h2 className="text-2xl font-bold">Gerenciar Imóveis</h2>
-            <div className="w-full max-w-sm">
-              <div className="relative">
-                <Search className="absolute left-2 top-1/2 transform -translate-y-1/2 text-gray-500 h-4 w-4" />
-                <Input
-                  placeholder="Pesquisar imóveis..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-8"
-                />
-              </div>
-            </div>
-          </div>
-          
-          <div className="border rounded-lg">
-            <div className="flex border-b p-0.5">
-              {['Todos', 'Ativo', 'Em Processo', 'Vendido'].map((filter) => (
-                <button
-                  key={filter}
-                  onClick={() => setActiveFilter(filter)}
-                  className={`px-6 py-2 text-sm font-medium rounded-lg transition-colors ${
-                    activeFilter === filter
-                      ? 'bg-primary text-primary-foreground'
-                      : 'bg-background text-muted-foreground hover:bg-muted'
-                  }`}
-                >
-                  {filter}
-                </button>
-              ))}
-            </div>
-            
-            {isLoading ? (
-              <div className="py-12 text-center">
-                <p className="text-gray-500">Carregando seus imóveis...</p>
-              </div>
-            ) : filteredProperties.length === 0 ? (
-              <div className="py-12 text-center">
-                <p className="text-gray-500">
-                  {searchTerm 
-                    ? "Nenhum imóvel encontrado com os critérios de busca." 
-                    : "Você ainda não possui imóveis cadastrados."}
-                </p>
-                <Button onClick={addNewProperty} className="mt-4">
-                  Adicionar Imóvel
-                </Button>
-              </div>
-            ) : (
-              <PropertyTable 
-                properties={filteredProperties}
-                onView={(id) => navigate(`/property/${id}`)}
-                onDelete={(id) => setPropertyToDelete(id)}
-              />
-            )}
-          </div>
-        </div>
-      </div>
-
-      <div className="fixed bottom-10 right-10">
+      <div className="mb-8 flex justify-end">
         <Button
           onClick={addNewProperty}
-          size="lg"
-          className="rounded-full h-14 w-14 p-0 bg-blue-600 hover:bg-blue-700"
+          className="rounded-md flex items-center gap-2"
         >
-          <Plus className="h-6 w-6" />
+          <Plus className="h-5 w-5" />
+          Adicionar Imóvel
         </Button>
+      </div>
+
+      <div className="bg-white border rounded-lg">
+        <div className="p-6 border-b flex justify-between items-center">
+          <h2 className="text-2xl font-semibold">Gerenciar Imóveis</h2>
+          <div className="w-full max-w-xs">
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 h-4 w-4" />
+              <Input
+                placeholder="Pesquisar imóveis..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="pl-9"
+              />
+            </div>
+          </div>
+        </div>
+          
+        <div className="border-b p-1 px-2 flex">
+          {['Todos', 'Ativos', 'Em Processo', 'Vendidos'].map((filter) => (
+            <button
+              key={filter}
+              onClick={() => setActiveFilter(filter === 'Ativos' ? 'Ativo' : 
+                               filter === 'Vendidos' ? 'Vendido' : filter)}
+              className={`px-6 py-2 text-sm font-medium rounded-md transition-colors ${
+                (activeFilter === filter || 
+                 (filter === 'Ativos' && activeFilter === 'Ativo') ||
+                 (filter === 'Vendidos' && activeFilter === 'Vendido'))
+                  ? 'bg-blue-600 text-white'
+                  : 'text-gray-700 hover:bg-gray-100'
+              }`}
+            >
+              {filter}
+            </button>
+          ))}
+        </div>
+            
+        {isLoading ? (
+          <div className="py-12 text-center">
+            <p className="text-gray-500">Carregando seus imóveis...</p>
+          </div>
+        ) : filteredProperties.length === 0 ? (
+          <div className="py-12 text-center">
+            <p className="text-gray-500">
+              {searchTerm 
+                ? "Nenhum imóvel encontrado com os critérios de busca." 
+                : "Você ainda não possui imóveis cadastrados."}
+            </p>
+            <Button onClick={addNewProperty} className="mt-4">
+              Adicionar Imóvel
+            </Button>
+          </div>
+        ) : (
+          <div className="overflow-x-auto">
+            <PropertyTable 
+              properties={filteredProperties}
+              onView={(id) => navigate(`/property/${id}`)}
+              onDelete={(id) => setPropertyToDelete(id)}
+            />
+          </div>
+        )}
       </div>
 
       <AlertDialog open={!!propertyToDelete} onOpenChange={() => setPropertyToDelete(null)}>

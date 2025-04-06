@@ -38,48 +38,46 @@ const PropertyTable: React.FC<PropertyTableProps> = ({ properties, onView, onDel
   };
 
   return (
-    <div className="overflow-x-auto border rounded-lg">
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead className="w-[250px]">Endereço</TableHead>
-            <TableHead>Tipo</TableHead>
-            <TableHead>Status</TableHead>
-            <TableHead>Data Compra</TableHead>
-            <TableHead>Valor Compra</TableHead>
-            <TableHead>Valor Estimado</TableHead>
-            <TableHead className="text-center">Ações</TableHead>
+    <Table>
+      <TableHeader>
+        <TableRow className="bg-gray-50">
+          <TableHead className="w-[300px]">Endereço</TableHead>
+          <TableHead>Tipo</TableHead>
+          <TableHead>Status</TableHead>
+          <TableHead className="text-right">Data Compra</TableHead>
+          <TableHead className="text-right">Valor Compra</TableHead>
+          <TableHead className="text-right">Valor Estimado</TableHead>
+          <TableHead className="text-center">Ações</TableHead>
+        </TableRow>
+      </TableHeader>
+      <TableBody>
+        {properties.map((property) => (
+          <TableRow key={property.id}>
+            <TableCell className="font-medium">
+              <div>
+                <div className="font-medium">{property.address}</div>
+                <div className="text-sm text-gray-500">{property.city}, {property.state}</div>
+              </div>
+            </TableCell>
+            <TableCell>{property.type}</TableCell>
+            <TableCell>{renderStatusBadge(property.status)}</TableCell>
+            <TableCell className="text-right">{property.purchaseDate}</TableCell>
+            <TableCell className="text-right">{formatCurrency(property.purchasePrice)}</TableCell>
+            <TableCell className="text-right">{formatCurrency(property.estimatedValue)}</TableCell>
+            <TableCell>
+              <div className="flex justify-center gap-2">
+                <Button variant="ghost" size="icon" onClick={() => onView(property.id)}>
+                  <Eye className="h-4 w-4" />
+                </Button>
+                <Button variant="ghost" size="icon" onClick={() => onDelete(property.id)} className="text-red-500">
+                  <Trash2 className="h-4 w-4" />
+                </Button>
+              </div>
+            </TableCell>
           </TableRow>
-        </TableHeader>
-        <TableBody>
-          {properties.map((property) => (
-            <TableRow key={property.id}>
-              <TableCell className="font-medium">
-                <div>
-                  <div className="font-medium">{property.address}</div>
-                  <div className="text-sm text-gray-500">{property.city}, {property.state}</div>
-                </div>
-              </TableCell>
-              <TableCell>{property.type}</TableCell>
-              <TableCell>{renderStatusBadge(property.status)}</TableCell>
-              <TableCell>{property.purchaseDate}</TableCell>
-              <TableCell>{formatCurrency(property.purchasePrice)}</TableCell>
-              <TableCell>{formatCurrency(property.estimatedValue)}</TableCell>
-              <TableCell>
-                <div className="flex justify-center gap-2">
-                  <Button variant="ghost" size="icon" onClick={() => onView(property.id)}>
-                    <Eye className="h-4 w-4" />
-                  </Button>
-                  <Button variant="ghost" size="icon" onClick={() => onDelete(property.id)} className="text-red-500">
-                    <Trash2 className="h-4 w-4" />
-                  </Button>
-                </div>
-              </TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-    </div>
+        ))}
+      </TableBody>
+    </Table>
   );
 };
 

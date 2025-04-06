@@ -1,11 +1,11 @@
 
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import Navbar from './Navbar';
 import { useAuth } from '@/components/auth/AuthProvider';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import SidebarLayout from './SidebarLayout';
 import { 
   Dialog, 
   DialogContent, 
@@ -43,12 +43,12 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
 
   const handleSetPassword = async () => {
     if (localPassword !== confirmPassword) {
-      alert('Passwords do not match');
+      alert('Senhas não coincidem');
       return;
     }
 
     if (localPassword.length < 8) {
-      alert('Password must be at least 8 characters long');
+      alert('A senha deve ter pelo menos 8 caracteres');
       return;
     }
 
@@ -56,57 +56,105 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
       await setLocalPassword(localPassword);
       setPasswordDialogOpen(false);
     } catch (error) {
-      console.error('Failed to set local password:', error);
-      alert('Failed to set local password. Please try again.');
+      console.error('Falha ao definir senha local:', error);
+      alert('Falha ao definir senha local. Por favor, tente novamente.');
     }
   };
 
-  return (
-    <div className="min-h-screen bg-background flex flex-col">
-      <Navbar />
-      
-      <main className="flex-1 container mx-auto py-6 px-4">
-        {children}
-      </main>
+  // Use the index page path condition to determine whether to show sidebar
+  const isIndexPage = location.pathname === '/';
 
+  if (isIndexPage) {
+    return (
+      <div className="min-h-screen bg-background flex flex-col">
+        {children}
+        
+        {/* Local Password Dialog */}
+        <Dialog open={passwordDialogOpen} onOpenChange={setPasswordDialogOpen}>
+          <DialogContent className="sm:max-w-md">
+            <DialogHeader>
+              <DialogTitle>Definir Senha de Criptografia</DialogTitle>
+              <DialogDescription>
+                Esta senha será usada para criptografar seus dados localmente. É importante para sua privacidade e segurança.
+                Esta senha nunca é enviada para nossos servidores e não podemos recuperá-la se você esquecer.
+              </DialogDescription>
+            </DialogHeader>
+            <div className="grid gap-4 py-4">
+              <div className="grid gap-2">
+                <Label htmlFor="local-password">Senha de Criptografia</Label>
+                <Input
+                  id="local-password"
+                  type="password"
+                  placeholder="Digite uma senha forte"
+                  value={localPassword}
+                  onChange={(e) => setLocalPasswordValue(e.target.value)}
+                />
+              </div>
+              <div className="grid gap-2">
+                <Label htmlFor="confirm-password">Confirmar Senha</Label>
+                <Input
+                  id="confirm-password"
+                  type="password"
+                  placeholder="Confirme sua senha"
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                />
+              </div>
+            </div>
+            <DialogFooter>
+              <Button type="submit" onClick={handleSetPassword}>Definir Senha</Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+      </div>
+    );
+  }
+
+  // For other pages, use the SidebarLayout
+  return (
+    <>
+      <SidebarLayout>
+        {children}
+      </SidebarLayout>
+      
       {/* Local Password Dialog */}
       <Dialog open={passwordDialogOpen} onOpenChange={setPasswordDialogOpen}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
-            <DialogTitle>Set Encryption Password</DialogTitle>
+            <DialogTitle>Definir Senha de Criptografia</DialogTitle>
             <DialogDescription>
-              This password will be used to encrypt your data locally. It's important for your privacy and security. 
-              This password is never sent to our servers and we cannot recover it for you if you forget it.
+              Esta senha será usada para criptografar seus dados localmente. É importante para sua privacidade e segurança.
+              Esta senha nunca é enviada para nossos servidores e não podemos recuperá-la se você esquecer.
             </DialogDescription>
           </DialogHeader>
           <div className="grid gap-4 py-4">
             <div className="grid gap-2">
-              <Label htmlFor="local-password">Encryption Password</Label>
+              <Label htmlFor="local-password">Senha de Criptografia</Label>
               <Input
                 id="local-password"
                 type="password"
-                placeholder="Enter a strong password"
+                placeholder="Digite uma senha forte"
                 value={localPassword}
                 onChange={(e) => setLocalPasswordValue(e.target.value)}
               />
             </div>
             <div className="grid gap-2">
-              <Label htmlFor="confirm-password">Confirm Password</Label>
+              <Label htmlFor="confirm-password">Confirmar Senha</Label>
               <Input
                 id="confirm-password"
                 type="password"
-                placeholder="Confirm your password"
+                placeholder="Confirme sua senha"
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
               />
             </div>
           </div>
           <DialogFooter>
-            <Button type="submit" onClick={handleSetPassword}>Set Password</Button>
+            <Button type="submit" onClick={handleSetPassword}>Definir Senha</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
-    </div>
+    </>
   );
 };
 
