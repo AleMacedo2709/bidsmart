@@ -89,8 +89,8 @@ const SidebarLayout: React.FC<SidebarLayoutProps> = ({ children }) => {
                   </SidebarMenuItem>
                   
                   <SidebarMenuItem>
-                    <SidebarMenuButton asChild isActive={isActive('/configuracoes')}>
-                      <Link to="#" className="flex items-center gap-2 text-white">
+                    <SidebarMenuButton asChild isActive={isActive('/settings')}>
+                      <Link to="/settings" className="flex items-center gap-2 text-white">
                         <Settings className="h-5 w-5" />
                         <span>Configurações</span>
                       </Link>
