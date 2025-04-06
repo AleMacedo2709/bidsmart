@@ -8,10 +8,12 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { CalendarIcon, Plus, Trash2 } from "lucide-react";
+import { CalendarIcon, Plus, Trash2, Mail, Bell, Calendar as CalendarIcon2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import SidebarLayout from "@/components/layout/SidebarLayout";
 import { useToast } from "@/hooks/use-toast";
+import { Switch } from "@/components/ui/switch";
+import { Separator } from "@/components/ui/separator";
 
 interface Auction {
   id: string;
@@ -19,6 +21,12 @@ interface Auction {
   date: Date;
   location: string;
   propertyCount: number;
+}
+
+interface Preferences {
+  emailNotifications: boolean;
+  auctionAlerts: boolean;
+  monthlyReports: boolean;
 }
 
 const Settings = () => {
@@ -40,6 +48,12 @@ const Settings = () => {
       propertyCount: 12
     }
   ]);
+
+  const [preferences, setPreferences] = useState<Preferences>({
+    emailNotifications: true,
+    auctionAlerts: true,
+    monthlyReports: false
+  });
 
   // New auction form state
   const [newAuction, setNewAuction] = useState({
@@ -88,6 +102,18 @@ const Settings = () => {
     toast({
       title: "Leilão removido",
       description: "O leilão foi removido com sucesso."
+    });
+  };
+
+  const handleTogglePreference = (key: keyof Preferences) => {
+    setPreferences(prev => ({
+      ...prev,
+      [key]: !prev[key]
+    }));
+
+    toast({
+      title: "Preferência atualizada",
+      description: `A preferência foi ${preferences[key] ? "desativada" : "ativada"} com sucesso.`
     });
   };
 
@@ -239,8 +265,59 @@ const Settings = () => {
           <TabsContent value="preferences">
             <Card>
               <CardContent className="p-6">
-                <h2 className="text-xl font-semibold mb-4">Preferências</h2>
-                <p>Configurações de preferências serão implementadas aqui.</p>
+                <h2 className="text-xl font-semibold mb-6">Preferências</h2>
+                
+                <div className="space-y-6">
+                  <div className="flex items-center justify-between">
+                    <div className="space-y-0.5">
+                      <div className="flex items-center gap-2">
+                        <Mail className="h-5 w-5 text-blue-600" />
+                        <h3 className="text-lg font-medium">Notificações por Email</h3>
+                      </div>
+                      <p className="text-sm text-gray-500">Receba atualizações sobre seus imóveis</p>
+                    </div>
+                    <Switch 
+                      checked={preferences.emailNotifications}
+                      onCheckedChange={() => handleTogglePreference('emailNotifications')}
+                      className="data-[state=checked]:bg-blue-600"
+                    />
+                  </div>
+                  
+                  <Separator />
+                  
+                  <div className="flex items-center justify-between">
+                    <div className="space-y-0.5">
+                      <div className="flex items-center gap-2">
+                        <Bell className="h-5 w-5 text-blue-600" />
+                        <h3 className="text-lg font-medium">Alertas de Leilão</h3>
+                      </div>
+                      <p className="text-sm text-gray-500">Seja avisado sobre novos leilões</p>
+                    </div>
+                    <Switch 
+                      checked={preferences.auctionAlerts}
+                      onCheckedChange={() => handleTogglePreference('auctionAlerts')}
+                      className="data-[state=checked]:bg-blue-600"
+                    />
+                  </div>
+                  
+                  <Separator />
+                  
+                  <div className="flex items-center justify-between">
+                    <div className="space-y-0.5">
+                      <div className="flex items-center gap-2">
+                        <CalendarIcon2 className="h-5 w-5 text-blue-600" />
+                        <h3 className="text-lg font-medium">Relatórios Mensais</h3>
+                      </div>
+                      <p className="text-sm text-gray-500">Receba relatórios de desempenho mensalmente</p>
+                    </div>
+                    <Switch 
+                      checked={preferences.monthlyReports}
+                      onCheckedChange={() => handleTogglePreference('monthlyReports')}
+                      className="data-[state=checked]:bg-blue-600"
+                    />
+                  </div>
+                </div>
+                
               </CardContent>
             </Card>
           </TabsContent>
