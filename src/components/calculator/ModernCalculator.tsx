@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -899,4 +900,12 @@ const ModernCalculator: React.FC = () => {
                   Preencha os dados do imóvel no formulário ao lado para calcular o potencial de lucro do seu investimento.
                 </p>
               </div>
-              <div className="max-w-
+            </div>
+          )}
+        </CardContent>
+      </Card>
+    </div>
+  );
+};
+
+export default ModernCalculator;
