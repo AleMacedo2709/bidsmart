@@ -1,6 +1,7 @@
 
 import React from 'react';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { Button } from '@/components/ui/button';
 import { Eye, Trash2 } from 'lucide-react';
 import { formatCurrency } from '@/lib/calculations';
 
@@ -47,6 +48,7 @@ const PropertiesTable: React.FC<PropertyTableProps> = ({ properties, onView, onD
           <TableHead className="text-right">Data Compra</TableHead>
           <TableHead className="text-right">Valor Compra</TableHead>
           <TableHead className="text-right">Valor Estimado</TableHead>
+          <TableHead className="text-right">Valor Venda</TableHead>
           <TableHead className="text-center">Ações</TableHead>
         </TableRow>
       </TableHeader>
@@ -64,20 +66,27 @@ const PropertiesTable: React.FC<PropertyTableProps> = ({ properties, onView, onD
             <TableCell className="text-right">{property.purchaseDate}</TableCell>
             <TableCell className="text-right">{formatCurrency(property.purchasePrice)}</TableCell>
             <TableCell className="text-right">{formatCurrency(property.estimatedValue)}</TableCell>
+            <TableCell className="text-right">
+              {property.saleValue ? formatCurrency(property.saleValue) : '—'}
+            </TableCell>
             <TableCell>
               <div className="flex justify-center gap-2">
-                <button 
+                <Button 
+                  variant="ghost" 
+                  size="icon" 
                   onClick={() => onView(property.id)}
-                  className="p-1 text-blue-600 hover:text-blue-800"
+                  className="text-blue-600 hover:text-blue-800 hover:bg-blue-100"
                 >
                   <Eye className="h-5 w-5" />
-                </button>
-                <button 
+                </Button>
+                <Button 
+                  variant="ghost" 
+                  size="icon" 
                   onClick={() => onDelete(property.id)} 
-                  className="p-1 text-red-500 hover:text-red-700"
+                  className="text-red-500 hover:text-red-700 hover:bg-red-100"
                 >
                   <Trash2 className="h-5 w-5" />
-                </button>
+                </Button>
               </div>
             </TableCell>
           </TableRow>

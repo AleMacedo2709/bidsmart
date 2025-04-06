@@ -7,6 +7,16 @@ import { Plus, Search } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import PropertiesTable from './PropertiesTable';
 import { mockProperties } from '@/data/mockData';
+import { 
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 
 interface PropertyData {
   id: string;
@@ -24,10 +34,11 @@ interface PropertyData {
 }
 
 const PropertyManager: React.FC = () => {
-  const [properties] = useState<PropertyData[]>(mockProperties);
+  const [properties, setProperties] = useState<PropertyData[]>(mockProperties);
   const [isLoading, setIsLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [activeFilter, setActiveFilter] = useState('Todos');
+  const [propertyToDelete, setPropertyToDelete] = useState<string | null>(null);
   const { toast } = useToast();
   const navigate = useNavigate();
 
@@ -50,24 +61,31 @@ const PropertyManager: React.FC = () => {
     : searchFilteredProperties;
 
   const addNewProperty = () => {
-    navigate('/add-property');
     toast({
-      title: "Função em desenvolvimento",
-      description: "A adição de imóveis será implementada em breve.",
+      title: "Adicionar imóvel",
+      description: "Você será redirecionado para o formulário de adição de imóvel.",
     });
+    // In a real application, this would navigate to a new property form
+    navigate('/imoveis/adicionar');
   };
 
   const handleView = (id: string) => {
     toast({
       title: "Visualizando imóvel",
-      description: `Visualizando detalhes do imóvel ${id}`,
+      description: `Visualizando detalhes do imóvel ID: ${id}`,
     });
+    // In a real application, this would navigate to a property details page
+    navigate(`/imoveis/${id}`);
   };
 
   const handleDelete = (id: string) => {
+    // Remove the property from the state
+    setProperties(properties.filter(property => property.id !== id));
+    setPropertyToDelete(null);
+    
     toast({
-      title: "Função em desenvolvimento",
-      description: "A exclusão de imóveis será implementada em breve.",
+      title: "Imóvel excluído",
+      description: "O imóvel foi excluído com sucesso.",
     });
   };
 
@@ -131,10 +149,31 @@ const PropertyManager: React.FC = () => {
           <PropertiesTable 
             properties={filteredProperties}
             onView={handleView}
-            onDelete={handleDelete}
+            onDelete={(id) => setPropertyToDelete(id)}
           />
         </div>
       )}
+      
+      <AlertDialog open={!!propertyToDelete} onOpenChange={() => setPropertyToDelete(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Tem certeza?</AlertDialogTitle>
+            <AlertDialogDescription>
+              Esta ação não pode ser desfeita. Isso excluirá permanentemente o
+              imóvel e removerá os dados do seu dispositivo.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancelar</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={() => propertyToDelete && handleDelete(propertyToDelete)}
+              className="bg-red-600 hover:bg-red-700"
+            >
+              Excluir
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 };
