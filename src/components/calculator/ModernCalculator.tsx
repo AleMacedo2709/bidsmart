@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -262,11 +261,10 @@ const ModernCalculator: React.FC = () => {
   };
   
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-      {/* Left Panel - Inputs */}
+    <div className="w-full max-w-4xl mx-auto">
       <Card className="border shadow-sm">
         <Tabs value={activeTab} onValueChange={setActiveTab}>
-          <TabsList className="grid w-full grid-cols-3 mb-4">
+          <TabsList className="grid w-full grid-cols-4 mb-4">
             <TabsTrigger value="property-data" className="text-xs md:text-sm">
               Dados do Imóvel
             </TabsTrigger>
@@ -275,6 +273,9 @@ const ModernCalculator: React.FC = () => {
             </TabsTrigger>
             <TabsTrigger value="financing" className="text-xs md:text-sm">
               Impostos e Financiamento
+            </TabsTrigger>
+            <TabsTrigger value="results" className="text-xs md:text-sm" disabled={!results}>
+              Resultados
             </TabsTrigger>
           </TabsList>
           
@@ -806,103 +807,6 @@ const ModernCalculator: React.FC = () => {
             )}
           </TabsContent>
         </Tabs>
-      </Card>
-      
-      {/* Right Panel - Results Preview or Help */}
-      <Card className="border shadow-sm">
-        <CardContent className="p-6">
-          {results ? (
-            <div className="space-y-6">
-              <div className="flex items-center text-xl font-semibold">
-                <ArrowRight className="mr-2 h-5 w-5" />
-                <h2>Resultados</h2>
-              </div>
-              
-              <div className="space-y-6">
-                <div className="grid grid-cols-1 gap-4">
-                  <div className="p-4 bg-green-50 rounded-lg border border-green-100">
-                    <h3 className="text-sm font-medium text-gray-500">Valor de Venda</h3>
-                    <p className="text-2xl font-bold text-green-700">{formatToBRL(initialValues.resalePrice)}</p>
-                  </div>
-                  
-                  <div className="p-4 bg-blue-50 rounded-lg border border-blue-100">
-                    <h3 className="text-sm font-medium text-gray-500">Lucro Líquido</h3>
-                    <p className={cn(
-                      "text-2xl font-bold",
-                      results.netProfit >= 0 ? "text-blue-700" : "text-red-600"
-                    )}>
-                      {formatToBRL(results.netProfit)}
-                    </p>
-                  </div>
-                  
-                  <div className="p-4 bg-indigo-50 rounded-lg border border-indigo-100">
-                    <h3 className="text-sm font-medium text-gray-500">ROI Total</h3>
-                    <p className={cn(
-                      "text-2xl font-bold",
-                      results.roi >= 0 ? "text-indigo-700" : "text-red-600"
-                    )}>
-                      {formatPercentage(results.roi)}
-                    </p>
-                  </div>
-                </div>
-                
-                <div className="border-t pt-4">
-                  <h3 className="font-medium mb-2">Resumo do Investimento</h3>
-                  <div className="space-y-2 text-sm">
-                    <div className="flex justify-between">
-                      <span className="text-gray-600">Valor de Compra:</span>
-                      <span className="font-medium">{formatToBRL(initialValues.auctionPrice)}</span>
-                    </div>
-                    
-                    {needsRenovation && (
-                      <div className="flex justify-between">
-                        <span className="text-gray-600">Custos de Reforma:</span>
-                        <span className="font-medium">{formatToBRL(maintenanceCosts.renovation)}</span>
-                      </div>
-                    )}
-                    
-                    <div className="flex justify-between">
-                      <span className="text-gray-600">Custos de Aquisição:</span>
-                      <span className="font-medium">{formatToBRL(results.totalAcquisitionCosts)}</span>
-                    </div>
-                    
-                    <div className="flex justify-between">
-                      <span className="text-gray-600">Custos de Manutenção:</span>
-                      <span className="font-medium">{formatToBRL(results.totalMaintenanceCosts - maintenanceCosts.renovation)}</span>
-                    </div>
-                    
-                    <div className="flex justify-between">
-                      <span className="text-gray-600">Custos de Venda:</span>
-                      <span className="font-medium">{formatToBRL(results.totalSaleCosts)}</span>
-                    </div>
-                    
-                    <div className="flex justify-between">
-                      <span className="text-gray-600">Impostos:</span>
-                      <span className="font-medium">{formatToBRL(results.capitalGainsTaxDue)}</span>
-                    </div>
-                    
-                    <div className="flex justify-between font-bold pt-2 border-t">
-                      <span>Lucro Bruto:</span>
-                      <span className={results.grossProfit >= 0 ? "text-green-600" : "text-red-600"}>
-                        {formatToBRL(results.grossProfit)}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          ) : (
-            <div className="flex flex-col items-center justify-center h-full text-center space-y-4">
-              <Calculator className="h-16 w-16 text-gray-300" />
-              <div>
-                <h3 className="text-lg font-medium text-gray-700">Calculadora de Lucro Imobiliário</h3>
-                <p className="text-gray-500 mt-2">
-                  Preencha os dados do imóvel no formulário ao lado para calcular o potencial de lucro do seu investimento.
-                </p>
-              </div>
-            </div>
-          )}
-        </CardContent>
       </Card>
     </div>
   );
