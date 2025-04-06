@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { CalendarIcon, Plus, Trash2, Mail, Bell, Calendar as CalendarIcon2 } from "lucide-react";
+import { CalendarIcon, Plus, Trash2, Mail, Bell, Calendar as CalendarIcon2, User, Phone } from "lucide-react";
 import { cn } from "@/lib/utils";
 import SidebarLayout from "@/components/layout/SidebarLayout";
 import { useToast } from "@/hooks/use-toast";
@@ -27,6 +27,12 @@ interface Preferences {
   emailNotifications: boolean;
   auctionAlerts: boolean;
   monthlyReports: boolean;
+}
+
+interface UserProfile {
+  name: string;
+  email: string;
+  phone: string;
 }
 
 const Settings = () => {
@@ -53,6 +59,12 @@ const Settings = () => {
     emailNotifications: true,
     auctionAlerts: true,
     monthlyReports: false
+  });
+
+  const [userProfile, setUserProfile] = useState<UserProfile>({
+    name: "João Silva",
+    email: "alessandra.macedo@terra.com.br",
+    phone: "(11) 98765-4321"
   });
 
   // New auction form state
@@ -117,6 +129,20 @@ const Settings = () => {
     });
   };
 
+  const handleProfileChange = (e: React.ChangeEvent<HTMLInputElement>, field: keyof UserProfile) => {
+    setUserProfile({
+      ...userProfile,
+      [field]: e.target.value
+    });
+  };
+
+  const handleSaveProfile = () => {
+    toast({
+      title: "Perfil atualizado",
+      description: "Seus dados pessoais foram atualizados com sucesso."
+    });
+  };
+
   return (
     <SidebarLayout>
       <div className="p-6 max-w-6xl mx-auto">
@@ -133,8 +159,61 @@ const Settings = () => {
           <TabsContent value="user-profile">
             <Card>
               <CardContent className="p-6">
-                <h2 className="text-xl font-semibold mb-4">Perfil do Usuário</h2>
-                <p>Configurações do perfil do usuário serão implementadas aqui.</p>
+                <div className="space-y-6">
+                  <div>
+                    <h2 className="text-xl font-semibold mb-2">Perfil do Usuário</h2>
+                    <p className="text-gray-500">Gerencie suas informações pessoais e preferências</p>
+                  </div>
+                  
+                  <div className="space-y-4">
+                    <div>
+                      <Label htmlFor="name" className="flex items-center gap-2">
+                        <User className="h-4 w-4 text-blue-600" />
+                        Nome
+                      </Label>
+                      <Input 
+                        id="name" 
+                        className="mt-1"
+                        value={userProfile.name}
+                        onChange={(e) => handleProfileChange(e, 'name')}
+                      />
+                    </div>
+                    
+                    <div>
+                      <Label htmlFor="email" className="flex items-center gap-2">
+                        <Mail className="h-4 w-4 text-blue-600" />
+                        Email
+                      </Label>
+                      <Input 
+                        id="email" 
+                        type="email"
+                        className="mt-1"
+                        value={userProfile.email}
+                        onChange={(e) => handleProfileChange(e, 'email')}
+                      />
+                    </div>
+                    
+                    <div>
+                      <Label htmlFor="phone" className="flex items-center gap-2">
+                        <Phone className="h-4 w-4 text-blue-600" />
+                        Telefone
+                      </Label>
+                      <Input 
+                        id="phone" 
+                        className="mt-1"
+                        value={userProfile.phone}
+                        onChange={(e) => handleProfileChange(e, 'phone')}
+                      />
+                    </div>
+                  </div>
+                  
+                  <Button 
+                    className="bg-blue-600 hover:bg-blue-700"
+                    onClick={handleSaveProfile}
+                  >
+                    Salvar Alterações
+                  </Button>
+                </div>
               </CardContent>
             </Card>
           </TabsContent>
