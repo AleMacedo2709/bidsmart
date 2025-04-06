@@ -12,7 +12,7 @@ import {
   SidebarMenuButton,
   SidebarProvider,
 } from '@/components/ui/sidebar';
-import { Home, Building2, Calculator, DollarSign, Settings, LogOut } from 'lucide-react';
+import { Home, Building2, Calculator, DollarSign, Settings, LogOut, Info } from 'lucide-react';
 import { useAuth } from '@/components/auth/AuthProvider';
 
 interface SidebarLayoutProps {
@@ -75,6 +75,15 @@ const SidebarLayout: React.FC<SidebarLayoutProps> = ({ children }) => {
                       <Link to="#" className="flex items-center gap-2 text-white">
                         <DollarSign className="h-5 w-5" />
                         <span>Finanças</span>
+                      </Link>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                  
+                  <SidebarMenuItem>
+                    <SidebarMenuButton asChild isActive={isActive('/about')}>
+                      <Link to="/about" className="flex items-center gap-2 text-white">
+                        <Info className="h-5 w-5" />
+                        <span>Sobre</span>
                       </Link>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
