@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { format } from "date-fns";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -35,6 +34,12 @@ interface UserProfile {
   phone: string;
 }
 
+interface CalculatorSettings {
+  itbiRate: string;
+  commissionRate: string;
+  taxRate: string;
+}
+
 const Settings = () => {
   const { toast } = useToast();
   const [activeTab, setActiveTab] = useState("user-profile");
@@ -67,7 +72,12 @@ const Settings = () => {
     phone: "(11) 98765-4321"
   });
 
-  // New auction form state
+  const [calculatorSettings, setCalculatorSettings] = useState<CalculatorSettings>({
+    itbiRate: "3",
+    commissionRate: "5",
+    taxRate: "15"
+  });
+
   const [newAuction, setNewAuction] = useState({
     name: "",
     date: new Date(),
@@ -95,7 +105,6 @@ const Settings = () => {
 
     setAuctions([...auctions, auction]);
     
-    // Reset form
     setNewAuction({
       name: "",
       date: new Date(),
@@ -140,6 +149,20 @@ const Settings = () => {
     toast({
       title: "Perfil atualizado",
       description: "Seus dados pessoais foram atualizados com sucesso."
+    });
+  };
+
+  const handleCalculatorSettingChange = (e: React.ChangeEvent<HTMLInputElement>, field: keyof CalculatorSettings) => {
+    setCalculatorSettings({
+      ...calculatorSettings,
+      [field]: e.target.value
+    });
+  };
+
+  const handleSaveCalculatorSettings = () => {
+    toast({
+      title: "Configurações salvas",
+      description: "Os parâmetros da calculadora foram atualizados com sucesso."
     });
   };
 
@@ -221,8 +244,60 @@ const Settings = () => {
           <TabsContent value="calculator">
             <Card>
               <CardContent className="p-6">
-                <h2 className="text-xl font-semibold mb-4">Configurações da Calculadora</h2>
-                <p>Configurações da calculadora serão implementadas aqui.</p>
+                <div className="space-y-6">
+                  <div>
+                    <h2 className="text-xl font-semibold mb-2">Configurações da Calculadora</h2>
+                    <p className="text-gray-500">Ajuste os parâmetros padrão para suas simulações</p>
+                  </div>
+                  
+                  <div className="space-y-6">
+                    <div className="space-y-2">
+                      <Label htmlFor="itbi-rate">ITBI Padrão (%)</Label>
+                      <Input 
+                        id="itbi-rate" 
+                        type="number"
+                        min="0"
+                        step="0.1"
+                        className="max-w-md"
+                        value={calculatorSettings.itbiRate}
+                        onChange={(e) => handleCalculatorSettingChange(e, 'itbiRate')}
+                      />
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <Label htmlFor="commission-rate">Comissão de Venda Padrão (%)</Label>
+                      <Input 
+                        id="commission-rate" 
+                        type="number"
+                        min="0"
+                        step="0.1"
+                        className="max-w-md"
+                        value={calculatorSettings.commissionRate}
+                        onChange={(e) => handleCalculatorSettingChange(e, 'commissionRate')}
+                      />
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <Label htmlFor="tax-rate">Taxa de Imposto sobre Ganho (%)</Label>
+                      <Input 
+                        id="tax-rate" 
+                        type="number"
+                        min="0"
+                        step="0.1"
+                        className="max-w-md"
+                        value={calculatorSettings.taxRate}
+                        onChange={(e) => handleCalculatorSettingChange(e, 'taxRate')}
+                      />
+                    </div>
+                  </div>
+                  
+                  <Button 
+                    className="bg-blue-600 hover:bg-blue-700"
+                    onClick={handleSaveCalculatorSettings}
+                  >
+                    Salvar Configurações
+                  </Button>
+                </div>
               </CardContent>
             </Card>
           </TabsContent>
