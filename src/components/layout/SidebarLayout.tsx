@@ -20,7 +20,7 @@ import {
   Settings, 
   LogOut, 
   Info, 
-  Menu, 
+  Menu as MenuIcon, 
   X 
 } from 'lucide-react';
 import { useAuth } from '@/components/auth/AuthProvider';
@@ -56,23 +56,20 @@ const SidebarLayout: React.FC<SidebarLayoutProps> = ({ children }) => {
             className="fixed top-2 left-2 z-50 lg:hidden"
             onClick={toggleMobileSidebar}
           >
-            {mobileSidebarOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+            {mobileSidebarOpen ? <X className="h-5 w-5" /> : <MenuIcon className="h-5 w-5" />}
           </Button>
         )}
         
         {/* Sidebar - conditionally shown on mobile */}
         <div className={`${isMobile ? (mobileSidebarOpen ? 'block' : 'hidden') : 'block'} h-full`}>
           <Sidebar className="h-screen">
-            <SidebarHeader>
-              <div className="px-4 py-6">
-                <h2 className="text-xl font-bold text-white">Arremate Lucro</h2>
+            <SidebarHeader className="p-0">
+              <div className="py-3 px-4 bg-blue-700 text-white font-medium">
+                <h3 className="text-md">Menu</h3>
               </div>
             </SidebarHeader>
             <SidebarContent className="bg-blue-600 text-white h-full flex flex-col">
               <SidebarGroup className="flex-grow">
-                <div className="px-4 py-2">
-                  <p className="text-sm font-medium text-blue-100">Menu</p>
-                </div>
                 <SidebarGroupContent>
                   <SidebarMenu>
                     <SidebarMenuItem>
