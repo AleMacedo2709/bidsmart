@@ -71,6 +71,15 @@ const SidebarLayout: React.FC<SidebarLayoutProps> = ({ children }) => {
                   </SidebarMenuItem>
                   
                   <SidebarMenuItem>
+                    <SidebarMenuButton asChild isActive={isActive('/financas')}>
+                      <Link to="/financas" className="flex items-center gap-2 text-white">
+                        <DollarSign className="h-5 w-5" />
+                        <span>Finanças</span>
+                      </Link>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                  
+                  <SidebarMenuItem>
                     <SidebarMenuButton asChild isActive={isActive('/about')}>
                       <Link to="/about" className="flex items-center gap-2 text-white">
                         <Info className="h-5 w-5" />

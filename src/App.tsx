@@ -15,6 +15,7 @@ import NotFound from "./pages/NotFound";
 import About from "./pages/About";
 import Settings from "./pages/Settings";
 import Properties from "./pages/Properties";
+import Finances from "./pages/Finances";
 
 // Initialize React Query
 const queryClient = new QueryClient();
@@ -34,6 +35,7 @@ const App = () => (
             <Route path="/imoveis" element={<Properties />} />
             <Route path="/imoveis/adicionar" element={<Properties />} />
             <Route path="/imoveis/:id" element={<Properties />} />
+            <Route path="/financas" element={<Finances />} />
             <Route path="/about" element={<About />} />
             <Route path="/settings" element={<Settings />} />
             <Route path="*" element={<NotFound />} />
