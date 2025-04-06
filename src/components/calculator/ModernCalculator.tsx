@@ -1,5 +1,4 @@
-
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
@@ -11,7 +10,7 @@ import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/components/auth/AuthProvider';
 import { storeData } from '@/lib/storage';
-import { DollarSign, ArrowRight, Calculator, Calendar, Info } from 'lucide-react';
+import { DollarSign, ArrowRight, Calculator, Calendar, Info, AlertTriangle } from 'lucide-react';
 import { format } from 'date-fns';
 import { cn } from '@/lib/utils';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
@@ -28,6 +27,81 @@ import {
   CapitalGainsTax,
   SimulationResult
 } from '@/lib/calculations';
+
+// Currency Formatter for Brazilian Real
+const formatToBRL = (value: number | string): string => {
+  if (!value && value !== 0) return 'R$ 0,00';
+  
+  const numValue = typeof value === 'string' ? parseFloat(value.replace(/\D/g, '')) / 100 : value;
+  
+  return new Intl.NumberFormat('pt-BR', {
+    style: 'currency',
+    currency: 'BRL',
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+  }).format(numValue);
+};
+
+// Parse BRL string to number
+const parseBRL = (value: string): number => {
+  return Number(value.replace(/\D/g, '')) / 100;
+};
+
+// Custom Currency Input Component
+const CurrencyInput = ({ 
+  value, 
+  onChange, 
+  id,
+  className = ""
+}: { 
+  value: number, 
+  onChange: (value: number) => void,
+  id: string,
+  className?: string
+}) => {
+  const [displayValue, setDisplayValue] = useState(formatToBRL(value));
+  
+  // When external value changes, update display value
+  useEffect(() => {
+    setDisplayValue(formatToBRL(value));
+  }, [value]);
+  
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    let input = e.target.value;
+    
+    // Keep only numbers
+    const numbers = input.replace(/\D/g, '');
+    
+    // Convert to cents/centavos
+    const cents = parseInt(numbers) || 0;
+    
+    // Format to display value
+    setDisplayValue(formatToBRL(cents / 100));
+    
+    // Update parent component with numeric value
+    onChange(cents / 100);
+  };
+  
+  const handleFocus = (e: React.FocusEvent<HTMLInputElement>) => {
+    e.target.select();
+  };
+  
+  const handleBlur = () => {
+    // Ensure proper formatting on blur
+    setDisplayValue(formatToBRL(value));
+  };
+  
+  return (
+    <Input
+      id={id}
+      className={className}
+      value={displayValue}
+      onChange={handleChange}
+      onFocus={handleFocus}
+      onBlur={handleBlur}
+    />
+  );
+};
 
 const ModernCalculator: React.FC = () => {
   const { toast } = useToast();
@@ -214,21 +288,14 @@ const ModernCalculator: React.FC = () => {
                 <div>
                   <Label htmlFor="auctionPrice">Valor de Compra</Label>
                   <div className="mt-1.5">
-                    <div className="relative">
-                      <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-500">
-                        <span className="text-sm font-medium">R$</span>
-                      </div>
-                      <Input
-                        id="auctionPrice"
-                        type="number"
-                        value={initialValues.auctionPrice || ''}
-                        onChange={(e) => setInitialValues({
-                          ...initialValues,
-                          auctionPrice: parseFloat(e.target.value) || 0
-                        })}
-                        className="pl-12"
-                      />
-                    </div>
+                    <CurrencyInput
+                      id="auctionPrice"
+                      value={initialValues.auctionPrice}
+                      onChange={(value) => setInitialValues({
+                        ...initialValues,
+                        auctionPrice: value
+                      })}
+                    />
                   </div>
                 </div>
                 
@@ -246,21 +313,14 @@ const ModernCalculator: React.FC = () => {
                     <div className="mt-3">
                       <Label htmlFor="renovationCost">Custo de Reforma</Label>
                       <div className="mt-1.5">
-                        <div className="relative">
-                          <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-500">
-                            <span className="text-sm font-medium">R$</span>
-                          </div>
-                          <Input
-                            id="renovationCost"
-                            type="number"
-                            value={maintenanceCosts.renovation || ''}
-                            onChange={(e) => setMaintenanceCosts({
-                              ...maintenanceCosts,
-                              renovation: parseFloat(e.target.value) || 0
-                            })}
-                            className="pl-12"
-                          />
-                        </div>
+                        <CurrencyInput
+                          id="renovationCost"
+                          value={maintenanceCosts.renovation}
+                          onChange={(value) => setMaintenanceCosts({
+                            ...maintenanceCosts,
+                            renovation: value
+                          })}
+                        />
                       </div>
                     </div>
                   )}
@@ -269,21 +329,14 @@ const ModernCalculator: React.FC = () => {
                 <div>
                   <Label htmlFor="resalePrice">Valor de Venda Esperado</Label>
                   <div className="mt-1.5">
-                    <div className="relative">
-                      <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-500">
-                        <span className="text-sm font-medium">R$</span>
-                      </div>
-                      <Input
-                        id="resalePrice"
-                        type="number"
-                        value={initialValues.resalePrice || ''}
-                        onChange={(e) => setInitialValues({
-                          ...initialValues,
-                          resalePrice: parseFloat(e.target.value) || 0
-                        })}
-                        className="pl-12"
-                      />
-                    </div>
+                    <CurrencyInput
+                      id="resalePrice"
+                      value={initialValues.resalePrice}
+                      onChange={(value) => setInitialValues({
+                        ...initialValues,
+                        resalePrice: value
+                      })}
+                    />
                   </div>
                 </div>
                 
@@ -391,20 +444,15 @@ const ModernCalculator: React.FC = () => {
                 </div>
                 
                 <div className="space-y-2">
-                  <Label htmlFor="registryFees">Taxas de Registro (R$)</Label>
-                  <div className="relative">
-                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-500">
-                      <span className="text-sm font-medium">R$</span>
-                    </div>
-                    <Input
+                  <Label htmlFor="registryFees">Taxas de Registro</Label>
+                  <div className="mt-1.5">
+                    <CurrencyInput
                       id="registryFees"
-                      type="number"
-                      value={acquisitionCosts.registryFees || ''}
-                      onChange={(e) => setAcquisitionCosts({
+                      value={acquisitionCosts.registryFees}
+                      onChange={(value) => setAcquisitionCosts({
                         ...acquisitionCosts,
-                        registryFees: parseFloat(e.target.value) || 0
+                        registryFees: value
                       })}
-                      className="pl-12"
                     />
                   </div>
                 </div>
@@ -429,20 +477,15 @@ const ModernCalculator: React.FC = () => {
                 </div>
                 
                 <div className="space-y-2">
-                  <Label htmlFor="otherMonthlyExpenses">Outras Despesas Mensais (R$)</Label>
-                  <div className="relative">
-                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-500">
-                      <span className="text-sm font-medium">R$</span>
-                    </div>
-                    <Input
+                  <Label htmlFor="otherMonthlyExpenses">Outras Despesas Mensais</Label>
+                  <div className="mt-1.5">
+                    <CurrencyInput
                       id="otherMonthlyExpenses"
-                      type="number"
-                      value={maintenanceCosts.otherMonthlyExpenses || ''}
-                      onChange={(e) => setMaintenanceCosts({
+                      value={maintenanceCosts.otherMonthlyExpenses}
+                      onChange={(value) => setMaintenanceCosts({
                         ...maintenanceCosts,
-                        otherMonthlyExpenses: parseFloat(e.target.value) || 0
+                        otherMonthlyExpenses: value
                       })}
-                      className="pl-12"
                     />
                   </div>
                 </div>
@@ -573,168 +616,191 @@ const ModernCalculator: React.FC = () => {
           <TabsContent value="results" className="space-y-6 p-6">
             {results && (
               <div className="space-y-6">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <Card className="bg-blue-50 border-none">
-                    <CardContent className="pt-6">
-                      <h3 className="text-sm font-medium text-gray-500">Investimento Total</h3>
-                      <p className="text-3xl font-bold mt-1 text-blue-900">
-                        {formatCurrency(initialValues.auctionPrice + results.totalAcquisitionCosts + maintenanceCosts.renovation)}
-                      </p>
-                    </CardContent>
-                  </Card>
+                <Tabs defaultValue="summary" className="w-full">
+                  <TabsList className="w-full">
+                    <TabsTrigger value="summary" className="flex-1">Resultados</TabsTrigger>
+                    <TabsTrigger value="details" className="flex-1">Detalhamento</TabsTrigger>
+                  </TabsList>
                   
-                  <Card className="bg-rose-50 border-none">
-                    <CardContent className="pt-6">
-                      <h3 className="text-sm font-medium text-gray-500">Despesas Totais</h3>
-                      <p className="text-3xl font-bold mt-1 text-rose-900">
-                        {formatCurrency(results.totalAcquisitionCosts + results.totalMaintenanceCosts + results.totalSaleCosts)}
-                      </p>
-                    </CardContent>
-                  </Card>
-                </div>
-                
-                <div className="space-y-4">
-                  <div className="flex justify-between items-center border-b pb-3">
-                    <span className="text-lg font-medium">Lucro Bruto</span>
-                    <span className={cn(
-                      "text-xl font-bold",
-                      results.grossProfit >= 0 ? "text-green-600" : "text-red-600"
-                    )}>
-                      {formatCurrency(results.grossProfit)}
-                    </span>
-                  </div>
-                  
-                  <div className="flex justify-between items-center border-b pb-3">
-                    <span className="text-lg font-medium">Lucro Líquido</span>
-                    <span className={cn(
-                      "text-xl font-bold",
-                      results.netProfit >= 0 ? "text-green-600" : "text-red-600"
-                    )}>
-                      {formatCurrency(results.netProfit)}
-                    </span>
-                  </div>
-                  
-                  <div className="flex justify-between items-center border-b pb-3">
-                    <span className="text-lg font-medium">ROI Total</span>
-                    <span className={cn(
-                      "text-xl font-bold",
-                      results.roi >= 0 ? "text-green-600" : "text-red-600"
-                    )}>
-                      {formatPercentage(results.roi)}
-                    </span>
-                  </div>
-                  
-                  <div className="flex justify-between items-center">
-                    <span className="text-lg font-medium">ROI Anualizado</span>
-                    <span className={cn(
-                      "text-xl font-bold",
-                      (results.roi / (maintenanceCosts.holdingPeriod / 12)) >= 0 
-                        ? "text-green-600" 
-                        : "text-red-600"
-                    )}>
-                      {formatPercentage(results.roi / (maintenanceCosts.holdingPeriod / 12))}
-                    </span>
-                  </div>
-                </div>
-                
-                <div className="pt-4">
-                  <Button 
-                    variant="outline" 
-                    onClick={() => setShowDetailedCosts(!showDetailedCosts)}
-                    className="w-full"
-                  >
-                    {showDetailedCosts ? "Ocultar" : "Mostrar"} Detalhamento de Custos
-                  </Button>
-                  
-                  {showDetailedCosts && (
-                    <div className="mt-4 space-y-3 bg-gray-50 p-4 rounded-lg animate-fade-in">
-                      <h3 className="font-medium text-lg">Detalhamento de Custos</h3>
+                  <TabsContent value="summary" className="pt-4 space-y-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="bg-blue-50 rounded-lg p-4 border border-blue-100">
+                        <h3 className="text-sm font-medium text-gray-500">Investimento Total</h3>
+                        <p className="text-3xl font-bold mt-1 text-blue-900">
+                          {formatToBRL(initialValues.auctionPrice + results.totalAcquisitionCosts + maintenanceCosts.renovation)}
+                        </p>
+                      </div>
                       
-                      <div className="space-y-2">
-                        <div className="flex justify-between">
-                          <span>ITBI ({acquisitionCosts.itbiTax}%)</span>
-                          <span className="font-medium">
-                            {formatCurrency(initialValues.auctionPrice * (acquisitionCosts.itbiTax / 100))}
-                          </span>
-                        </div>
-                        
-                        <div className="flex justify-between">
-                          <span>Taxas de Registro</span>
-                          <span className="font-medium">{formatCurrency(acquisitionCosts.registryFees)}</span>
-                        </div>
-                        
-                        <div className="flex justify-between">
-                          <span>Comissão do Leiloeiro ({acquisitionCosts.auctioneerCommission}%)</span>
-                          <span className="font-medium">
-                            {formatCurrency(initialValues.auctionPrice * (acquisitionCosts.auctioneerCommission / 100))}
-                          </span>
-                        </div>
-                        
-                        <div className="flex justify-between">
-                          <span>Comissão de Venda ({saleCosts.brokerCommission}%)</span>
-                          <span className="font-medium">
-                            {formatCurrency(initialValues.resalePrice * (saleCosts.brokerCommission / 100))}
-                          </span>
-                        </div>
-                        
-                        <div className="flex justify-between">
-                          <span>IPTU ({maintenanceCosts.holdingPeriod} meses)</span>
-                          <span className="font-medium">
-                            {formatCurrency(maintenanceCosts.monthlyIptu * maintenanceCosts.holdingPeriod)}
-                          </span>
-                        </div>
-                        
-                        {needsRenovation && (
-                          <div className="flex justify-between">
-                            <span>Reforma</span>
-                            <span className="font-medium">{formatCurrency(maintenanceCosts.renovation)}</span>
+                      <div className="bg-rose-50 rounded-lg p-4 border border-rose-100">
+                        <h3 className="text-sm font-medium text-gray-500">Despesas Totais</h3>
+                        <p className="text-3xl font-bold mt-1 text-rose-900">
+                          {formatToBRL(results.totalAcquisitionCosts + results.totalMaintenanceCosts + results.totalSaleCosts)}
+                        </p>
+                      </div>
+                    </div>
+                    
+                    <div className="space-y-3">
+                      <div className="flex justify-between items-center">
+                        <span className="text-lg font-medium">Lucro Bruto</span>
+                        <span className="text-xl font-bold text-green-600">
+                          {formatToBRL(results.grossProfit)}
+                        </span>
+                      </div>
+                      
+                      <div className="flex justify-between items-center">
+                        <span className="text-lg font-medium">Lucro Líquido</span>
+                        <span className={cn(
+                          "text-xl font-bold",
+                          results.netProfit >= 0 ? "text-green-600" : "text-red-600"
+                        )}>
+                          {formatToBRL(results.netProfit)}
+                        </span>
+                      </div>
+                      
+                      <div className="flex justify-between items-center">
+                        <span className="text-lg font-medium flex items-center">
+                          ROI Total
+                          <Popover>
+                            <PopoverTrigger asChild>
+                              <Button variant="ghost" className="h-auto p-0 ml-1">
+                                <Info className="h-4 w-4 text-muted-foreground" />
+                              </Button>
+                            </PopoverTrigger>
+                            <PopoverContent side="top" className="w-80">
+                              <p className="text-sm">Retorno sobre o investimento total</p>
+                            </PopoverContent>
+                          </Popover>
+                        </span>
+                        <span className={cn(
+                          "text-xl font-bold",
+                          results.roi >= 0 ? "text-green-600" : "text-red-600"
+                        )}>
+                          {formatPercentage(results.roi)}
+                        </span>
+                      </div>
+                      
+                      <div className="flex justify-between items-center">
+                        <span className="text-lg font-medium flex items-center">
+                          ROI Anualizado
+                          <Popover>
+                            <PopoverTrigger asChild>
+                              <Button variant="ghost" className="h-auto p-0 ml-1">
+                                <Info className="h-4 w-4 text-muted-foreground" />
+                              </Button>
+                            </PopoverTrigger>
+                            <PopoverContent side="top" className="w-80">
+                              <p className="text-sm">ROI convertido em taxa anual</p>
+                            </PopoverContent>
+                          </Popover>
+                        </span>
+                        <span className={cn(
+                          "text-xl font-bold",
+                          (results.roi / (maintenanceCosts.holdingPeriod / 12)) >= 0 
+                            ? "text-green-600" 
+                            : "text-red-600"
+                        )}>
+                          {formatPercentage(results.roi / (maintenanceCosts.holdingPeriod / 12))}
+                        </span>
+                      </div>
+                    </div>
+                    
+                    <div className="pt-4 space-y-3">
+                      <Card className="border border-gray-200">
+                        <CardContent className="pt-6">
+                          <div className="space-y-4">
+                            <div className="space-y-2">
+                              <Label htmlFor="simulationName">Nome (Opcional)</Label>
+                              <Input
+                                id="simulationName"
+                                placeholder="ex: Apartamento Centro"
+                                value={simulationName}
+                                onChange={(e) => setSimulationName(e.target.value)}
+                              />
+                            </div>
+                            
+                            <Button 
+                              onClick={saveSimulation}
+                              className="w-full bg-blue-600 hover:bg-blue-700"
+                            >
+                              Salvar Simulação
+                            </Button>
+                            
+                            <Button
+                              variant="outline"
+                              onClick={() => {
+                                setActiveTab('property-data');
+                                setResults(null);
+                              }}
+                              className="w-full"
+                            >
+                              Nova Simulação
+                            </Button>
                           </div>
-                        )}
-                        
+                        </CardContent>
+                      </Card>
+                    </div>
+                  </TabsContent>
+                  
+                  <TabsContent value="details" className="pt-4 space-y-4">
+                    <h3 className="font-medium text-lg">Detalhamento de Custos</h3>
+                    
+                    <div className="space-y-3 bg-gray-50 p-4 rounded-lg">
+                      <div className="flex justify-between">
+                        <span>ITBI ({acquisitionCosts.itbiTax}%)</span>
+                        <span className="font-medium">
+                          {formatToBRL(initialValues.auctionPrice * (acquisitionCosts.itbiTax / 100))}
+                        </span>
+                      </div>
+                      
+                      <div className="flex justify-between">
+                        <span>Taxas de Registro</span>
+                        <span className="font-medium">{formatToBRL(acquisitionCosts.registryFees)}</span>
+                      </div>
+                      
+                      <div className="flex justify-between">
+                        <span>Comissão do Leiloeiro ({acquisitionCosts.auctioneerCommission}%)</span>
+                        <span className="font-medium">
+                          {formatToBRL(initialValues.auctionPrice * (acquisitionCosts.auctioneerCommission / 100))}
+                        </span>
+                      </div>
+                      
+                      <div className="flex justify-between">
+                        <span>Comissão de Venda ({saleCosts.brokerCommission}%)</span>
+                        <span className="font-medium">
+                          {formatToBRL(initialValues.resalePrice * (saleCosts.brokerCommission / 100))}
+                        </span>
+                      </div>
+                      
+                      <div className="flex justify-between">
+                        <span>IPTU ({maintenanceCosts.holdingPeriod} meses)</span>
+                        <span className="font-medium">
+                          {formatToBRL(maintenanceCosts.monthlyIptu * maintenanceCosts.holdingPeriod)}
+                        </span>
+                      </div>
+                      
+                      {needsRenovation && (
                         <div className="flex justify-between">
-                          <span>Imposto sobre Ganho de Capital</span>
-                          <span className="font-medium">{formatCurrency(results.capitalGainsTaxDue)}</span>
+                          <span>Reforma</span>
+                          <span className="font-medium">{formatToBRL(maintenanceCosts.renovation)}</span>
+                        </div>
+                      )}
+                      
+                      <div className="flex justify-between">
+                        <span>Imposto sobre Ganho de Capital</span>
+                        <span className="font-medium">{formatToBRL(results.capitalGainsTaxDue)}</span>
+                      </div>
+                      
+                      <div className="border-t pt-2 mt-2">
+                        <div className="flex justify-between font-bold">
+                          <span>Lucro Líquido Final</span>
+                          <span className={results.netProfit >= 0 ? "text-green-600" : "text-red-600"}>
+                            {formatToBRL(results.netProfit)}
+                          </span>
                         </div>
                       </div>
                     </div>
-                  )}
-                </div>
-                
-                <div className="pt-4">
-                  <Card>
-                    <CardContent className="pt-6">
-                      <div className="space-y-4">
-                        <div className="space-y-2">
-                          <Label htmlFor="simulationName">Nome (Opcional)</Label>
-                          <Input
-                            id="simulationName"
-                            placeholder="ex: Apartamento Centro"
-                            value={simulationName}
-                            onChange={(e) => setSimulationName(e.target.value)}
-                          />
-                        </div>
-                        
-                        <Button 
-                          onClick={saveSimulation}
-                          className="w-full"
-                        >
-                          Salvar Simulação
-                        </Button>
-                        
-                        <Button
-                          variant="outline"
-                          onClick={() => {
-                            setActiveTab('property-data');
-                            setResults(null);
-                          }}
-                          className="w-full"
-                        >
-                          Nova Simulação
-                        </Button>
-                      </div>
-                    </CardContent>
-                  </Card>
-                </div>
+                  </TabsContent>
+                </Tabs>
               </div>
             )}
           </TabsContent>
@@ -753,22 +819,22 @@ const ModernCalculator: React.FC = () => {
               
               <div className="space-y-6">
                 <div className="grid grid-cols-1 gap-4">
-                  <div className="p-4 bg-green-50 rounded-lg">
+                  <div className="p-4 bg-green-50 rounded-lg border border-green-100">
                     <h3 className="text-sm font-medium text-gray-500">Valor de Venda</h3>
-                    <p className="text-2xl font-bold text-green-700">{formatCurrency(initialValues.resalePrice)}</p>
+                    <p className="text-2xl font-bold text-green-700">{formatToBRL(initialValues.resalePrice)}</p>
                   </div>
                   
-                  <div className="p-4 bg-blue-50 rounded-lg">
+                  <div className="p-4 bg-blue-50 rounded-lg border border-blue-100">
                     <h3 className="text-sm font-medium text-gray-500">Lucro Líquido</h3>
                     <p className={cn(
                       "text-2xl font-bold",
                       results.netProfit >= 0 ? "text-blue-700" : "text-red-600"
                     )}>
-                      {formatCurrency(results.netProfit)}
+                      {formatToBRL(results.netProfit)}
                     </p>
                   </div>
                   
-                  <div className="p-4 bg-indigo-50 rounded-lg">
+                  <div className="p-4 bg-indigo-50 rounded-lg border border-indigo-100">
                     <h3 className="text-sm font-medium text-gray-500">ROI Total</h3>
                     <p className={cn(
                       "text-2xl font-bold",
@@ -784,40 +850,40 @@ const ModernCalculator: React.FC = () => {
                   <div className="space-y-2 text-sm">
                     <div className="flex justify-between">
                       <span className="text-gray-600">Valor de Compra:</span>
-                      <span className="font-medium">{formatCurrency(initialValues.auctionPrice)}</span>
+                      <span className="font-medium">{formatToBRL(initialValues.auctionPrice)}</span>
                     </div>
                     
                     {needsRenovation && (
                       <div className="flex justify-between">
                         <span className="text-gray-600">Custos de Reforma:</span>
-                        <span className="font-medium">{formatCurrency(maintenanceCosts.renovation)}</span>
+                        <span className="font-medium">{formatToBRL(maintenanceCosts.renovation)}</span>
                       </div>
                     )}
                     
                     <div className="flex justify-between">
                       <span className="text-gray-600">Custos de Aquisição:</span>
-                      <span className="font-medium">{formatCurrency(results.totalAcquisitionCosts)}</span>
+                      <span className="font-medium">{formatToBRL(results.totalAcquisitionCosts)}</span>
                     </div>
                     
                     <div className="flex justify-between">
                       <span className="text-gray-600">Custos de Manutenção:</span>
-                      <span className="font-medium">{formatCurrency(results.totalMaintenanceCosts - maintenanceCosts.renovation)}</span>
+                      <span className="font-medium">{formatToBRL(results.totalMaintenanceCosts - maintenanceCosts.renovation)}</span>
                     </div>
                     
                     <div className="flex justify-between">
                       <span className="text-gray-600">Custos de Venda:</span>
-                      <span className="font-medium">{formatCurrency(results.totalSaleCosts)}</span>
+                      <span className="font-medium">{formatToBRL(results.totalSaleCosts)}</span>
                     </div>
                     
                     <div className="flex justify-between">
                       <span className="text-gray-600">Impostos:</span>
-                      <span className="font-medium">{formatCurrency(results.capitalGainsTaxDue)}</span>
+                      <span className="font-medium">{formatToBRL(results.capitalGainsTaxDue)}</span>
                     </div>
                     
                     <div className="flex justify-between font-bold pt-2 border-t">
                       <span>Lucro Bruto:</span>
                       <span className={results.grossProfit >= 0 ? "text-green-600" : "text-red-600"}>
-                        {formatCurrency(results.grossProfit)}
+                        {formatToBRL(results.grossProfit)}
                       </span>
                     </div>
                   </div>
@@ -833,18 +899,4 @@ const ModernCalculator: React.FC = () => {
                   Preencha os dados do imóvel no formulário ao lado para calcular o potencial de lucro do seu investimento.
                 </p>
               </div>
-              <div className="max-w-md text-sm text-gray-500 mt-4">
-                <p>
-                  Esta calculadora leva em consideração todos os custos relevantes para aquisições de imóveis
-                  em leilão, incluindo impostos, taxas, comissões e custos de manutenção.
-                </p>
-              </div>
-            </div>
-          )}
-        </CardContent>
-      </Card>
-    </div>
-  );
-};
-
-export default ModernCalculator;
+              <div className="max-w-
