@@ -29,15 +29,15 @@ const SidebarLayout: React.FC<SidebarLayoutProps> = ({ children }) => {
 
   return (
     <SidebarProvider defaultOpen={true}>
-      <div className="flex min-h-screen w-full">
+      <div className="flex h-screen w-full overflow-hidden">
         <Sidebar>
           <SidebarHeader>
             <div className="px-4 py-6">
               <h2 className="text-xl font-bold text-white">Arremate Lucro</h2>
             </div>
           </SidebarHeader>
-          <SidebarContent className="bg-blue-600 text-white h-full">
-            <SidebarGroup>
+          <SidebarContent className="bg-blue-600 text-white h-full flex flex-col">
+            <SidebarGroup className="flex-grow">
               <div className="px-4 py-2">
                 <p className="text-sm font-medium text-blue-100">Menu</p>
               </div>
@@ -100,7 +100,7 @@ const SidebarLayout: React.FC<SidebarLayoutProps> = ({ children }) => {
               </SidebarGroupContent>
             </SidebarGroup>
             
-            <div className="mt-auto p-4">
+            <div className="p-4 mt-auto">
               <button 
                 onClick={signOut}
                 className="flex items-center gap-2 text-white hover:text-blue-200 transition-colors"
@@ -112,7 +112,7 @@ const SidebarLayout: React.FC<SidebarLayoutProps> = ({ children }) => {
           </SidebarContent>
         </Sidebar>
         
-        <main className="flex-1">
+        <main className="flex-1 overflow-auto">
           {children}
         </main>
       </div>
