@@ -54,7 +54,7 @@ const SidebarLayout: React.FC<SidebarLayoutProps> = ({ children }) => {
                   
                   <SidebarMenuItem>
                     <SidebarMenuButton asChild isActive={isActive('/imoveis')}>
-                      <Link to="/dashboard" className="flex items-center gap-2 text-white">
+                      <Link to="/imoveis" className="flex items-center gap-2 text-white">
                         <Building2 className="h-5 w-5" />
                         <span>Imóveis</span>
                       </Link>
@@ -72,7 +72,7 @@ const SidebarLayout: React.FC<SidebarLayoutProps> = ({ children }) => {
                   
                   <SidebarMenuItem>
                     <SidebarMenuButton asChild isActive={isActive('/financas')}>
-                      <Link to="#" className="flex items-center gap-2 text-white">
+                      <Link to="/dashboard" className="flex items-center gap-2 text-white">
                         <DollarSign className="h-5 w-5" />
                         <span>Finanças</span>
                       </Link>
