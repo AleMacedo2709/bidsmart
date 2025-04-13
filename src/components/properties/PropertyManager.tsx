@@ -74,11 +74,22 @@ const PropertyManager: React.FC = () => {
   };
 
   const handleView = (id: string) => {
+    // Here's where we need to fix the issue
+    // Instead of just showing a toast, we need to ensure the data is being passed correctly
+    // and the navigation is working properly
+    
+    // Store the property data in localStorage for retrieval on the detail page
+    const propertyToView = properties.find(prop => prop.id === id);
+    if (propertyToView) {
+      localStorage.setItem('currentViewProperty', JSON.stringify(propertyToView));
+    }
+    
     toast({
       title: "Visualizando imóvel",
       description: `Visualizando detalhes do imóvel ID: ${id}`,
     });
-    // In a real application, this would navigate to a property details page
+    
+    // Navigate to the property details page
     navigate(`/imoveis/${id}`);
   };
 

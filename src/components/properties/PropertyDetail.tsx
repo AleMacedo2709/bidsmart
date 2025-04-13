@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -10,6 +10,7 @@ import { useAuth } from '@/components/auth/AuthProvider';
 import { retrieveData, updateData } from '@/lib/storage';
 import { formatCurrency } from '@/lib/calculations';
 import PropertyFinanceForm from './PropertyFinanceForm';
+import { mockProperties } from '@/data/mockData';
 
 interface PropertyDetailProps {
   propertyId: string;
@@ -22,16 +23,38 @@ const PropertyDetail: React.FC<PropertyDetailProps> = ({ propertyId }) => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const { encryptionKey } = useAuth();
+  const { id } = useParams(); // Get the ID from URL params
 
   useEffect(() => {
     const loadPropertyData = async () => {
-      if (!encryptionKey) return;
-      
       try {
         setLoading(true);
-        const fetchedProperty = await retrieveData('properties', propertyId, encryptionKey);
-        if (fetchedProperty) {
-          setProperty(fetchedProperty);
+        
+        // First try to get from localStorage (for demo purposes)
+        const storedProperty = localStorage.getItem('currentViewProperty');
+        if (storedProperty) {
+          setProperty(JSON.parse(storedProperty));
+          setLoading(false);
+          return;
+        }
+        
+        // If not in localStorage, try to fetch from IndexedDB if encryption key exists
+        if (encryptionKey) {
+          try {
+            const fetchedProperty = await retrieveData('properties', propertyId, encryptionKey);
+            if (fetchedProperty) {
+              setProperty(fetchedProperty);
+              return;
+            }
+          } catch (error) {
+            console.log('No stored property found, falling back to mock data');
+          }
+        }
+        
+        // As a fallback for demo, use mock data
+        const mockProperty = mockProperties.find(p => p.id === propertyId);
+        if (mockProperty) {
+          setProperty(mockProperty);
         } else {
           toast({
             title: "Imóvel não encontrado",
@@ -47,7 +70,6 @@ const PropertyDetail: React.FC<PropertyDetailProps> = ({ propertyId }) => {
           description: "Não foi possível carregar os detalhes do imóvel.",
           variant: "destructive",
         });
-        navigate('/imoveis');
       } finally {
         setLoading(false);
       }
