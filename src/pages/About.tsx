@@ -44,7 +44,7 @@ const About = () => {
       toast({
         title: "Verificação concluída",
         description: "A integridade dos dados foi verificada com sucesso.",
-        variant: "success"
+        variant: "default"
       });
     } catch (error) {
       console.error("Erro de verificação de integridade:", error);
