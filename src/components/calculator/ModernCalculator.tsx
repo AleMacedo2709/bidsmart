@@ -535,14 +535,14 @@ const ModernCalculator: React.FC = () => {
                       <div className="bg-blue-50 rounded-lg p-4 border border-blue-100">
                         <h3 className="text-sm font-medium text-gray-500">Investimento Total</h3>
                         <p className="text-3xl font-bold mt-1 text-blue-900">
-                          {formatToBRL(initialValues.auctionPrice + results.totalAcquisitionCosts + maintenanceCosts.renovation)}
+                          {formatCurrency(initialValues.auctionPrice + results.totalAcquisitionCosts + maintenanceCosts.renovation)}
                         </p>
                       </div>
                       
                       <div className="bg-rose-50 rounded-lg p-4 border border-rose-100">
                         <h3 className="text-sm font-medium text-gray-500">Despesas Totais</h3>
                         <p className="text-3xl font-bold mt-1 text-rose-900">
-                          {formatToBRL(results.totalAcquisitionCosts + results.totalMaintenanceCosts + results.totalSaleCosts)}
+                          {formatCurrency(results.totalAcquisitionCosts + results.totalMaintenanceCosts + results.totalSaleCosts)}
                         </p>
                       </div>
                     </div>
@@ -551,7 +551,7 @@ const ModernCalculator: React.FC = () => {
                       <div className="flex justify-between items-center">
                         <span className="text-lg font-medium">Lucro Bruto</span>
                         <span className="text-xl font-bold text-green-600">
-                          {formatToBRL(results.grossProfit)}
+                          {formatCurrency(results.grossProfit)}
                         </span>
                       </div>
                       
@@ -561,7 +561,7 @@ const ModernCalculator: React.FC = () => {
                           "text-xl font-bold",
                           results.netProfit >= 0 ? "text-green-600" : "text-red-600"
                         )}>
-                          {formatToBRL(results.netProfit)}
+                          {formatCurrency(results.netProfit)}
                         </span>
                       </div>
                       
@@ -656,53 +656,53 @@ const ModernCalculator: React.FC = () => {
                       <div className="flex justify-between">
                         <span>ITBI ({acquisitionCosts.itbiTax}%)</span>
                         <span className="font-medium">
-                          {formatToBRL(initialValues.auctionPrice * (acquisitionCosts.itbiTax / 100))}
+                          {formatCurrency(initialValues.auctionPrice * (acquisitionCosts.itbiTax / 100))}
                         </span>
                       </div>
                       
                       <div className="flex justify-between">
                         <span>Taxas de Registro</span>
-                        <span className="font-medium">{formatToBRL(acquisitionCosts.registryFees)}</span>
+                        <span className="font-medium">{formatCurrency(acquisitionCosts.registryFees)}</span>
                       </div>
                       
                       <div className="flex justify-between">
                         <span>Comissão do Leiloeiro ({acquisitionCosts.auctioneerCommission}%)</span>
                         <span className="font-medium">
-                          {formatToBRL(initialValues.auctionPrice * (acquisitionCosts.auctioneerCommission / 100))}
+                          {formatCurrency(initialValues.auctionPrice * (acquisitionCosts.auctioneerCommission / 100))}
                         </span>
                       </div>
                       
                       <div className="flex justify-between">
                         <span>Comissão de Venda ({saleCosts.brokerCommission}%)</span>
                         <span className="font-medium">
-                          {formatToBRL(initialValues.resalePrice * (saleCosts.brokerCommission / 100))}
+                          {formatCurrency(initialValues.resalePrice * (saleCosts.brokerCommission / 100))}
                         </span>
                       </div>
                       
                       <div className="flex justify-between">
                         <span>IPTU ({maintenanceCosts.holdingPeriod} meses)</span>
                         <span className="font-medium">
-                          {formatToBRL(maintenanceCosts.monthlyIptu * maintenanceCosts.holdingPeriod)}
+                          {formatCurrency(maintenanceCosts.monthlyIptu * maintenanceCosts.holdingPeriod)}
                         </span>
                       </div>
                       
                       {needsRenovation && (
                         <div className="flex justify-between">
                           <span>Reforma</span>
-                          <span className="font-medium">{formatToBRL(maintenanceCosts.renovation)}</span>
+                          <span className="font-medium">{formatCurrency(maintenanceCosts.renovation)}</span>
                         </div>
                       )}
                       
                       <div className="flex justify-between">
                         <span>Imposto sobre Ganho de Capital</span>
-                        <span className="font-medium">{formatToBRL(results.capitalGainsTaxDue)}</span>
+                        <span className="font-medium">{formatCurrency(results.capitalGainsTaxDue)}</span>
                       </div>
                       
                       <div className="border-t pt-2 mt-2">
                         <div className="flex justify-between font-bold">
                           <span>Lucro Líquido Final</span>
                           <span className={results.netProfit >= 0 ? "text-green-600" : "text-red-600"}>
-                            {formatToBRL(results.netProfit)}
+                            {formatCurrency(results.netProfit)}
                           </span>
                         </div>
                       </div>
