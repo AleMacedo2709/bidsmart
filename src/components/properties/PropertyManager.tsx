@@ -17,9 +17,8 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { exportEncryptedData } from '@/lib/encryption/export';
 import { useAuth } from '@/components/auth/AuthProvider';
-import { exportStoreData } from '@/lib/storage/export-import';
+import * as XLSX from 'xlsx';
 
 interface PropertyData {
   id: string;
@@ -95,34 +94,53 @@ const PropertyManager: React.FC = () => {
   };
 
   const exportData = async () => {
-    if (!encryptionKey) {
-      toast({
-        title: "Erro",
-        description: "É necessário estar autenticado para exportar dados.",
-        variant: "destructive",
-      });
-      return;
-    }
-
     try {
       setIsExporting(true);
       
-      // In a real app, this would export real data from IndexedDB
-      // For this example, we'll export the mock data
-      const encryptedData = await exportStoreData('properties', encryptionKey);
+      // Prepare data for Excel export
+      const excelData = filteredProperties.map(property => ({
+        Endereço: property.address,
+        Cidade: property.city,
+        Estado: property.state,
+        Tipo: property.type,
+        Status: property.status,
+        'Data de Compra': property.purchaseDate,
+        'Valor de Compra': property.purchasePrice,
+        'Valor Estimado': property.estimatedValue,
+        'Valor de Venda': property.saleValue || '',
+        Notas: property.notes || ''
+      }));
       
-      // Export the data as a file
-      exportEncryptedData(encryptedData, 'imoveis-export.json');
+      // Create a new workbook
+      const workbook = XLSX.utils.book_new();
+      const worksheet = XLSX.utils.json_to_sheet(excelData);
+      
+      // Add the worksheet to the workbook
+      XLSX.utils.book_append_sheet(workbook, worksheet, 'Imóveis');
+      
+      // Generate Excel file
+      const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+      
+      // Save the file
+      const blob = new Blob([excelBuffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'imoveis-export.xlsx';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
       
       toast({
         title: "Exportação concluída",
-        description: "Os dados dos imóveis foram exportados com sucesso.",
+        description: "Os dados dos imóveis foram exportados em Excel com sucesso.",
       });
     } catch (error) {
       console.error('Erro ao exportar dados:', error);
       toast({
         title: "Erro na exportação",
-        description: "Ocorreu um erro ao exportar os dados.",
+        description: "Ocorreu um erro ao exportar os dados para Excel.",
         variant: "destructive",
       });
     } finally {
@@ -152,7 +170,7 @@ const PropertyManager: React.FC = () => {
             className="gap-2"
           >
             <Download className="h-4 w-4" />
-            Exportar
+            Exportar Excel
           </Button>
           <Button
             onClick={addNewProperty}
