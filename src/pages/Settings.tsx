@@ -5,19 +5,12 @@ import { useToast } from '@/hooks/use-toast';
 import SidebarLayout from '@/components/layout/SidebarLayout';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
-import { 
-  Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel
-} from '@/components/ui/form';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Label } from '@/components/ui/label';
 import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
 import { retrieveSettings, storeSettings } from '@/lib/storage/settings';
 import { Info } from 'lucide-react';
+import { useForm } from 'react-hook-form';
 
 // Type for user preferences
 interface Preferences {
@@ -179,6 +172,21 @@ const Settings = () => {
     // Save the updated preferences
     await saveSettings();
   };
+
+  // Define form for profile tab
+  const profileForm = useForm({
+    defaultValues: {
+      name: userProfile.name,
+      email: userProfile.email,
+      phone: userProfile.phone,
+      address: userProfile.address
+    }
+  });
+
+  const onProfileSubmit = async (data: any) => {
+    setUserProfile(data);
+    await saveSettings();
+  };
   
   return (
     <SidebarLayout>
@@ -248,55 +256,51 @@ const Settings = () => {
             <div className="bg-white rounded-lg shadow p-6">
               <h2 className="text-xl font-semibold mb-4">Informações Pessoais</h2>
               
-              <Form>
+              <form onSubmit={profileForm.handleSubmit(onProfileSubmit)} className="space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <FormItem>
-                    <FormLabel>Nome</FormLabel>
-                    <FormControl>
-                      <input 
-                        type="text" 
-                        className="w-full p-2 border rounded"
-                        value={userProfile.name}
-                        onChange={(e) => setUserProfile({...userProfile, name: e.target.value})}
-                      />
-                    </FormControl>
-                  </FormItem>
+                  <div className="space-y-2">
+                    <Label htmlFor="name">Nome</Label>
+                    <input
+                      id="name"
+                      type="text"
+                      className="w-full p-2 border rounded"
+                      value={userProfile.name}
+                      onChange={(e) => setUserProfile({...userProfile, name: e.target.value})}
+                    />
+                  </div>
                   
-                  <FormItem>
-                    <FormLabel>E-mail</FormLabel>
-                    <FormControl>
-                      <input 
-                        type="email" 
-                        className="w-full p-2 border rounded"
-                        value={userProfile.email}
-                        onChange={(e) => setUserProfile({...userProfile, email: e.target.value})}
-                      />
-                    </FormControl>
-                  </FormItem>
+                  <div className="space-y-2">
+                    <Label htmlFor="email">E-mail</Label>
+                    <input
+                      id="email" 
+                      type="email" 
+                      className="w-full p-2 border rounded"
+                      value={userProfile.email}
+                      onChange={(e) => setUserProfile({...userProfile, email: e.target.value})}
+                    />
+                  </div>
                   
-                  <FormItem>
-                    <FormLabel>Telefone</FormLabel>
-                    <FormControl>
-                      <input 
-                        type="tel" 
-                        className="w-full p-2 border rounded"
-                        value={userProfile.phone}
-                        onChange={(e) => setUserProfile({...userProfile, phone: e.target.value})}
-                      />
-                    </FormControl>
-                  </FormItem>
+                  <div className="space-y-2">
+                    <Label htmlFor="phone">Telefone</Label>
+                    <input
+                      id="phone" 
+                      type="tel" 
+                      className="w-full p-2 border rounded"
+                      value={userProfile.phone}
+                      onChange={(e) => setUserProfile({...userProfile, phone: e.target.value})}
+                    />
+                  </div>
                   
-                  <FormItem>
-                    <FormLabel>Endereço</FormLabel>
-                    <FormControl>
-                      <input 
-                        type="text" 
-                        className="w-full p-2 border rounded"
-                        value={userProfile.address}
-                        onChange={(e) => setUserProfile({...userProfile, address: e.target.value})}
-                      />
-                    </FormControl>
-                  </FormItem>
+                  <div className="space-y-2">
+                    <Label htmlFor="address">Endereço</Label>
+                    <input
+                      id="address"
+                      type="text" 
+                      className="w-full p-2 border rounded"
+                      value={userProfile.address}
+                      onChange={(e) => setUserProfile({...userProfile, address: e.target.value})}
+                    />
+                  </div>
                 </div>
                 
                 <div className="mt-6">
@@ -308,7 +312,7 @@ const Settings = () => {
                     Salvar alterações
                   </Button>
                 </div>
-              </Form>
+              </form>
             </div>
           </TabsContent>
           
