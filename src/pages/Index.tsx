@@ -7,10 +7,6 @@ import { ArrowRight, PlayCircle, ShieldCheck, Calculator, LineChart } from 'luci
 const Index = () => {
   const { isAuthenticated, signInAnonymously } = useAuth();
 
-  const handleTryDemo = async () => {
-    await signInAnonymously();
-  };
-
   return (
     <div className="min-h-screen flex flex-col">
       {/* Hero Section */}
@@ -36,18 +32,12 @@ const Index = () => {
                 </Link>
               </Button>
             ) : (
-              <div className="space-y-4 sm:space-y-0 sm:mx-auto sm:inline-grid sm:grid-cols-2 sm:gap-5">
-                <Button asChild variant="gradient" size="lg" className="gap-2">
-                  <Link to="/auth?mode=signup">
-                    Começar Agora
-                    <ArrowRight className="h-4 w-4" />
-                  </Link>
-                </Button>
-                <Button variant="outline" size="lg" onClick={handleTryDemo} className="gap-2">
-                  <PlayCircle className="h-4 w-4" />
-                  Experimentar Demo
-                </Button>
-              </div>
+              <Button asChild variant="gradient" size="lg" className="gap-2">
+                <Link to="/auth?mode=signup">
+                  Começar Agora
+                  <ArrowRight className="h-4 w-4" />
+                </Link>
+              </Button>
             )}
           </div>
         </div>
