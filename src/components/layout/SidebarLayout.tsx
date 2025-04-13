@@ -19,7 +19,8 @@ import {
   LogOut, 
   Info, 
   Menu as MenuIcon, 
-  X 
+  X,
+  Database 
 } from 'lucide-react';
 import { useAuth } from '@/components/auth/AuthProvider';
 import { Button } from '@/components/ui/button';
@@ -46,7 +47,6 @@ const SidebarLayout: React.FC<SidebarLayoutProps> = ({ children }) => {
   return (
     <SidebarProvider defaultOpen={!isMobile}>
       <div className="flex h-screen w-full overflow-hidden">
-        {/* Mobile sidebar toggle */}
         {isMobile && (
           <Button 
             variant="ghost" 
@@ -58,7 +58,6 @@ const SidebarLayout: React.FC<SidebarLayoutProps> = ({ children }) => {
           </Button>
         )}
         
-        {/* Sidebar - conditionally shown on mobile */}
         <div className={`${isMobile ? (mobileSidebarOpen ? 'block' : 'hidden') : 'block'} h-full`}>
           <Sidebar className="h-screen">
             <SidebarHeader className="p-0">
@@ -115,6 +114,15 @@ const SidebarLayout: React.FC<SidebarLayoutProps> = ({ children }) => {
                         <Link to="/about" className="flex items-center gap-2 text-white">
                           <Info className="h-5 w-5" />
                           <span>Sobre</span>
+                        </Link>
+                      </SidebarMenuButton>
+                    </SidebarMenuItem>
+                    
+                    <SidebarMenuItem>
+                      <SidebarMenuButton asChild isActive={isActive('/backup')} onClick={() => isMobile && setMobileSidebarOpen(false)}>
+                        <Link to="/backup" className="flex items-center gap-2 text-white">
+                          <Database className="h-5 w-5" />
+                          <span>Backup de Dados</span>
                         </Link>
                       </SidebarMenuButton>
                     </SidebarMenuItem>

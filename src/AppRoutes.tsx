@@ -1,31 +1,95 @@
 
-import { Routes, Route } from "react-router-dom";
+import React, { Suspense } from 'react';
+import { Routes, Route, Navigate } from 'react-router-dom';
+import { SidebarLayout } from '@/components/layout/SidebarLayout';
+import { ProtectedRoute } from '@/components/auth/ProtectedRoute';
+import Spinner from '@/components/ui/spinner'; 
 
-// Pages
-import Index from "./pages/Index";
-import Auth from "./pages/Auth";
-import Dashboard from "./pages/Dashboard";
-import Calculator from "./pages/Calculator";
-import NotFound from "./pages/NotFound";
-import About from "./pages/About";
-import Properties from "./pages/Properties";
-import Finances from "./pages/Finances";
-import Auctions from "./pages/Auctions"; // Import the new Auctions page
+// Lazy load pages
+const Dashboard = React.lazy(() => import('@/pages/Dashboard'));
+const Properties = React.lazy(() => import('@/pages/Properties'));
+const Calculator = React.lazy(() => import('@/pages/Calculator'));
+const Finances = React.lazy(() => import('@/pages/Finances'));
+const About = React.lazy(() => import('@/pages/About'));
+const Backup = React.lazy(() => import('@/pages/Backup')); // Novo!
 
-const AppRoutes = () => {
+const AppRoutes: React.FC = () => {
   return (
     <Routes>
-      <Route path="/" element={<Index />} />
-      <Route path="/auth" element={<Auth />} />
-      <Route path="/dashboard" element={<Dashboard />} />
-      <Route path="/calculator" element={<Calculator />} />
-      <Route path="/imoveis" element={<Properties />} />
-      <Route path="/imoveis/adicionar" element={<Properties />} />
-      <Route path="/imoveis/:id" element={<Properties />} />
-      <Route path="/financas" element={<Finances />} />
-      <Route path="/leiloes" element={<Auctions />} /> {/* Add the new route */}
-      <Route path="/about" element={<About />} />
-      <Route path="*" element={<NotFound />} />
+      <Route 
+        path="/dashboard" 
+        element={
+          <ProtectedRoute>
+            <SidebarLayout>
+              <Suspense fallback={<Spinner />}>
+                <Dashboard />
+              </Suspense>
+            </SidebarLayout>
+          </ProtectedRoute>
+        } 
+      />
+      <Route 
+        path="/imoveis/*" 
+        element={
+          <ProtectedRoute>
+            <SidebarLayout>
+              <Suspense fallback={<Spinner />}>
+                <Properties />
+              </Suspense>
+            </SidebarLayout>
+          </ProtectedRoute>
+        } 
+      />
+      <Route 
+        path="/calculator" 
+        element={
+          <ProtectedRoute>
+            <SidebarLayout>
+              <Suspense fallback={<Spinner />}>
+                <Calculator />
+              </Suspense>
+            </SidebarLayout>
+          </ProtectedRoute>
+        } 
+      />
+      <Route 
+        path="/financas" 
+        element={
+          <ProtectedRoute>
+            <SidebarLayout>
+              <Suspense fallback={<Spinner />}>
+                <Finances />
+              </Suspense>
+            </SidebarLayout>
+          </ProtectedRoute>
+        } 
+      />
+      <Route 
+        path="/about" 
+        element={
+          <ProtectedRoute>
+            <SidebarLayout>
+              <Suspense fallback={<Spinner />}>
+                <About />
+              </Suspense>
+            </SidebarLayout>
+          </ProtectedRoute>
+        } 
+      />
+      <Route 
+        path="/backup" 
+        element={
+          <ProtectedRoute>
+            <SidebarLayout>
+              <Suspense fallback={<Spinner />}>
+                <Backup />
+              </Suspense>
+            </SidebarLayout>
+          </ProtectedRoute>
+        } 
+      />
+      <Route path="/" element={<Navigate to="/dashboard" replace />} />
+      <Route path="*" element={<Navigate to="/dashboard" replace />} />
     </Routes>
   );
 };
