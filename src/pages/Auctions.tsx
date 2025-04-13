@@ -51,14 +51,10 @@ const Auctions = () => {
     const houses = Math.floor(totalProperties * 0.3);
     const lands = Math.floor(totalProperties * 0.1);
     
-    // Adjust for potential rounding issues to ensure sum equals total properties
-    const calculatedTotal = apartments + houses + lands;
-    const adjustment = totalProperties - calculatedTotal;
-    
     return {
       apartments,
       houses,
-      lands: lands + adjustment // Add any difference to lands to ensure correct total
+      lands
     };
   };
 
@@ -383,17 +379,6 @@ const Auctions = () => {
                   onClick={() => setDialogOpen(false)}
                 >
                   Fechar
-                </Button>
-                <Button
-                  onClick={() => {
-                    toast({
-                      title: "Inscrição Confirmada",
-                      description: "Você será notificado sobre este leilão",
-                    });
-                    setDialogOpen(false);
-                  }}
-                >
-                  Inscrever-me no Leilão
                 </Button>
               </DialogFooter>
             </>

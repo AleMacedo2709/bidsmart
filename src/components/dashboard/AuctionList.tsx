@@ -4,12 +4,16 @@ import { mockAuctions } from '@/data/mockData';
 
 const AuctionList: React.FC = () => {
   // Function to calculate property counts
-  const calculateTotalProperties = (totalProperties: number) => {
+  const calculatePropertyCounts = (totalProperties: number) => {
     const apartments = Math.floor(totalProperties * 0.6);
     const houses = Math.floor(totalProperties * 0.3);
     const lands = Math.floor(totalProperties * 0.1);
-    // Ensure the total matches the original count by adjusting the lands value
-    return apartments + houses + lands;
+    
+    return {
+      apartments,
+      houses,
+      lands
+    };
   };
   
   return (
@@ -17,8 +21,9 @@ const AuctionList: React.FC = () => {
       {mockAuctions.map((auction) => {
         // Extract day and month from date string (format: DD/MM/YYYY)
         const [day, month] = auction.date.split('/');
-        // Calculate the total properties based on the distribution
-        const totalCalculatedProperties = calculateTotalProperties(auction.properties);
+        // Calculate the property counts 
+        const { apartments, houses, lands } = calculatePropertyCounts(auction.properties);
+        const totalCalculatedProperties = apartments + houses + lands;
         
         return (
           <div key={auction.id} className="flex items-center py-2">
