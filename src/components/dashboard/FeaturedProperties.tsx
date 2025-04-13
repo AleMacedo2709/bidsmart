@@ -121,7 +121,8 @@ const FeaturedProperties: React.FC = () => {
               {completionPercentage.toFixed(0)}% do processo concluído
             </div>
           </div>
-        ))}
+        );
+      })}
     </div>
   );
 };
