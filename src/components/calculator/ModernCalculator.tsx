@@ -108,7 +108,6 @@ const DEFAULT_VALUES = isProduction ? PROD_DEFAULT_VALUES : DEV_DEFAULT_VALUES;
 const ModernCalculator: React.FC = () => {
   const { toast } = useToast();
   const { encryptionKey } = useAuth();
-  const [simulationName, setSimulationName] = useState('');
   const [simulationNotes, setSimulationNotes] = useState('');
   const [activeTab, setActiveTab] = useState<string>('property-data');
   const [showDetailedCosts, setShowDetailedCosts] = useState(false);
@@ -167,7 +166,7 @@ const ModernCalculator: React.FC = () => {
     
     try {
       const simulation = {
-        name: simulationName || `Simulação ${new Date().toLocaleString()}`,
+        name: `Simulação ${new Date().toLocaleString()}`,
         notes: simulationNotes,
         date: new Date(),
         inputs: {
@@ -261,14 +260,7 @@ const ModernCalculator: React.FC = () => {
       doc.setTextColor(100, 100, 100);
       doc.text(`Data: ${format(new Date(), 'dd/MM/yyyy')}`, margin, margin + imgHeight + 20);
       
-      if (simulationName) {
-        doc.setFontSize(12);
-        doc.setTextColor(0, 0, 0);
-        doc.text(`Nome da Simulação: ${simulationName}`, margin, margin + imgHeight + 30);
-        var currentY = margin + imgHeight + 35;
-      } else {
-        var currentY = margin + imgHeight + 25;
-      }
+      var currentY = margin + imgHeight + 25;
       
       currentY += 5;
       
@@ -411,9 +403,7 @@ const ModernCalculator: React.FC = () => {
         doc.text(`Gerado em: ${format(new Date(), 'dd/MM/yyyy HH:mm')}`, pageWidth - margin - 60, pageHeight - 10, { align: 'right' });
       }
       
-      const fileName = simulationName 
-        ? `BidSmart_Simulacao_${simulationName.replace(/\s+/g, '_')}.pdf`
-        : `BidSmart_Simulacao_${format(new Date(), 'dd-MM-yyyy_HH-mm')}.pdf`;
+      const fileName = `BidSmart_Simulacao_${format(new Date(), 'dd-MM-yyyy_HH-mm')}.pdf`;
       
       doc.save(fileName);
       
@@ -871,107 +861,6 @@ const ModernCalculator: React.FC = () => {
                       <Card className="border border-gray-200">
                         <CardContent className="pt-6">
                           <div className="space-y-4">
-                            <div className="space-y-2">
-                              <Label htmlFor="simulationName">Nome (Opcional)</Label>
-                              <Input
-                                id="simulationName"
-                                placeholder="ex: Apartamento Centro"
-                                value={simulationName}
-                                onChange={(e) => setSimulationName(e.target.value)}
-                              />
-                            </div>
                             
-                            <Button 
-                              onClick={generatePDF}
-                              className="w-full bg-blue-600 hover:bg-blue-700 flex items-center justify-center gap-2"
-                            >
-                              <FileText className="h-4 w-4" />
-                              Salvar em PDF
-                            </Button>
                             
                             <Button
-                              variant="outline"
-                              onClick={() => {
-                                setActiveTab('property-data');
-                                setResults(null);
-                              }}
-                              className="w-full"
-                            >
-                              Nova Simulação
-                            </Button>
-                          </div>
-                        </CardContent>
-                      </Card>
-                    </div>
-                  </TabsContent>
-                  
-                  <TabsContent value="details" className="pt-4 space-y-4">
-                    <h3 className="font-medium text-lg">Detalhamento de Custos</h3>
-                    
-                    <div className="space-y-3 bg-gray-50 p-4 rounded-lg">
-                      <div className="flex justify-between">
-                        <span>ITBI ({acquisitionCosts.itbiTax}%)</span>
-                        <span className="font-medium">
-                          {formatCurrency(initialValues.auctionPrice * (acquisitionCosts.itbiTax / 100))}
-                        </span>
-                      </div>
-                      
-                      <div className="flex justify-between">
-                        <span>Taxas de Registro</span>
-                        <span className="font-medium">{formatCurrency(acquisitionCosts.registryFees)}</span>
-                      </div>
-                      
-                      <div className="flex justify-between">
-                        <span>Comissão do Leiloeiro ({acquisitionCosts.auctioneerCommission}%)</span>
-                        <span className="font-medium">
-                          {formatCurrency(initialValues.auctionPrice * (acquisitionCosts.auctioneerCommission / 100))}
-                        </span>
-                      </div>
-                      
-                      <div className="flex justify-between">
-                        <span>Comissão de Venda ({saleCosts.brokerCommission}%)</span>
-                        <span className="font-medium">
-                          {formatCurrency(initialValues.resalePrice * (saleCosts.brokerCommission / 100))}
-                        </span>
-                      </div>
-                      
-                      <div className="flex justify-between">
-                        <span>IPTU ({maintenanceCosts.holdingPeriod} meses)</span>
-                        <span className="font-medium">
-                          {formatCurrency(maintenanceCosts.monthlyIptu * maintenanceCosts.holdingPeriod)}
-                        </span>
-                      </div>
-                      
-                      {needsRenovation && (
-                        <div className="flex justify-between">
-                          <span>Reforma</span>
-                          <span className="font-medium">{formatCurrency(maintenanceCosts.renovation)}</span>
-                        </div>
-                      )}
-                      
-                      <div className="flex justify-between">
-                        <span>Imposto sobre Ganho de Capital</span>
-                        <span className="font-medium">{formatCurrency(results.capitalGainsTaxDue)}</span>
-                      </div>
-                      
-                      <div className="border-t pt-2 mt-2">
-                        <div className="flex justify-between font-bold">
-                          <span>Lucro Líquido Final</span>
-                          <span className={results.netProfit >= 0 ? "text-green-600" : "text-red-600"}>
-                            {formatCurrency(results.netProfit)}
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-                  </TabsContent>
-                </Tabs>
-              </div>
-            )}
-          </TabsContent>
-        </Tabs>
-      </Card>
-    </div>
-  );
-};
-
-export default ModernCalculator;
