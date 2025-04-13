@@ -157,6 +157,7 @@ const ModernCalculator = () => {
     setErrors({});
   };
 
+  // This function is only called during render and doesn't update state
   const renderStepContent = () => {
     if (currentStep === steps.length + 1) {
       return <ResultsSummary results={calculatedResults} formData={formData} />;
@@ -330,7 +331,6 @@ const ModernCalculator = () => {
           
           <Button
             onClick={handleNext}
-            disabled={!validateCurrentStep()}
           >
             {currentStep === steps.length ? 'Ver Resultados' : 'Próximo'}
           </Button>

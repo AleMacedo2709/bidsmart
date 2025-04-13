@@ -22,10 +22,19 @@ const CurrencyInput: React.FC<CurrencyInputProps> = ({
 
   // Formata o valor quando o componente é renderizado ou quando o valor muda
   useEffect(() => {
+    if (value === 0 && !displayValue) {
+      // Avoid unnecessary state update if both value and displayValue are effectively empty
+      return;
+    }
+    
     if (value === 0) {
       setDisplayValue('');
     } else {
-      setDisplayValue(formatToBRL(value));
+      const formatted = formatToBRL(value);
+      // Only update if the formatted value is different from current display value
+      if (formatted !== displayValue) {
+        setDisplayValue(formatted);
+      }
     }
   }, [value]);
 
