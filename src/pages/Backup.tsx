@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -12,7 +11,6 @@ import {
   ShieldCheck, 
   AlertCircle 
 } from 'lucide-react';
-import AppLayout from '@/components/layout/AppLayout';
 import { verifyDatabaseIntegrity } from '@/lib/storage/integrity';
 
 const BackupPage: React.FC = () => {
@@ -74,7 +72,6 @@ const BackupPage: React.FC = () => {
       setIsImporting(true);
       const fileContent = await file.text();
 
-      // Determine store based on filename
       const storeMap: Record<string, string> = {
         'properties': 'properties',
         'simulations': 'simulations',
@@ -87,7 +84,6 @@ const BackupPage: React.FC = () => {
 
       await importStoreData(matchedStore, fileContent, encryptionKey);
 
-      // Verify database integrity after import
       const integrityResult = await verifyDatabaseIntegrity(encryptionKey);
       
       if (integrityResult.valid) {
@@ -116,7 +112,7 @@ const BackupPage: React.FC = () => {
   };
 
   return (
-    <AppLayout>
+    <div className="h-full overflow-auto">
       <div className="container mx-auto px-4 py-8">
         <h1 className="text-3xl font-bold mb-6 flex items-center gap-2">
           <ShieldCheck className="text-primary" /> Backup de Dados
@@ -191,7 +187,7 @@ const BackupPage: React.FC = () => {
           </div>
         </div>
       </div>
-    </AppLayout>
+    </div>
   );
 };
 
