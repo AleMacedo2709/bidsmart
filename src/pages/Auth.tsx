@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
-import { useSearchParams, useNavigate, useLocation } from 'react-router-dom';
+import { useSearchParams, useNavigate } from 'react-router-dom';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import LoginForm from '@/components/auth/LoginForm';
 import SignupForm from '@/components/auth/SignupForm';
@@ -14,28 +14,16 @@ const Auth = () => {
   const [activeTab, setActiveTab] = useState(initialMode);
   const { isAuthenticated } = useAuth();
   const navigate = useNavigate();
-  const location = useLocation();
-  
-  // Get the redirect path from location state or default to dashboard
-  const from = location.state?.from?.pathname || '/dashboard';
 
   useEffect(() => {
     if (isAuthenticated) {
-      // Navigate to the path they tried to visit or dashboard
-      navigate(from, { replace: true });
+      navigate('/dashboard');
     }
-  }, [isAuthenticated, navigate, from]);
+  }, [isAuthenticated, navigate]);
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-b from-blue-50 to-white px-4 py-10">
       <div className="text-center mb-6 animate-fade-in">
-        <div className="flex justify-center mb-3">
-          <img 
-            src="/lovable-uploads/beb44d81-2944-4436-8fa1-4d4dc91797c3.png" 
-            alt="BidSmart Logo" 
-            className="h-16 w-auto"
-          />
-        </div>
         <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-3">
           Bem-vindo ao BidSmart
         </h1>

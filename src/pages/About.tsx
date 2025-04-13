@@ -1,4 +1,6 @@
+
 import React from 'react';
+import AppLayout from '@/components/layout/AppLayout';
 import { 
   Shield, 
   Lock, 
@@ -42,7 +44,7 @@ const About = () => {
       toast({
         title: "Verificação concluída",
         description: "A integridade dos dados foi verificada com sucesso.",
-        variant: "default"
+        variant: "success"
       });
     } catch (error) {
       console.error("Erro de verificação de integridade:", error);
@@ -55,7 +57,7 @@ const About = () => {
   };
   
   return (
-    <div className="h-full overflow-auto">
+    <AppLayout>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="flex items-center gap-3 mb-6">
           <BadgeInfo className="h-8 w-8 text-primary" />
@@ -280,7 +282,7 @@ const About = () => {
           </TabsContent>
         </Tabs>
       </div>
-    </div>
+    </AppLayout>
   );
 };
 

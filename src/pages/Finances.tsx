@@ -1,5 +1,6 @@
 
 import React from 'react';
+import SidebarLayout from '@/components/layout/SidebarLayout';
 import FinancialMetrics from '@/components/finances/FinancialMetrics';
 import InvestmentChart from '@/components/finances/InvestmentChart';
 import PortfolioPieChart from '@/components/finances/PortfolioPieChart';
@@ -11,8 +12,8 @@ const Finances: React.FC = () => {
   const isMobile = useIsMobile();
   
   return (
-    <div className="h-full overflow-auto">
-      <div className="container mx-auto px-2 sm:px-4 py-4 sm:py-6">
+    <SidebarLayout>
+      <div className="container mx-auto px-2 sm:px-4 py-4 sm:py-6 min-h-screen">
         <div className="mb-4 sm:mb-6">
           <h1 className="text-2xl sm:text-3xl font-bold">Finanças</h1>
           <p className="text-gray-500 mt-1 sm:mt-2 text-sm sm:text-base">
@@ -48,7 +49,7 @@ const Finances: React.FC = () => {
           </TabsContent>
         </Tabs>
       </div>
-    </div>
+    </SidebarLayout>
   );
 };
 

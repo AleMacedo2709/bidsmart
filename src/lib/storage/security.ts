@@ -19,31 +19,22 @@ export const recordSecurityEvent = async (
   const db = await initDB();
   
   return new Promise((resolve, reject) => {
-    try {
-      const transaction = db.transaction(['security_metadata'], 'readwrite');
-      const store = transaction.objectStore('security_metadata');
-      
-      const event = {
-        id: crypto.randomUUID(),
-        type: eventType,
-        timestamp: Date.now(),
-        details
-      };
-      
-      const request = store.add(event);
-      
-      request.onerror = (event) => {
-        console.error('Failed to record security event:', event);
-        reject(new Error('Failed to record security event'));
-      };
-      
-      request.onsuccess = () => resolve();
-      
-      transaction.oncomplete = () => db.close();
-    } catch (error) {
-      console.error('Error recording security event:', error);
-      reject(error);
-    }
+    const transaction = db.transaction(['security_metadata'], 'readwrite');
+    const store = transaction.objectStore('security_metadata');
+    
+    const event = {
+      id: crypto.randomUUID(),
+      type: eventType,
+      timestamp: Date.now(),
+      details
+    };
+    
+    const request = store.add(event);
+    
+    request.onerror = () => reject(new Error('Failed to record security event'));
+    request.onsuccess = () => resolve();
+    
+    transaction.oncomplete = () => db.close();
   });
 };
 
@@ -98,44 +89,8 @@ export const trackAuthAttempt = async (
         unlockTime: AUTH_ATTEMPTS.lockedUntil
       });
     }
-    
-    // Always log failed attempts
-    await recordSecurityEvent('login_failed', {
-      attemptNumber: AUTH_ATTEMPTS.count,
-      timestamp: now
-    });
   } else {
     // Reset on successful auth
     AUTH_ATTEMPTS.count = 0;
-    
-    // Log successful login for audit trail
-    await recordSecurityEvent('login_success', {
-      timestamp: now
-    });
   }
-};
-
-// Perform periodic security checks
-export const runSecurityAudit = async (): Promise<{
-  issues: string[];
-  recommendations: string[];
-}> => {
-  const issues: string[] = [];
-  const recommendations: string[] = [];
-  
-  // Sample check: verify IndexedDB is accessible
-  try {
-    const db = await initDB();
-    db.close();
-  } catch (error) {
-    issues.push('Database access issue detected');
-  }
-  
-  // Add standard recommendations
-  recommendations.push('Regularly update your device operating system');
-  recommendations.push('Use strong, unique passwords for all accounts');
-  recommendations.push('Export and securely store backups regularly');
-  recommendations.push('Verify data integrity at least monthly');
-  
-  return { issues, recommendations };
 };

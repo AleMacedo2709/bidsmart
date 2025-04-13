@@ -111,6 +111,11 @@ export const useAuthProvider = () => {
   }, []);
 
   const signIn = async (email: string, password: string) => {
+    if (!isFirebaseConfigured) {
+      simulateDemoMode();
+      return;
+    }
+
     const status = await checkSecurityStatus();
     if (status.locked) {
       toast({
@@ -123,15 +128,6 @@ export const useAuthProvider = () => {
 
     try {
       setIsLoading(true);
-      if (!isFirebaseConfigured) {
-        toast({
-          title: "Firebase Not Configured",
-          description: "Firebase credentials are missing. Switching to demo mode.",
-        });
-        await simulateDemoMode();
-        return;
-      }
-      
       await firebaseSignIn(email, password);
       
       await trackAuthAttempt(true);
@@ -159,17 +155,13 @@ export const useAuthProvider = () => {
   };
 
   const signUp = async (email: string, password: string) => {
+    if (!isFirebaseConfigured) {
+      simulateDemoMode();
+      return;
+    }
+
     try {
       setIsLoading(true);
-      if (!isFirebaseConfigured) {
-        toast({
-          title: "Firebase Not Configured",
-          description: "Firebase credentials are missing. Switching to demo mode.",
-        });
-        await simulateDemoMode();
-        return;
-      }
-      
       await firebaseSignUp(email, password);
       toast({
         title: "Account created",
@@ -299,6 +291,11 @@ export const useAuthProvider = () => {
   };
 
   const signInAnonymously = async () => {
+    if (!isFirebaseConfigured) {
+      simulateDemoMode();
+      return;
+    }
+
     try {
       setIsLoading(true);
       await firebaseSignInAnonymously();

@@ -1,7 +1,6 @@
 
 import React from 'react';
 import { mockAuctions } from '@/data/mockData';
-import { Link } from 'react-router-dom';
 
 const AuctionList: React.FC = () => {
   return (
@@ -19,18 +18,14 @@ const AuctionList: React.FC = () => {
         const totalProperties = apartments + houses + lands;
         
         return (
-          <div key={auction.id} className="flex items-center py-2 hover:bg-gray-50 rounded-md px-2 transition-colors">
+          <div key={auction.id} className="flex items-center py-2">
             <div className="mr-4 text-center">
               <div className="text-lg font-semibold">{day}</div>
               <div className="text-sm text-gray-500">{month}/24</div>
             </div>
             
             <div className="flex-grow">
-              <div className="font-medium">
-                <Link to={`/leiloes/${auction.id}`} className="hover:text-blue-600 transition-colors">
-                  {auction.name}
-                </Link>
-              </div>
+              <div className="font-medium">{auction.name}</div>
               <div className="text-sm text-gray-500">{totalProperties} imóveis disponíveis</div>
             </div>
           </div>

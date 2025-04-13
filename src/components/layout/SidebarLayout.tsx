@@ -1,8 +1,6 @@
-
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { 
-  SidebarProvider,
   Sidebar, 
   SidebarContent, 
   SidebarGroup, 
@@ -11,6 +9,7 @@ import {
   SidebarMenu,
   SidebarMenuItem,
   SidebarMenuButton,
+  SidebarProvider,
 } from '@/components/ui/sidebar';
 import { 
   Home, 
@@ -20,9 +19,7 @@ import {
   LogOut, 
   Info, 
   Menu as MenuIcon, 
-  X,
-  Database,
-  Gavel
+  X 
 } from 'lucide-react';
 import { useAuth } from '@/components/auth/AuthProvider';
 import { Button } from '@/components/ui/button';
@@ -39,7 +36,7 @@ const SidebarLayout: React.FC<SidebarLayoutProps> = ({ children }) => {
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
   
   const isActive = (path: string) => {
-    return location.pathname.startsWith(path);
+    return location.pathname === path;
   };
 
   const toggleMobileSidebar = () => {
@@ -47,8 +44,9 @@ const SidebarLayout: React.FC<SidebarLayoutProps> = ({ children }) => {
   };
 
   return (
-    <SidebarProvider>
+    <SidebarProvider defaultOpen={!isMobile}>
       <div className="flex h-screen w-full overflow-hidden">
+        {/* Mobile sidebar toggle */}
         {isMobile && (
           <Button 
             variant="ghost" 
@@ -60,14 +58,15 @@ const SidebarLayout: React.FC<SidebarLayoutProps> = ({ children }) => {
           </Button>
         )}
         
+        {/* Sidebar - conditionally shown on mobile */}
         <div className={`${isMobile ? (mobileSidebarOpen ? 'block' : 'hidden') : 'block'} h-full`}>
-          <Sidebar className="h-full border-r-0">
+          <Sidebar className="h-screen">
             <SidebarHeader className="p-0">
-              <div className="py-4 px-4 bg-white flex items-center justify-center">
+              <div className="py-3 px-4 bg-blue-700 text-white flex items-center">
                 <img 
-                  src="/lovable-uploads/beb44d81-2944-4436-8fa1-4d4dc91797c3.png" 
+                  src="/lovable-uploads/08ed5091-1137-4b1f-845e-9821bdc77e69.png" 
                   alt="BidSmart Logo" 
-                  className="h-16 w-auto mx-auto"
+                  className="h-8 w-auto mr-2"
                 />
               </div>
             </SidebarHeader>
@@ -89,15 +88,6 @@ const SidebarLayout: React.FC<SidebarLayoutProps> = ({ children }) => {
                         <Link to="/imoveis" className="flex items-center gap-2 text-white">
                           <Building2 className="h-5 w-5" />
                           <span>Imóveis</span>
-                        </Link>
-                      </SidebarMenuButton>
-                    </SidebarMenuItem>
-                    
-                    <SidebarMenuItem>
-                      <SidebarMenuButton asChild isActive={isActive('/leiloes')} onClick={() => isMobile && setMobileSidebarOpen(false)}>
-                        <Link to="/leiloes" className="flex items-center gap-2 text-white">
-                          <Gavel className="h-5 w-5" />
-                          <span>Leilões</span>
                         </Link>
                       </SidebarMenuButton>
                     </SidebarMenuItem>
@@ -128,15 +118,6 @@ const SidebarLayout: React.FC<SidebarLayoutProps> = ({ children }) => {
                         </Link>
                       </SidebarMenuButton>
                     </SidebarMenuItem>
-                    
-                    <SidebarMenuItem>
-                      <SidebarMenuButton asChild isActive={isActive('/backup')} onClick={() => isMobile && setMobileSidebarOpen(false)}>
-                        <Link to="/backup" className="flex items-center gap-2 text-white">
-                          <Database className="h-5 w-5" />
-                          <span>Backup de Dados</span>
-                        </Link>
-                      </SidebarMenuButton>
-                    </SidebarMenuItem>
                   </SidebarMenu>
                 </SidebarGroupContent>
               </SidebarGroup>
@@ -158,7 +139,7 @@ const SidebarLayout: React.FC<SidebarLayoutProps> = ({ children }) => {
           </Sidebar>
         </div>
         
-        <main className="flex-1 bg-background overflow-auto">
+        <main className="flex-1 overflow-auto h-screen bg-background">
           {children}
         </main>
       </div>

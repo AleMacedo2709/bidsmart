@@ -1,146 +1,31 @@
 
-import React, { Suspense } from 'react';
-import { Routes, Route, Navigate } from 'react-router-dom';
-import ProtectedRoute from '@/components/auth/ProtectedRoute';
-import { Skeleton } from '@/components/ui/skeleton'; 
-import AppLayout from '@/components/layout/AppLayout';
+import { Routes, Route } from "react-router-dom";
 
-// Lazy load pages
-const Dashboard = React.lazy(() => import('@/pages/Dashboard'));
-const Properties = React.lazy(() => import('@/pages/Properties'));
-const Calculator = React.lazy(() => import('@/pages/Calculator'));
-const Finances = React.lazy(() => import('@/pages/Finances'));
-const About = React.lazy(() => import('@/pages/About'));
-const Backup = React.lazy(() => import('@/pages/Backup'));
-const Auth = React.lazy(() => import('@/pages/Auth'));
-const Auctions = React.lazy(() => import('@/pages/Auctions'));
-const Index = React.lazy(() => import('@/pages/Index'));
-const NotFound = React.lazy(() => import('@/pages/NotFound'));
+// Pages
+import Index from "./pages/Index";
+import Auth from "./pages/Auth";
+import Dashboard from "./pages/Dashboard";
+import Calculator from "./pages/Calculator";
+import NotFound from "./pages/NotFound";
+import About from "./pages/About";
+import Properties from "./pages/Properties";
+import Finances from "./pages/Finances";
+import Auctions from "./pages/Auctions"; // Import the new Auctions page
 
-const AppRoutes: React.FC = () => {
+const AppRoutes = () => {
   return (
     <Routes>
-      {/* Public routes */}
-      <Route 
-        path="/" 
-        element={
-          <Suspense fallback={<div className="flex items-center justify-center h-screen"><Skeleton className="h-32 w-32 rounded-full" /></div>}>
-            <Index />
-          </Suspense>
-        } 
-      />
-      
-      {/* Authentication route - should not be protected */}
-      <Route 
-        path="/auth" 
-        element={
-          <Suspense fallback={<div className="flex items-center justify-center h-screen"><Skeleton className="h-32 w-32 rounded-full" /></div>}>
-            <Auth />
-          </Suspense>
-        } 
-      />
-      
-      {/* Protected routes */}
-      <Route 
-        path="/dashboard" 
-        element={
-          <ProtectedRoute>
-            <AppLayout>
-              <Suspense fallback={<div className="flex items-center justify-center h-full"><Skeleton className="h-32 w-32 rounded-full" /></div>}>
-                <Dashboard />
-              </Suspense>
-            </AppLayout>
-          </ProtectedRoute>
-        } 
-      />
-      
-      <Route 
-        path="/imoveis/*" 
-        element={
-          <ProtectedRoute>
-            <AppLayout>
-              <Suspense fallback={<div className="flex items-center justify-center h-full"><Skeleton className="h-32 w-32 rounded-full" /></div>}>
-                <Properties />
-              </Suspense>
-            </AppLayout>
-          </ProtectedRoute>
-        } 
-      />
-      
-      <Route 
-        path="/calculator" 
-        element={
-          <ProtectedRoute>
-            <AppLayout>
-              <Suspense fallback={<div className="flex items-center justify-center h-full"><Skeleton className="h-32 w-32 rounded-full" /></div>}>
-                <Calculator />
-              </Suspense>
-            </AppLayout>
-          </ProtectedRoute>
-        } 
-      />
-      
-      <Route 
-        path="/financas" 
-        element={
-          <ProtectedRoute>
-            <AppLayout>
-              <Suspense fallback={<div className="flex items-center justify-center h-full"><Skeleton className="h-32 w-32 rounded-full" /></div>}>
-                <Finances />
-              </Suspense>
-            </AppLayout>
-          </ProtectedRoute>
-        } 
-      />
-      
-      <Route 
-        path="/about" 
-        element={
-          <ProtectedRoute>
-            <AppLayout>
-              <Suspense fallback={<div className="flex items-center justify-center h-full"><Skeleton className="h-32 w-32 rounded-full" /></div>}>
-                <About />
-              </Suspense>
-            </AppLayout>
-          </ProtectedRoute>
-        } 
-      />
-      
-      <Route 
-        path="/backup" 
-        element={
-          <ProtectedRoute>
-            <AppLayout>
-              <Suspense fallback={<div className="flex items-center justify-center h-full"><Skeleton className="h-32 w-32 rounded-full" /></div>}>
-                <Backup />
-              </Suspense>
-            </AppLayout>
-          </ProtectedRoute>
-        } 
-      />
-      
-      <Route 
-        path="/leiloes" 
-        element={
-          <ProtectedRoute>
-            <AppLayout>
-              <Suspense fallback={<div className="flex items-center justify-center h-full"><Skeleton className="h-32 w-32 rounded-full" /></div>}>
-                <Auctions />
-              </Suspense>
-            </AppLayout>
-          </ProtectedRoute>
-        } 
-      />
-      
-      {/* Not Found route */}
-      <Route 
-        path="*" 
-        element={
-          <Suspense fallback={<div className="flex items-center justify-center h-screen"><Skeleton className="h-32 w-32 rounded-full" /></div>}>
-            <NotFound />
-          </Suspense>
-        } 
-      />
+      <Route path="/" element={<Index />} />
+      <Route path="/auth" element={<Auth />} />
+      <Route path="/dashboard" element={<Dashboard />} />
+      <Route path="/calculator" element={<Calculator />} />
+      <Route path="/imoveis" element={<Properties />} />
+      <Route path="/imoveis/adicionar" element={<Properties />} />
+      <Route path="/imoveis/:id" element={<Properties />} />
+      <Route path="/financas" element={<Finances />} />
+      <Route path="/leiloes" element={<Auctions />} /> {/* Add the new route */}
+      <Route path="/about" element={<About />} />
+      <Route path="*" element={<NotFound />} />
     </Routes>
   );
 };

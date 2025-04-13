@@ -1,25 +1,22 @@
 
 import React from 'react';
-import { Routes, Route, useLocation, useParams } from 'react-router-dom';
+import { useLocation, useParams } from 'react-router-dom';
+import SidebarLayout from '@/components/layout/SidebarLayout';
 import PropertyManager from '@/components/properties/PropertyManager';
 import PropertyForm from '@/components/properties/PropertyForm';
 import PropertyDetail from '@/components/properties/PropertyDetail';
-import PropertyEditForm from '@/components/properties/PropertyEditForm';
 
 const Properties: React.FC = () => {
   const location = useLocation();
   const params = useParams();
-  
   const isAddRoute = location.pathname === '/imoveis/adicionar';
-  const isEditRoute = location.pathname.includes('/editar');
-  const isDetailRoute = location.pathname.match(/^\/imoveis\/[^/]+$/) && !isAddRoute && !isEditRoute;
-  
+  const isDetailRoute = location.pathname.match(/^\/imoveis\/[^/]+$/);
   const propertyId = params.id;
 
   return (
-    <div className="h-full overflow-auto">
-      <div className="container mx-auto px-4 py-6">
-        {!isAddRoute && !isDetailRoute && !isEditRoute && (
+    <SidebarLayout>
+      <div className="container mx-auto px-4 py-6 min-h-screen">
+        {!isAddRoute && !isDetailRoute && (
           <>
             <div className="mb-8">
               <h1 className="text-3xl font-bold">Imóveis</h1>
@@ -31,13 +28,15 @@ const Properties: React.FC = () => {
           </>
         )}
 
-        <Routes>
-          <Route path="adicionar" element={<PropertyForm />} />
-          <Route path=":id" element={<PropertyDetail propertyId={propertyId || ''} />} />
-          <Route path=":id/editar" element={<PropertyEditForm propertyId={propertyId || ''} />} />
-        </Routes>
+        {isAddRoute && (
+          <PropertyForm />
+        )}
+
+        {isDetailRoute && propertyId && (
+          <PropertyDetail propertyId={propertyId} />
+        )}
       </div>
-    </div>
+    </SidebarLayout>
   );
 };
 
