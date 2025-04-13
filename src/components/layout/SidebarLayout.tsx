@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { 
@@ -59,7 +60,7 @@ const SidebarLayout: React.FC<SidebarLayoutProps> = ({ children }) => {
         )}
         
         <div className={`${isMobile ? (mobileSidebarOpen ? 'block' : 'hidden') : 'block'} h-full`}>
-          <Sidebar className="h-screen border-r border-gray-200">
+          <Sidebar className="h-screen border-r-0 border-gray-200">
             <SidebarHeader className="p-0">
               <div className="py-3 px-4 bg-blue-700 text-white flex items-center">
                 <img 
@@ -147,7 +148,7 @@ const SidebarLayout: React.FC<SidebarLayoutProps> = ({ children }) => {
           </Sidebar>
         </div>
         
-        <main className="flex-1 overflow-auto h-screen bg-background">
+        <main className="flex-1 h-screen bg-background p-0 m-0">
           {children}
         </main>
       </div>
