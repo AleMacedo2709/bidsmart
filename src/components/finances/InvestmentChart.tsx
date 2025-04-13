@@ -31,26 +31,40 @@ const InvestmentChart: React.FC<InvestmentChartProps> = ({ className }) => {
     });
   };
 
+  // Custom label for data points
+  const renderCustomizedLabel = (props: any) => {
+    const { x, y, value, index } = props;
+    // Show labels only for first, middle and last points to avoid cluttering
+    if (index === 0 || index === Math.floor(mockFinancialData.monthlyData.length / 2) || index === mockFinancialData.monthlyData.length - 1) {
+      return (
+        <text x={x} y={y - 10} fill="#666" fontSize={9} textAnchor="middle">
+          {formatCurrency(value)}
+        </text>
+      );
+    }
+    return null;
+  };
+
   return (
-    <Card className={className}>
-      <CardHeader className="pb-2">
-        <CardTitle>Evolução do Investimento</CardTitle>
-        <CardDescription>
+    <div className={className}>
+      <div className="mb-4">
+        <h3 className="text-lg font-semibold">Evolução do Investimento</h3>
+        <p className="text-sm text-muted-foreground">
           Comparação entre o valor investido e o valor estimado dos imóveis ao longo do tempo
-        </CardDescription>
-      </CardHeader>
-      <CardContent className="p-1 sm:p-2">
-        <div className="h-[220px] w-full">
-          <ChartContainer config={chartConfig}>
+        </p>
+      </div>
+      <div className="w-full h-[250px]">
+        <ChartContainer config={chartConfig}>
+          <ResponsiveContainer width="100%" height="100%">
             <AreaChart 
               data={mockFinancialData.monthlyData}
-              margin={{ top: 10, right: 30, left: 5, bottom: 20 }}
+              margin={{ top: 30, right: 10, left: 0, bottom: 20 }}
             >
               <CartesianGrid strokeDasharray="3 3" />
               <XAxis 
                 dataKey="month" 
                 tick={{ fontSize: 9 }}
-                height={20}
+                height={30}
                 tickMargin={5}
               >
                 <Label value="Mês" position="insideBottom" offset={-10} style={{ fontSize: 10 }} />
@@ -58,7 +72,7 @@ const InvestmentChart: React.FC<InvestmentChartProps> = ({ className }) => {
               <YAxis 
                 tick={{ fontSize: 9 }}
                 tickFormatter={formatCurrency}
-                width={45}
+                width={50}
                 tickMargin={3}
               >
                 <Label value="Valor (R$)" angle={-90} position="insideLeft" style={{ textAnchor: 'middle', fontSize: 10 }} />
@@ -75,6 +89,7 @@ const InvestmentChart: React.FC<InvestmentChartProps> = ({ className }) => {
                 fillOpacity={0.3}
                 strokeWidth={2}
                 name="Investimento"
+                label={renderCustomizedLabel}
               />
               <Area
                 type="monotone"
@@ -84,12 +99,13 @@ const InvestmentChart: React.FC<InvestmentChartProps> = ({ className }) => {
                 fillOpacity={0.3}
                 strokeWidth={2}
                 name="Valor Estimado"
+                label={renderCustomizedLabel}
               />
             </AreaChart>
-          </ChartContainer>
-        </div>
-      </CardContent>
-    </Card>
+          </ResponsiveContainer>
+        </ChartContainer>
+      </div>
+    </div>
   );
 };
 

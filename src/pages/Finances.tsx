@@ -31,19 +31,19 @@ const Finances: React.FC = () => {
           </TabsList>
           
           <TabsContent value="overview" className="mt-3 sm:mt-4">
-            <div className="w-full max-w-4xl mx-auto overflow-hidden">
-              <InvestmentChart className="mb-0" />
+            <div className="w-full bg-card rounded-md p-4">
+              <InvestmentChart />
             </div>
           </TabsContent>
           
           <TabsContent value="roi" className="mt-3 sm:mt-4">
-            <div className="w-full max-w-4xl mx-auto overflow-hidden">
+            <div className="w-full bg-card rounded-md p-4">
               <ROIBarChart />
             </div>
           </TabsContent>
           
           <TabsContent value="portfolio" className="mt-3 sm:mt-4">
-            <div className="w-full max-w-4xl mx-auto overflow-hidden">
+            <div className="w-full bg-card rounded-md p-4">
               <PortfolioPieChart />
             </div>
           </TabsContent>

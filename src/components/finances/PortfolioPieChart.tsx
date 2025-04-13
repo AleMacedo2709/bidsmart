@@ -1,7 +1,6 @@
 
 import React from 'react';
-import { PieChart, Pie, Cell, Legend, Tooltip } from 'recharts';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { PieChart, Pie, Cell, Legend, Tooltip, ResponsiveContainer } from 'recharts';
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart';
 import { mockFinancialData } from '@/data/mockData';
 
@@ -34,7 +33,7 @@ const PortfolioPieChart: React.FC<PortfolioPieChartProps> = ({ className }) => {
   // Custom renderer for the pie chart labels
   const renderCustomizedLabel = (props: any) => {
     const { cx, cy, midAngle, innerRadius, outerRadius, percent, index, value } = props;
-    const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
+    const radius = innerRadius + (outerRadius - innerRadius) * 0.7;
     const x = cx + radius * Math.cos(-midAngle * Math.PI / 180);
     const y = cy + radius * Math.sin(-midAngle * Math.PI / 180);
     
@@ -53,24 +52,24 @@ const PortfolioPieChart: React.FC<PortfolioPieChartProps> = ({ className }) => {
   };
 
   return (
-    <Card className={className}>
-      <CardHeader className="pb-2">
-        <CardTitle>Distribuição do Portfólio</CardTitle>
-        <CardDescription>
+    <div className={className}>
+      <div className="mb-4">
+        <h3 className="text-lg font-semibold">Distribuição do Portfólio</h3>
+        <p className="text-sm text-muted-foreground">
           Distribuição dos imóveis por status
-        </CardDescription>
-      </CardHeader>
-      <CardContent className="p-1 sm:p-2">
-        <div className="h-[220px] w-full flex items-center justify-center">
-          <ChartContainer config={chartConfig}>
-            <PieChart width={250} height={200} margin={{ top: 0, right: 0, left: 0, bottom: 0 }}>
+        </p>
+      </div>
+      <div className="w-full h-[250px]">
+        <ChartContainer config={chartConfig}>
+          <ResponsiveContainer width="100%" height="100%">
+            <PieChart margin={{ top: 10, right: 10, left: 10, bottom: 10 }}>
               <Pie
                 data={data}
                 cx="50%"
                 cy="50%"
                 labelLine={false}
                 label={renderCustomizedLabel}
-                outerRadius={50}
+                outerRadius={80}
                 fill="#8884d8"
                 dataKey="value"
                 nameKey="name"
@@ -84,13 +83,13 @@ const PortfolioPieChart: React.FC<PortfolioPieChartProps> = ({ className }) => {
                 layout="horizontal" 
                 verticalAlign="bottom" 
                 align="center"
-                wrapperStyle={{ fontSize: '10px', paddingTop: '10px' }}
+                wrapperStyle={{ fontSize: '11px', paddingTop: '15px' }}
               />
             </PieChart>
-          </ChartContainer>
-        </div>
-      </CardContent>
-    </Card>
+          </ResponsiveContainer>
+        </ChartContainer>
+      </div>
+    </div>
   );
 };
 

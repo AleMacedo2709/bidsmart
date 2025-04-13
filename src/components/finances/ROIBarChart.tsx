@@ -1,7 +1,6 @@
 
 import React from 'react';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, LabelList } from 'recharts';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, LabelList, ResponsiveContainer } from 'recharts';
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart';
 import { mockProperties } from '@/data/mockData';
 import { useIsMobile } from '@/hooks/use-mobile';
@@ -21,14 +20,14 @@ const ROIBarChart: React.FC<ROIBarChartProps> = ({ className }) => {
       const roi = (investmentGain / property.purchasePrice) * 100;
       
       return {
-        name: isMobile ? property.name.substring(0, 6) + (property.name.length > 6 ? '...' : '') : property.name.substring(0, 8) + (property.name.length > 8 ? '...' : ''),
+        name: isMobile ? property.name.substring(0, 4) + '...' : property.name.substring(0, 6) + (property.name.length > 6 ? '...' : ''),
         fullName: property.name,
         roi: parseFloat(roi.toFixed(1)),
         gain: investmentGain
       };
     })
     .sort((a, b) => b.roi - a.roi)
-    .slice(0, 4); // Reduced from 5 to 4 properties for better display
+    .slice(0, 4); // Reduced to 4 properties for better display
 
   const chartConfig = {
     roi: {
@@ -50,27 +49,20 @@ const ROIBarChart: React.FC<ROIBarChartProps> = ({ className }) => {
   };
 
   return (
-    <Card className={className}>
-      <CardHeader className="pb-2">
-        <CardTitle className="text-lg">ROI por Imóvel</CardTitle>
-        <CardDescription className="text-xs">
+    <div className={className}>
+      <div className="mb-4">
+        <h3 className="text-lg font-semibold">ROI por Imóvel</h3>
+        <p className="text-sm text-muted-foreground">
           Retorno sobre o investimento (%) para cada imóvel
-        </CardDescription>
-      </CardHeader>
-      <CardContent className="p-1 sm:p-2">
-        <div className="h-[220px] w-full flex items-center justify-center">
-          <ChartContainer config={chartConfig}>
+        </p>
+      </div>
+      <div className="w-full h-[250px]">
+        <ChartContainer config={chartConfig}>
+          <ResponsiveContainer width="100%" height="100%">
             <BarChart 
-              width={300}
-              height={200}
               data={data} 
               layout="vertical" 
-              margin={{ 
-                top: 5, 
-                right: 30, 
-                left: 5, 
-                bottom: 5 
-              }}
+              margin={{ top: 20, right: 45, left: 10, bottom: 20 }}
             >
               <CartesianGrid strokeDasharray="3 3" />
               <XAxis 
@@ -82,7 +74,7 @@ const ROIBarChart: React.FC<ROIBarChartProps> = ({ className }) => {
               <YAxis 
                 type="category" 
                 dataKey="name" 
-                width={50}
+                width={40}
                 tick={{ fontSize: 9 }}
                 tickMargin={5}
               />
@@ -92,14 +84,14 @@ const ROIBarChart: React.FC<ROIBarChartProps> = ({ className }) => {
                   dataKey="roi" 
                   position="right" 
                   formatter={(value: number) => `${value}%`}
-                  style={{ fontSize: 9 }}
+                  style={{ fontSize: 9, fill: '#666' }}
                 />
               </Bar>
             </BarChart>
-          </ChartContainer>
-        </div>
-      </CardContent>
-    </Card>
+          </ResponsiveContainer>
+        </ChartContainer>
+      </div>
+    </div>
   );
 };
 
