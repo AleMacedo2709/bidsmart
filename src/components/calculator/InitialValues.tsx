@@ -3,7 +3,7 @@ import React from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { CurrencyReal } from 'lucide-react';
+import { Currency } from 'lucide-react';
 import { formatCurrency } from '@/lib/calculations';
 
 export interface InitialValuesType {
@@ -51,7 +51,7 @@ const InitialValues: React.FC<InitialValuesProps> = ({ values, onChange }) => {
             <Label htmlFor="auctionPrice">Preço de Compra no Leilão (R$)</Label>
             <div className="relative">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-500">
-                <CurrencyReal className="h-4 w-4" />
+                <Currency className="h-4 w-4" />
               </div>
               <Input
                 id="auctionPrice"
@@ -69,7 +69,7 @@ const InitialValues: React.FC<InitialValuesProps> = ({ values, onChange }) => {
             <Label htmlFor="assessedValue">Valor Avaliado pelo Governo (R$)</Label>
             <div className="relative">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-500">
-                <CurrencyReal className="h-4 w-4" />
+                <Currency className="h-4 w-4" />
               </div>
               <Input
                 id="assessedValue"
@@ -87,7 +87,7 @@ const InitialValues: React.FC<InitialValuesProps> = ({ values, onChange }) => {
             <Label htmlFor="resalePrice">Preço de Revenda Esperado (R$)</Label>
             <div className="relative">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-500">
-                <CurrencyReal className="h-4 w-4" />
+                <Currency className="h-4 w-4" />
               </div>
               <Input
                 id="resalePrice"
