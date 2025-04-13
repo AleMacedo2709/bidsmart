@@ -10,7 +10,7 @@ import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/components/auth/AuthProvider';
 import { storeData } from '@/lib/storage';
-import { DollarSign, ArrowRight, Calculator, Calendar, Info, AlertTriangle } from 'lucide-react';
+import { DollarSign, ArrowRight, Calculator, Calendar, Info, AlertTriangle, ExternalLink } from 'lucide-react';
 import { format } from 'date-fns';
 import { cn } from '@/lib/utils';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
@@ -359,7 +359,18 @@ const ModernCalculator: React.FC = () => {
                 </div>
                 
                 <div className="space-y-2">
-                  <Label htmlFor="registryFees">Taxas de Registro</Label>
+                  <Label htmlFor="registryFees" className="flex items-center">
+                    Taxas de Registro
+                    <a 
+                      href="https://calculadora.registrodeimoveis.org.br" 
+                      target="_blank" 
+                      rel="noopener noreferrer" 
+                      className="inline-flex items-center ml-2 text-sm text-indigo-600 hover:text-indigo-500 transition-colors" 
+                      title="Calcular valor no site oficial"
+                    >
+                      <ExternalLink className="w-4 h-4" />
+                    </a>
+                  </Label>
                   <div className="mt-1.5">
                     <CurrencyInput
                       id="registryFees"
