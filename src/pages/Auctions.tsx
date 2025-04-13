@@ -28,6 +28,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 
 const Auctions = () => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -461,7 +462,7 @@ const Auctions = () => {
       </Dialog>
 
       <Dialog open={newAuctionDialogOpen} onOpenChange={setNewAuctionDialogOpen}>
-        <DialogContent className="sm:max-w-[700px]">
+        <DialogContent className="sm:max-w-[800px] max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2 text-xl">
               <Gavel className="h-5 w-5 text-blue-500" />
@@ -474,254 +475,266 @@ const Auctions = () => {
 
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <FormField
-                  control={form.control}
-                  name="name"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Nome do Leilão</FormLabel>
-                      <FormControl>
-                        <Input placeholder="Leilão de Imóveis Caixa Econômica" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={form.control}
-                  name="date"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Data do Leilão</FormLabel>
-                      <FormControl>
-                        <Input placeholder="DD/MM/AAAA" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={form.control}
-                  name="location"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Localização</FormLabel>
-                      <FormControl>
-                        <Input placeholder="São Paulo, SP" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={form.control}
-                  name="auctionTime"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Horário</FormLabel>
-                      <FormControl>
-                        <Input placeholder="14:00" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={form.control}
-                  name="auctioneerName"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Nome do Leiloeiro</FormLabel>
-                      <FormControl>
-                        <Input placeholder="Nome do leiloeiro responsável" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={form.control}
-                  name="auctioneerContact"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Contato do Leiloeiro</FormLabel>
-                      <FormControl>
-                        <Input placeholder="(XX) XXXXX-XXXX" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
-
-              <FormField
-                control={form.control}
-                name="description"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Descrição do Leilão</FormLabel>
-                    <FormControl>
-                      <Textarea 
-                        placeholder="Descreva as informações principais sobre o leilão" 
-                        className="min-h-[100px]"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <div className="border-t pt-4">
-                <h3 className="font-medium mb-3">Distribuição de Imóveis</h3>
+              <Tabs defaultValue="basic" className="w-full">
+                <TabsList className="grid w-full grid-cols-3">
+                  <TabsTrigger value="basic">Informações Básicas</TabsTrigger>
+                  <TabsTrigger value="properties">Imóveis</TabsTrigger>
+                  <TabsTrigger value="auctioneer">Leiloeiro</TabsTrigger>
+                </TabsList>
                 
-                <div className="grid gap-6">
-                  <div className="bg-blue-50 p-4 rounded-md">
-                    <h4 className="text-sm text-blue-800 font-medium mb-3">Apartamentos</h4>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <FormField
-                        control={form.control}
-                        name="apartmentCount"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Quantidade</FormLabel>
-                            <FormControl>
-                              <Input 
-                                type="number" 
-                                {...field}
-                                onChange={e => field.onChange(parseInt(e.target.value) || 0)}
-                              />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                      
-                      <FormField
-                        control={form.control}
-                        name="apartmentValue"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Valor Médio (R$)</FormLabel>
-                            <FormControl>
-                              <Input 
-                                type="number" 
-                                {...field}
-                                onChange={e => field.onChange(parseInt(e.target.value) || 0)}
-                              />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
+                <TabsContent value="basic" className="space-y-4 pt-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <FormField
+                      control={form.control}
+                      name="name"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Nome do Leilão</FormLabel>
+                          <FormControl>
+                            <Input placeholder="Leilão de Imóveis Caixa Econômica" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                      control={form.control}
+                      name="date"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Data do Leilão</FormLabel>
+                          <FormControl>
+                            <Input placeholder="DD/MM/AAAA" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                      control={form.control}
+                      name="location"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Localização</FormLabel>
+                          <FormControl>
+                            <Input placeholder="São Paulo, SP" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                      control={form.control}
+                      name="auctionTime"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Horário</FormLabel>
+                          <FormControl>
+                            <Input placeholder="14:00" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+
+                  <FormField
+                    control={form.control}
+                    name="description"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Descrição do Leilão</FormLabel>
+                        <FormControl>
+                          <Textarea 
+                            placeholder="Descreva as informações principais sobre o leilão" 
+                            className="min-h-[100px]"
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </TabsContent>
+                
+                <TabsContent value="properties" className="space-y-4 pt-4">
+                  <div className="space-y-6">
+                    <div className="bg-blue-50 p-4 rounded-md">
+                      <h4 className="text-sm text-blue-800 font-medium mb-3">Apartamentos</h4>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <FormField
+                          control={form.control}
+                          name="apartmentCount"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Quantidade</FormLabel>
+                              <FormControl>
+                                <Input 
+                                  type="number" 
+                                  {...field}
+                                  onChange={e => field.onChange(parseInt(e.target.value) || 0)}
+                                />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                        
+                        <FormField
+                          control={form.control}
+                          name="apartmentValue"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Valor Médio (R$)</FormLabel>
+                              <FormControl>
+                                <Input 
+                                  type="number" 
+                                  {...field}
+                                  onChange={e => field.onChange(parseInt(e.target.value) || 0)}
+                                />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                      </div>
+                    </div>
+                    
+                    <div className="bg-green-50 p-4 rounded-md">
+                      <h4 className="text-sm text-green-800 font-medium mb-3">Casas</h4>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <FormField
+                          control={form.control}
+                          name="houseCount"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Quantidade</FormLabel>
+                              <FormControl>
+                                <Input 
+                                  type="number" 
+                                  {...field}
+                                  onChange={e => field.onChange(parseInt(e.target.value) || 0)}
+                                />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                        
+                        <FormField
+                          control={form.control}
+                          name="houseValue"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Valor Médio (R$)</FormLabel>
+                              <FormControl>
+                                <Input 
+                                  type="number" 
+                                  {...field}
+                                  onChange={e => field.onChange(parseInt(e.target.value) || 0)}
+                                />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                      </div>
+                    </div>
+                    
+                    <div className="bg-amber-50 p-4 rounded-md">
+                      <h4 className="text-sm text-amber-800 font-medium mb-3">Terrenos</h4>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <FormField
+                          control={form.control}
+                          name="landCount"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Quantidade</FormLabel>
+                              <FormControl>
+                                <Input 
+                                  type="number" 
+                                  {...field}
+                                  onChange={e => field.onChange(parseInt(e.target.value) || 0)}
+                                />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                        
+                        <FormField
+                          control={form.control}
+                          name="landValue"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Valor Médio (R$)</FormLabel>
+                              <FormControl>
+                                <Input 
+                                  type="number" 
+                                  {...field}
+                                  onChange={e => field.onChange(parseInt(e.target.value) || 0)}
+                                />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                      </div>
                     </div>
                   </div>
                   
-                  <div className="bg-green-50 p-4 rounded-md">
-                    <h4 className="text-sm text-green-800 font-medium mb-3">Casas</h4>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <FormField
-                        control={form.control}
-                        name="houseCount"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Quantidade</FormLabel>
-                            <FormControl>
-                              <Input 
-                                type="number" 
-                                {...field}
-                                onChange={e => field.onChange(parseInt(e.target.value) || 0)}
-                              />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                      
-                      <FormField
-                        control={form.control}
-                        name="houseValue"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Valor Médio (R$)</FormLabel>
-                            <FormControl>
-                              <Input 
-                                type="number" 
-                                {...field}
-                                onChange={e => field.onChange(parseInt(e.target.value) || 0)}
-                              />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
+                  <div className="mt-4 p-3 bg-gray-50 rounded-md">
+                    <div className="flex justify-between">
+                      <span className="font-medium">Total de Imóveis:</span>
+                      <span className="font-medium">{getTotalProperties()}</span>
                     </div>
+                  </div>
+                </TabsContent>
+                
+                <TabsContent value="auctioneer" className="space-y-4 pt-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <FormField
+                      control={form.control}
+                      name="auctioneerName"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Nome do Leiloeiro</FormLabel>
+                          <FormControl>
+                            <Input placeholder="Nome do leiloeiro responsável" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                      control={form.control}
+                      name="auctioneerContact"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Contato do Leiloeiro</FormLabel>
+                          <FormControl>
+                            <Input placeholder="(XX) XXXXX-XXXX" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
                   </div>
                   
-                  <div className="bg-amber-50 p-4 rounded-md">
-                    <h4 className="text-sm text-amber-800 font-medium mb-3">Terrenos</h4>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <FormField
-                        control={form.control}
-                        name="landCount"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Quantidade</FormLabel>
-                            <FormControl>
-                              <Input 
-                                type="number" 
-                                {...field}
-                                onChange={e => field.onChange(parseInt(e.target.value) || 0)}
-                              />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                      
-                      <FormField
-                        control={form.control}
-                        name="landValue"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Valor Médio (R$)</FormLabel>
-                            <FormControl>
-                              <Input 
-                                type="number" 
-                                {...field}
-                                onChange={e => field.onChange(parseInt(e.target.value) || 0)}
-                              />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
+                  <div className="border-t pt-4">
+                    <h3 className="font-medium mb-3">Condições do Leilão</h3>
+                    <div className="text-sm text-gray-500 space-y-2">
+                      <p>• Os imóveis serão vendidos no estado físico e de ocupação em que se encontram.</p>
+                      <p>• A comissão do leiloeiro, a ser paga pelo arrematante, será de 5% sobre o valor da arrematação.</p>
+                      <p>• O pagamento poderá ser à vista ou financiado em até 420 meses, sujeito à aprovação de crédito.</p>
                     </div>
                   </div>
-                </div>
-                
-                <div className="mt-4 p-3 bg-gray-50 rounded-md">
-                  <div className="flex justify-between">
-                    <span className="font-medium">Total de Imóveis:</span>
-                    <span className="font-medium">{getTotalProperties()}</span>
-                  </div>
-                </div>
-              </div>
-
-              <div className="border-t pt-4">
-                <h3 className="font-medium mb-3">Condições do Leilão</h3>
-                <div className="text-sm text-gray-500 space-y-2">
-                  <p>• Os imóveis serão vendidos no estado físico e de ocupação em que se encontram.</p>
-                  <p>• A comissão do leiloeiro, a ser paga pelo arrematante, será de 5% sobre o valor da arrematação.</p>
-                  <p>• O pagamento poderá ser à vista ou financiado em até 420 meses, sujeito à aprovação de crédito.</p>
-                </div>
-              </div>
+                </TabsContent>
+              </Tabs>
 
               <DialogFooter>
                 <Button
