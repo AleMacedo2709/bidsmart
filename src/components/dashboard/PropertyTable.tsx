@@ -2,7 +2,7 @@
 import React from 'react';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
-import { Eye, Trash2 } from 'lucide-react';
+import { Eye, Trash2, Edit, Share2 } from 'lucide-react';
 import { formatCurrency } from '@/lib/calculations';
 
 interface PropertyTableProps {
@@ -20,9 +20,17 @@ interface PropertyTableProps {
   }[];
   onView: (id: string) => void;
   onDelete: (id: string) => void;
+  onEdit?: (id: string) => void;
+  onShare?: (id: string) => void;
 }
 
-const PropertyTable: React.FC<PropertyTableProps> = ({ properties, onView, onDelete }) => {
+const PropertyTable: React.FC<PropertyTableProps> = ({ 
+  properties, 
+  onView, 
+  onDelete, 
+  onEdit = () => {}, 
+  onShare = () => {} 
+}) => {
   // Function to render the status badge with appropriate color
   const renderStatusBadge = (status: string) => {
     switch (status) {
@@ -66,10 +74,16 @@ const PropertyTable: React.FC<PropertyTableProps> = ({ properties, onView, onDel
             <TableCell className="text-right">{formatCurrency(property.estimatedValue)}</TableCell>
             <TableCell>
               <div className="flex justify-center gap-2">
-                <Button variant="ghost" size="icon" onClick={() => onView(property.id)}>
+                <Button variant="ghost" size="icon-sm" onClick={() => onView(property.id)} title="Visualizar">
                   <Eye className="h-4 w-4" />
                 </Button>
-                <Button variant="ghost" size="icon" onClick={() => onDelete(property.id)} className="text-red-500">
+                <Button variant="ghost" size="icon-sm" onClick={() => onEdit(property.id)} title="Editar">
+                  <Edit className="h-4 w-4" />
+                </Button>
+                <Button variant="ghost" size="icon-sm" onClick={() => onShare(property.id)} title="Compartilhar">
+                  <Share2 className="h-4 w-4" />
+                </Button>
+                <Button variant="ghost" size="icon-sm" onClick={() => onDelete(property.id)} className="text-red-500 hover:text-red-700 hover:bg-red-50" title="Excluir">
                   <Trash2 className="h-4 w-4" />
                 </Button>
               </div>

@@ -5,6 +5,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import LoginForm from '@/components/auth/LoginForm';
 import SignupForm from '@/components/auth/SignupForm';
 import { useAuth } from '@/components/auth/AuthProvider';
+import { Button } from '@/components/ui/button';
+import { Link } from 'react-router-dom';
 
 const Auth = () => {
   const [searchParams] = useSearchParams();
@@ -43,6 +45,12 @@ const Auth = () => {
             <SignupForm />
           </TabsContent>
         </Tabs>
+      </div>
+
+      <div className="mt-8">
+        <Button variant="outline" asChild>
+          <Link to="/">Voltar para página inicial</Link>
+        </Button>
       </div>
 
       <div className="mt-12 bg-white rounded-xl p-6 max-w-md mx-auto shadow-sm border border-gray-100 animate-fade-in">

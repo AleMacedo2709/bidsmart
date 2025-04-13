@@ -5,6 +5,8 @@ import AppLayout from '@/components/layout/AppLayout';
 import StatCard from '@/components/dashboard/StatCard';
 import AuctionList from '@/components/dashboard/AuctionList';
 import FeaturedProperties from '@/components/dashboard/FeaturedProperties';
+import { Button } from '@/components/ui/button';
+import { Link } from 'react-router-dom';
 
 const Dashboard = () => {
   // Example data - in a real application, this would come from an API or context
@@ -22,7 +24,17 @@ const Dashboard = () => {
   return (
     <AppLayout>
       <div className="h-full px-8 py-6">
-        <h1 className="text-3xl font-bold mb-6">Olá, Alessandra Macedo</h1>
+        <div className="flex justify-between items-center mb-6">
+          <h1 className="text-3xl font-bold">Olá, Alessandra Macedo</h1>
+          <div className="flex gap-3">
+            <Button variant="outline" size="sm" asChild>
+              <Link to="/imoveis">Ver Todos Imóveis</Link>
+            </Button>
+            <Button size="sm" asChild>
+              <Link to="/imoveis/adicionar">Adicionar Imóvel</Link>
+            </Button>
+          </div>
+        </div>
         
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           <StatCard 
@@ -63,12 +75,22 @@ const Dashboard = () => {
         
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           <div className="bg-white border rounded-lg p-6">
-            <h2 className="text-xl font-semibold mb-4">Próximos Leilões</h2>
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-xl font-semibold">Próximos Leilões</h2>
+              <Button variant="outline" size="sm" asChild>
+                <Link to="/leiloes">Ver Todos</Link>
+              </Button>
+            </div>
             <AuctionList />
           </div>
           
           <div className="bg-white border rounded-lg p-6">
-            <h2 className="text-xl font-semibold mb-4">Imóveis em Destaque</h2>
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-xl font-semibold">Imóveis em Destaque</h2>
+              <Button variant="outline" size="sm" asChild>
+                <Link to="/imoveis">Ver Todos</Link>
+              </Button>
+            </div>
             <FeaturedProperties />
           </div>
         </div>

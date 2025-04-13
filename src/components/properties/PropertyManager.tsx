@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Plus, Search } from 'lucide-react';
+import { Plus, Search, Filter, Download } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import PropertiesTable from './PropertiesTable';
 import { mockProperties } from '@/data/mockData';
@@ -89,6 +89,14 @@ const PropertyManager: React.FC = () => {
     });
   };
 
+  const exportData = () => {
+    toast({
+      title: "Exportando dados",
+      description: "Os dados dos imóveis estão sendo exportados.",
+    });
+    // In a real app, this would trigger a download
+  };
+
   return (
     <div className="bg-white border rounded-lg">
       <div className="flex justify-between items-center p-6 border-b">
@@ -104,10 +112,20 @@ const PropertyManager: React.FC = () => {
             />
           </div>
           <Button
-            onClick={addNewProperty}
-            className="rounded-md flex items-center gap-2"
+            variant="outline"
+            size="sm"
+            onClick={exportData}
+            className="gap-2"
           >
-            <Plus className="h-5 w-5" />
+            <Download className="h-4 w-4" />
+            Exportar
+          </Button>
+          <Button
+            onClick={addNewProperty}
+            className="gap-2"
+            size="sm"
+          >
+            <Plus className="h-4 w-4" />
             Adicionar Imóvel
           </Button>
         </div>
