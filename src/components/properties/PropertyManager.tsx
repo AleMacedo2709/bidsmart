@@ -17,6 +17,9 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+import { exportEncryptedData } from '@/lib/encryption/export';
+import { useAuth } from '@/components/auth/AuthProvider';
+import { exportStoreData } from '@/lib/storage/export-import';
 
 interface PropertyData {
   id: string;
@@ -39,8 +42,10 @@ const PropertyManager: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [activeFilter, setActiveFilter] = useState('Todos');
   const [propertyToDelete, setPropertyToDelete] = useState<string | null>(null);
+  const [isExporting, setIsExporting] = useState(false);
   const { toast } = useToast();
   const navigate = useNavigate();
+  const { encryptionKey } = useAuth();
 
   // Apply search filter
   const searchFilteredProperties = searchTerm
@@ -89,12 +94,40 @@ const PropertyManager: React.FC = () => {
     });
   };
 
-  const exportData = () => {
-    toast({
-      title: "Exportando dados",
-      description: "Os dados dos imóveis estão sendo exportados.",
-    });
-    // In a real app, this would trigger a download
+  const exportData = async () => {
+    if (!encryptionKey) {
+      toast({
+        title: "Erro",
+        description: "É necessário estar autenticado para exportar dados.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    try {
+      setIsExporting(true);
+      
+      // In a real app, this would export real data from IndexedDB
+      // For this example, we'll export the mock data
+      const encryptedData = await exportStoreData('properties', encryptionKey);
+      
+      // Export the data as a file
+      exportEncryptedData(encryptedData, 'imoveis-export.json');
+      
+      toast({
+        title: "Exportação concluída",
+        description: "Os dados dos imóveis foram exportados com sucesso.",
+      });
+    } catch (error) {
+      console.error('Erro ao exportar dados:', error);
+      toast({
+        title: "Erro na exportação",
+        description: "Ocorreu um erro ao exportar os dados.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsExporting(false);
+    }
   };
 
   return (
@@ -115,6 +148,7 @@ const PropertyManager: React.FC = () => {
             variant="outline"
             size="sm"
             onClick={exportData}
+            isLoading={isExporting}
             className="gap-2"
           >
             <Download className="h-4 w-4" />
