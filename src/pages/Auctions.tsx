@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Gavel, Calendar, MapPin, Search, Filter, Eye, Home, Building, DollarSign, Briefcase, Clock } from 'lucide-react';
 import { mockAuctions } from '@/data/mockData';
@@ -46,11 +45,28 @@ const Auctions = () => {
     return matchesSearch && matchesLocation;
   });
 
+  // Calculate property counts for each auction
+  const getAuctionPropertyCounts = (totalProperties: number) => {
+    const apartments = Math.floor(totalProperties * 0.6);
+    const houses = Math.floor(totalProperties * 0.3);
+    const lands = Math.floor(totalProperties * 0.1);
+    
+    // Adjust for potential rounding issues to ensure sum equals total properties
+    const calculatedTotal = apartments + houses + lands;
+    const adjustment = totalProperties - calculatedTotal;
+    
+    return {
+      apartments,
+      houses,
+      lands: lands + adjustment // Add any difference to lands to ensure correct total
+    };
+  };
+
   const handleViewDetails = (auction: typeof mockAuctions[0]) => {
     setSelectedAuction(auction);
     setDialogOpen(true);
     
-    // Manter o toast para consistência com o comportamento anterior
+    // Keep toast for consistency with previous behavior
     toast({
       title: "Detalhes do Leilão",
       description: `Visualizando detalhes do leilão ${auction.id}`,
@@ -148,84 +164,90 @@ const Auctions = () => {
 
         {/* List of upcoming auctions */}
         <div className="grid gap-6">
-          {filteredAuctions.map((auction) => (
-            <Card key={auction.id} className="overflow-hidden">
-              <div className="flex flex-col md:flex-row">
-                <div className="p-6 md:w-1/4 bg-blue-50 flex flex-col justify-center items-center">
-                  <div className="text-center">
-                    <div className="text-5xl font-bold text-blue-600">
-                      {auction.date.split('/')[0]}
-                    </div>
-                    <div className="text-gray-500 font-medium">
-                      {auction.date.split('/')[1]}/2024
-                    </div>
-                    <div className="mt-4 flex items-center justify-center gap-1 text-sm">
-                      <Calendar className="h-4 w-4 text-blue-500" />
-                      <span>{auction.date}</span>
-                    </div>
-                    <div className="mt-1 flex items-center justify-center gap-1 text-sm">
-                      <MapPin className="h-4 w-4 text-blue-500" />
-                      <span>{auction.location}</span>
+          {filteredAuctions.map((auction) => {
+            // Calculate property counts for this auction
+            const { apartments, houses, lands } = getAuctionPropertyCounts(auction.properties);
+            const totalCalculatedProperties = apartments + houses + lands;
+            
+            return (
+              <Card key={auction.id} className="overflow-hidden">
+                <div className="flex flex-col md:flex-row">
+                  <div className="p-6 md:w-1/4 bg-blue-50 flex flex-col justify-center items-center">
+                    <div className="text-center">
+                      <div className="text-5xl font-bold text-blue-600">
+                        {auction.date.split('/')[0]}
+                      </div>
+                      <div className="text-gray-500 font-medium">
+                        {auction.date.split('/')[1]}/2024
+                      </div>
+                      <div className="mt-4 flex items-center justify-center gap-1 text-sm">
+                        <Calendar className="h-4 w-4 text-blue-500" />
+                        <span>{auction.date}</span>
+                      </div>
+                      <div className="mt-1 flex items-center justify-center gap-1 text-sm">
+                        <MapPin className="h-4 w-4 text-blue-500" />
+                        <span>{auction.location}</span>
+                      </div>
                     </div>
                   </div>
-                </div>
-                
-                <CardContent className="p-6 md:flex-1">
-                  <CardHeader className="p-0 mb-4">
-                    <CardTitle className="text-xl">{auction.name}</CardTitle>
-                  </CardHeader>
                   
-                  <div className="text-gray-600 mb-4">
-                    {auction.description}
-                  </div>
-                  
-                  <div className="bg-gray-50 p-4 rounded-md">
-                    <div className="flex justify-between items-center mb-2">
-                      <h3 className="font-medium">Resumo</h3>
-                      <span className="text-blue-600 font-medium">{auction.properties} imóveis</span>
+                  <CardContent className="p-6 md:flex-1">
+                    <CardHeader className="p-0 mb-4">
+                      <CardTitle className="text-xl">{auction.name}</CardTitle>
+                    </CardHeader>
+                    
+                    <div className="text-gray-600 mb-4">
+                      {auction.description}
                     </div>
                     
-                    <Table>
-                      <TableHeader>
-                        <TableRow>
-                          <TableHead>Tipo</TableHead>
-                          <TableHead>Quantidade</TableHead>
-                          <TableHead>Valor Médio</TableHead>
-                        </TableRow>
-                      </TableHeader>
-                      <TableBody>
-                        <TableRow>
-                          <TableCell>Apartamentos</TableCell>
-                          <TableCell>{Math.floor(auction.properties * 0.6)}</TableCell>
-                          <TableCell>R$ {(300000).toLocaleString('pt-BR')}</TableCell>
-                        </TableRow>
-                        <TableRow>
-                          <TableCell>Casas</TableCell>
-                          <TableCell>{Math.floor(auction.properties * 0.3)}</TableCell>
-                          <TableCell>R$ {(450000).toLocaleString('pt-BR')}</TableCell>
-                        </TableRow>
-                        <TableRow>
-                          <TableCell>Terrenos</TableCell>
-                          <TableCell>{Math.floor(auction.properties * 0.1)}</TableCell>
-                          <TableCell>R$ {(180000).toLocaleString('pt-BR')}</TableCell>
-                        </TableRow>
-                      </TableBody>
-                    </Table>
-                  </div>
-                  
-                  <div className="mt-6 flex justify-end">
-                    <Button 
-                      onClick={() => handleViewDetails(auction)} 
-                      className="flex items-center gap-2"
-                    >
-                      <Eye className="h-4 w-4" />
-                      Ver Detalhes
-                    </Button>
-                  </div>
-                </CardContent>
-              </div>
-            </Card>
-          ))}
+                    <div className="bg-gray-50 p-4 rounded-md">
+                      <div className="flex justify-between items-center mb-2">
+                        <h3 className="font-medium">Resumo</h3>
+                        <span className="text-blue-600 font-medium">{totalCalculatedProperties} imóveis</span>
+                      </div>
+                      
+                      <Table>
+                        <TableHeader>
+                          <TableRow>
+                            <TableHead>Tipo</TableHead>
+                            <TableHead>Quantidade</TableHead>
+                            <TableHead>Valor Médio</TableHead>
+                          </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                          <TableRow>
+                            <TableCell>Apartamentos</TableCell>
+                            <TableCell>{apartments}</TableCell>
+                            <TableCell>R$ {(300000).toLocaleString('pt-BR')}</TableCell>
+                          </TableRow>
+                          <TableRow>
+                            <TableCell>Casas</TableCell>
+                            <TableCell>{houses}</TableCell>
+                            <TableCell>R$ {(450000).toLocaleString('pt-BR')}</TableCell>
+                          </TableRow>
+                          <TableRow>
+                            <TableCell>Terrenos</TableCell>
+                            <TableCell>{lands}</TableCell>
+                            <TableCell>R$ {(180000).toLocaleString('pt-BR')}</TableCell>
+                          </TableRow>
+                        </TableBody>
+                      </Table>
+                    </div>
+                    
+                    <div className="mt-6 flex justify-end">
+                      <Button 
+                        onClick={() => handleViewDetails(auction)} 
+                        className="flex items-center gap-2"
+                      >
+                        <Eye className="h-4 w-4" />
+                        Ver Detalhes
+                      </Button>
+                    </div>
+                  </CardContent>
+                </div>
+              </Card>
+            );
+          })}
         </div>
         
         {filteredAuctions.length === 0 && (
@@ -269,13 +291,20 @@ const Auctions = () => {
                         <p className="font-medium">{selectedAuction.location}</p>
                       </div>
                     </div>
-                    <div className="flex items-center gap-2">
-                      <Home className="h-5 w-5 text-blue-500" />
-                      <div>
-                        <p className="text-sm text-gray-500">Total de Imóveis</p>
-                        <p className="font-medium">{selectedAuction.properties} imóveis</p>
-                      </div>
-                    </div>
+                    {(() => {
+                      const { apartments, houses, lands } = getAuctionPropertyCounts(selectedAuction.properties);
+                      const totalProperties = apartments + houses + lands;
+                      
+                      return (
+                        <div className="flex items-center gap-2">
+                          <Home className="h-5 w-5 text-blue-500" />
+                          <div>
+                            <p className="text-sm text-gray-500">Total de Imóveis</p>
+                            <p className="font-medium">{totalProperties} imóveis</p>
+                          </div>
+                        </div>
+                      );
+                    })()}
                     <div className="flex items-center gap-2">
                       <Clock className="h-5 w-5 text-blue-500" />
                       <div>
@@ -292,21 +321,29 @@ const Auctions = () => {
                     Distribuição de Imóveis
                   </h3>
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-3">
-                    <div className="p-3 bg-blue-50 rounded-md">
-                      <p className="text-sm text-blue-800">Apartamentos</p>
-                      <p className="font-medium">{Math.floor(selectedAuction.properties * 0.6)} unidades</p>
-                      <p className="text-sm text-gray-500">R$ {(300000).toLocaleString('pt-BR')} (média)</p>
-                    </div>
-                    <div className="p-3 bg-green-50 rounded-md">
-                      <p className="text-sm text-green-800">Casas</p>
-                      <p className="font-medium">{Math.floor(selectedAuction.properties * 0.3)} unidades</p>
-                      <p className="text-sm text-gray-500">R$ {(450000).toLocaleString('pt-BR')} (média)</p>
-                    </div>
-                    <div className="p-3 bg-amber-50 rounded-md">
-                      <p className="text-sm text-amber-800">Terrenos</p>
-                      <p className="font-medium">{Math.floor(selectedAuction.properties * 0.1)} unidades</p>
-                      <p className="text-sm text-gray-500">R$ {(180000).toLocaleString('pt-BR')} (média)</p>
-                    </div>
+                    {(() => {
+                      const { apartments, houses, lands } = getAuctionPropertyCounts(selectedAuction.properties);
+                      
+                      return (
+                        <>
+                          <div className="p-3 bg-blue-50 rounded-md">
+                            <p className="text-sm text-blue-800">Apartamentos</p>
+                            <p className="font-medium">{apartments} unidades</p>
+                            <p className="text-sm text-gray-500">R$ {(300000).toLocaleString('pt-BR')} (média)</p>
+                          </div>
+                          <div className="p-3 bg-green-50 rounded-md">
+                            <p className="text-sm text-green-800">Casas</p>
+                            <p className="font-medium">{houses} unidades</p>
+                            <p className="text-sm text-gray-500">R$ {(450000).toLocaleString('pt-BR')} (média)</p>
+                          </div>
+                          <div className="p-3 bg-amber-50 rounded-md">
+                            <p className="text-sm text-amber-800">Terrenos</p>
+                            <p className="font-medium">{lands} unidades</p>
+                            <p className="text-sm text-gray-500">R$ {(180000).toLocaleString('pt-BR')} (média)</p>
+                          </div>
+                        </>
+                      );
+                    })()}
                   </div>
                 </div>
 
