@@ -43,12 +43,15 @@ const ModernCalculator = () => {
     const monthsHeld = parseFloat(String(values.monthsHeld)) || 0;
     const taxRate = parseFloat(String(values.taxRate)) || 0;
     const deductions = parseFloat(String(values.deductions)) || 0;
+    const auctionPrice = parseFloat(String(values.auctionPrice)) || 0;
+    const assessedValue = parseFloat(String(values.assessedValue)) || 0;
+    const resalePrice = parseFloat(String(values.resalePrice)) || 0;
 
     // Calculate total investment
-    const totalInvestment = purchasePrice + renovationCosts;
+    const totalInvestment = auctionPrice + renovationCosts;
 
     // Calculate gross profit
-    const grossProfit = sellingPrice - sellingCosts - totalInvestment;
+    const grossProfit = resalePrice - totalInvestment;
 
     // Calculate interest paid
     const monthlyInterestRate = interestRate / 100 / 12;
