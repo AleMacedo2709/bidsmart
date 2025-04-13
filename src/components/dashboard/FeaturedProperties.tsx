@@ -1,93 +1,54 @@
 
-import React, { useEffect, useState } from 'react';
-import { useAuth } from '@/components/auth/AuthProvider';
-import { retrieveAllData } from '@/lib/storage';
-
-interface Property {
-  id: string;
-  type: string;
-  address: string;
-  city: string;
-  purchasePrice: number;
-  estimatedValue: number;
-  status: string;
-  finances?: {
-    acquisitionCosts?: number;
-    monthlyCosts?: number;
-    income?: number;
-    saleCosts?: number;
-  };
-}
-
-const calculateCompletionPercentage = (property: Property): number => {
-  let completedSteps = 0;
-  const totalSteps = 5; // Total number of major steps in the property lifecycle
-
-  // Step 1: Basic property information
-  if (property.type && property.address && property.city) {
-    completedSteps++;
-  }
-
-  // Step 2: Purchase information
-  if (property.purchasePrice > 0) {
-    completedSteps++;
-  }
-
-  // Step 3: Financial setup
-  if (property.finances) {
-    if (property.finances.acquisitionCosts && property.finances.acquisitionCosts > 0) {
-      completedSteps++;
-    }
-    if (property.finances.monthlyCosts !== undefined || property.finances.income !== undefined) {
-      completedSteps++;
-    }
-  }
-
-  // Step 4: Sale preparation
-  if (property.estimatedValue > 0) {
-    completedSteps++;
-  }
-
-  return (completedSteps / totalSteps) * 100;
-};
-
-const calculateProfitPercentage = (property: Property): number => {
-  if (!property.purchasePrice) return 0;
-  
-  const totalInvestment = property.purchasePrice + 
-    (property.finances?.acquisitionCosts || 0) + 
-    (property.finances?.monthlyCosts || 0);
-    
-  const potentialReturn = property.estimatedValue + 
-    (property.finances?.income || 0) - 
-    (property.finances?.saleCosts || 0);
-
-  if (totalInvestment <= 0) return 0;
-  
-  return ((potentialReturn - totalInvestment) / totalInvestment) * 100;
-};
+import React, { useState, useEffect } from 'react';
+import { mockProperties } from '@/data/mockData';
 
 const FeaturedProperties: React.FC = () => {
   const [properties, setProperties] = useState<Property[]>([]);
-  const { encryptionKey } = useAuth();
 
   useEffect(() => {
-    const loadProperties = async () => {
-      if (!encryptionKey) return;
-      
-      try {
-        const allProperties = await retrieveAllData<Property>('properties', encryptionKey);
-        const sortedProperties = allProperties
-          .sort((a, b) => calculateProfitPercentage(b) - calculateProfitPercentage(a))
-          .slice(0, 3); // Get top 3 properties by profit percentage
-        setProperties(sortedProperties);
-      } catch (error) {
-        console.error('Erro ao carregar imóveis:', error);
-      }
-    };
+    // Sort properties by profit percentage and take top 3
+    const sortedProperties = mockProperties
+      .sort((a, b) => calculateProfitPercentage(b) - calculateProfitPercentage(a))
+      .slice(0, 3);
+    
+    setProperties(sortedProperties);
+  }, []);
 
-    loadProperties();
-  }, [encryptionKey]);
+  const calculateCompletionPercentage = (property: Property): number => {
+    let completedSteps = 0;
+    const totalSteps = 5; // Total number of major steps in the property lifecycle
+
+    // Step 1: Basic property information
+    if (property.type && property.address && property.city) {
+      completedSteps++;
+    }
+
+    // Step 2: Purchase information
+    if (property.purchasePrice > 0) {
+      completedSteps++;
+    }
+
+    // Step 3: Estimated value
+    if (property.estimatedValue > 0) {
+      completedSteps++;
+    }
+
+    // Additional steps could be added based on other property details
+    completedSteps += 2; // Assuming some other steps are completed
+
+    return (completedSteps / totalSteps) * 100;
+  };
+
+  const calculateProfitPercentage = (property: Property): number => {
+    if (!property.purchasePrice) return 0;
+    
+    const totalInvestment = property.purchasePrice;
+    const potentialReturn = property.estimatedValue;
+
+    if (totalInvestment <= 0) return 0;
+    
+    return ((potentialReturn - totalInvestment) / totalInvestment) * 100;
+  };
 
   return (
     <div className="space-y-6">
@@ -128,3 +89,15 @@ const FeaturedProperties: React.FC = () => {
 };
 
 export default FeaturedProperties;
+
+// Define the Property type to match the mock data structure
+interface Property {
+  id: string;
+  type: string;
+  address: string;
+  city: string;
+  purchasePrice: number;
+  estimatedValue: number;
+  status: string;
+}
+
