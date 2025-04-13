@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { useLocation, useParams } from 'react-router-dom';
 import SidebarLayout from '@/components/layout/SidebarLayout';
 import PropertyManager from '@/components/properties/PropertyManager';

@@ -6,7 +6,8 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ArrowLeft, Edit, Banknote, Home, MapPin, Calendar, BarChart } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
-import { mockProperties } from '@/data/mockData';
+import { useAuth } from '@/components/auth/AuthProvider';
+import { retrieveData, updateData } from '@/lib/storage';
 import { formatCurrency } from '@/lib/calculations';
 import PropertyFinanceForm from './PropertyFinanceForm';
 
@@ -20,25 +21,40 @@ const PropertyDetail: React.FC<PropertyDetailProps> = ({ propertyId }) => {
   const [activeTab, setActiveTab] = useState('details');
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { encryptionKey } = useAuth();
 
   useEffect(() => {
-    // Em um aplicativo real, isso buscaria os dados do imóvel do banco de dados
-    // Por enquanto, usamos o mockData
-    const fetchedProperty = mockProperties.find(p => p.id === propertyId);
-    
-    if (fetchedProperty) {
-      setProperty(fetchedProperty);
-    } else {
-      toast({
-        title: "Imóvel não encontrado",
-        description: "O imóvel que você está procurando não foi encontrado.",
-        variant: "destructive",
-      });
-      navigate('/imoveis');
-    }
-    
-    setLoading(false);
-  }, [propertyId, navigate, toast]);
+    const loadPropertyData = async () => {
+      if (!encryptionKey) return;
+      
+      try {
+        setLoading(true);
+        const fetchedProperty = await retrieveData('properties', propertyId, encryptionKey);
+        if (fetchedProperty) {
+          setProperty(fetchedProperty);
+        } else {
+          toast({
+            title: "Imóvel não encontrado",
+            description: "O imóvel que você está procurando não foi encontrado.",
+            variant: "destructive",
+          });
+          navigate('/imoveis');
+        }
+      } catch (error) {
+        console.error('Erro ao carregar dados do imóvel:', error);
+        toast({
+          title: "Erro ao carregar dados",
+          description: "Não foi possível carregar os detalhes do imóvel.",
+          variant: "destructive",
+        });
+        navigate('/imoveis');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadPropertyData();
+  }, [propertyId, navigate, toast, encryptionKey]);
 
   const handleBack = () => {
     navigate('/imoveis');
@@ -50,6 +66,35 @@ const PropertyDetail: React.FC<PropertyDetailProps> = ({ propertyId }) => {
       title: "Editar imóvel",
       description: "Funcionalidade de edição será implementada em breve.",
     });
+  };
+
+  const handleFinanceUpdate = async (financialData: any) => {
+    if (!encryptionKey || !property) return;
+    
+    try {
+      const updatedProperty = {
+        ...property,
+        finances: {
+          ...property.finances,
+          ...financialData
+        }
+      };
+      
+      await updateData('properties', propertyId, updatedProperty, encryptionKey);
+      setProperty(updatedProperty);
+      
+      toast({
+        title: "Dados financeiros atualizados",
+        description: "As informações financeiras do imóvel foram salvas com sucesso.",
+      });
+    } catch (error) {
+      console.error('Erro ao salvar dados financeiros:', error);
+      toast({
+        title: "Erro ao salvar",
+        description: "Não foi possível atualizar os dados financeiros.",
+        variant: "destructive",
+      });
+    }
   };
 
   if (loading) {
@@ -187,7 +232,11 @@ const PropertyDetail: React.FC<PropertyDetailProps> = ({ propertyId }) => {
         </TabsContent>
 
         <TabsContent value="finances" className="space-y-6">
-          <PropertyFinanceForm propertyId={propertyId} property={property} />
+          <PropertyFinanceForm 
+            propertyId={propertyId} 
+            property={property} 
+            onSave={handleFinanceUpdate}
+          />
         </TabsContent>
 
         <TabsContent value="performance">
@@ -197,7 +246,11 @@ const PropertyDetail: React.FC<PropertyDetailProps> = ({ propertyId }) => {
                 <CardTitle className="text-lg">Desempenho Financeiro</CardTitle>
               </CardHeader>
               <CardContent className="h-64 flex items-center justify-center">
-                <p className="text-gray-500">Gráficos de desempenho serão exibidos aqui.</p>
+                {property.finances ? (
+                  <p className="text-gray-700">Gráficos de desempenho baseados nas informações financeiras.</p>
+                ) : (
+                  <p className="text-gray-500">Adicione informações financeiras para visualizar o desempenho.</p>
+                )}
               </CardContent>
             </Card>
 
@@ -210,6 +263,24 @@ const PropertyDetail: React.FC<PropertyDetailProps> = ({ propertyId }) => {
                   <span className="text-gray-500">Investimento Total:</span>
                   <span className="font-medium">{formatCurrency(property.purchasePrice)}</span>
                 </div>
+                
+                {property.finances && (
+                  <>
+                    <div className="flex justify-between border-b pb-2">
+                      <span className="text-gray-500">Custos de Aquisição:</span>
+                      <span className="font-medium">{formatCurrency(property.finances.acquisitionCosts || 0)}</span>
+                    </div>
+                    <div className="flex justify-between border-b pb-2">
+                      <span className="text-gray-500">Custos Mensais (Acumulado):</span>
+                      <span className="font-medium">{formatCurrency(property.finances.monthlyCosts || 0)}</span>
+                    </div>
+                    <div className="flex justify-between border-b pb-2">
+                      <span className="text-gray-500">Receitas (Acumulado):</span>
+                      <span className="font-medium text-green-600">{formatCurrency(property.finances.income || 0)}</span>
+                    </div>
+                  </>
+                )}
+                
                 <div className="flex justify-between border-b pb-2">
                   <span className="text-gray-500">Valorização:</span>
                   <span className="font-medium text-green-600">
