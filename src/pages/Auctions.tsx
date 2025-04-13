@@ -1,21 +1,59 @@
 
 import React, { useState } from 'react';
-import { Gavel, Calendar, MapPin, Search, Filter } from 'lucide-react';
+import { Gavel, Calendar, MapPin, Search, Filter, Eye } from 'lucide-react';
 import { mockAuctions } from '@/data/mockData';
 import AppLayout from '@/components/layout/AppLayout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { 
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuCheckboxItem,
+  DropdownMenuTrigger
+} from "@/components/ui/dropdown-menu";
+import { Badge } from "@/components/ui/badge";
+import { useToast } from "@/hooks/use-toast";
 
 const Auctions = () => {
   const [searchTerm, setSearchTerm] = useState('');
+  const [filterOpen, setFilterOpen] = useState(false);
+  const [selectedLocations, setSelectedLocations] = useState<string[]>([]);
+  const { toast } = useToast();
   
-  // Filter auctions based on search term
-  const filteredAuctions = mockAuctions.filter(auction => 
-    auction.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    auction.location.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  // Extract unique locations from auctions
+  const uniqueLocations = Array.from(new Set(mockAuctions.map(auction => auction.location.split(',')[1].trim())));
+  
+  // Filter auctions based on search term and location filters
+  const filteredAuctions = mockAuctions.filter(auction => {
+    const matchesSearch = auction.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      auction.location.toLowerCase().includes(searchTerm.toLowerCase());
+    
+    const matchesLocation = selectedLocations.length === 0 || 
+      selectedLocations.includes(auction.location.split(',')[1].trim());
+    
+    return matchesSearch && matchesLocation;
+  });
+
+  const handleViewDetails = (auctionId: string) => {
+    // In a real application, this would navigate to a details page
+    // For now, we'll just show a toast notification
+    toast({
+      title: "Detalhes do Leilão",
+      description: `Visualizando detalhes do leilão ${auctionId}`,
+    });
+  };
+
+  const handleLocationFilter = (location: string) => {
+    setSelectedLocations(prev => {
+      if (prev.includes(location)) {
+        return prev.filter(l => l !== location);
+      } else {
+        return [...prev, location];
+      }
+    });
+  };
 
   return (
     <AppLayout>
@@ -42,11 +80,57 @@ const Auctions = () => {
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
             </div>
-            <Button variant="outline" size="icon">
-              <Filter className="h-4 w-4" />
-            </Button>
+            <DropdownMenu open={filterOpen} onOpenChange={setFilterOpen}>
+              <DropdownMenuTrigger asChild>
+                <Button 
+                  variant="outline" 
+                  size="icon"
+                  className={selectedLocations.length > 0 ? "bg-blue-50 border-blue-200" : ""}
+                >
+                  <Filter className={`h-4 w-4 ${selectedLocations.length > 0 ? "text-blue-500" : ""}`} />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-56">
+                <div className="p-2">
+                  <p className="font-medium mb-2">Filtrar por Estado</p>
+                  {uniqueLocations.map((location) => (
+                    <DropdownMenuCheckboxItem
+                      key={location}
+                      checked={selectedLocations.includes(location)}
+                      onCheckedChange={() => handleLocationFilter(location)}
+                    >
+                      {location}
+                    </DropdownMenuCheckboxItem>
+                  ))}
+                </div>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
         </div>
+
+        {selectedLocations.length > 0 && (
+          <div className="flex gap-2 mb-4 flex-wrap">
+            <span className="text-sm text-gray-500 mt-1">Filtros:</span>
+            {selectedLocations.map(location => (
+              <Badge 
+                key={location} 
+                variant="outline" 
+                className="bg-blue-50 text-blue-600 border-blue-200 flex items-center gap-1"
+                onClick={() => handleLocationFilter(location)}
+              >
+                {location}
+                <span className="cursor-pointer hover:text-blue-800">×</span>
+              </Badge>
+            ))}
+            <Button 
+              variant="link" 
+              className="text-sm h-auto p-0 text-blue-600" 
+              onClick={() => setSelectedLocations([])}
+            >
+              Limpar filtros
+            </Button>
+          </div>
+        )}
 
         {/* List of upcoming auctions */}
         <div className="grid gap-6">
@@ -116,7 +200,10 @@ const Auctions = () => {
                   </div>
                   
                   <div className="mt-6 flex justify-end">
-                    <Button>Ver Detalhes</Button>
+                    <Button onClick={() => handleViewDetails(auction.id)} className="flex items-center gap-2">
+                      <Eye className="h-4 w-4" />
+                      Ver Detalhes
+                    </Button>
                   </div>
                 </CardContent>
               </div>
