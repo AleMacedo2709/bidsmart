@@ -30,8 +30,8 @@ const propertySchema = z.object({
   type: z.string().min(1, { message: 'Selecione um tipo de imóvel' }),
   status: z.string().min(1, { message: 'Selecione um status' }),
   purchaseDate: z.string().min(1, { message: 'Selecione uma data de compra' }),
-  purchasePrice: z.string().transform(val => Number(val) || 0),
-  estimatedValue: z.string().transform(val => Number(val) || 0),
+  purchasePrice: z.coerce.number().min(0, { message: 'O valor de compra deve ser positivo' }),
+  estimatedValue: z.coerce.number().min(0, { message: 'O valor estimado deve ser positivo' }),
   notes: z.string().optional(),
 });
 
@@ -60,8 +60,8 @@ const PropertyEditForm: React.FC<PropertyEditFormProps> = ({ property, onSave, o
       type: property.type || 'Apartamento',
       status: property.status || 'Ativo',
       purchaseDate: property.purchaseDate || new Date().toISOString().split('T')[0],
-      purchasePrice: String(property.purchasePrice) || '',
-      estimatedValue: String(property.estimatedValue) || '',
+      purchasePrice: property.purchasePrice || 0,
+      estimatedValue: property.estimatedValue || 0,
       notes: property.notes || '',
     },
   });
@@ -89,8 +89,8 @@ const PropertyEditForm: React.FC<PropertyEditFormProps> = ({ property, onSave, o
         type: data.type,
         status: data.status,
         purchaseDate: data.purchaseDate,
-        purchasePrice: Number(data.purchasePrice),
-        estimatedValue: Number(data.estimatedValue),
+        purchasePrice: data.purchasePrice,
+        estimatedValue: data.estimatedValue,
         notes: data.notes,
       };
 
