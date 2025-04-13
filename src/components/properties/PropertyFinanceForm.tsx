@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -7,6 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import CurrencyInput from '@/components/ui/currency-input';
 import { 
   formatCurrency, 
   formatPercentage,
@@ -192,6 +194,10 @@ const PropertyFinanceForm: React.FC<PropertyFinanceFormProps> = ({ propertyId, p
     }
   };
 
+  const handleCurrencyChange = (field: string, value: number) => {
+    setValue(field, value);
+  };
+
   return (
     <div>
       <form onSubmit={handleSubmit(onSubmit)}>
@@ -220,10 +226,10 @@ const PropertyFinanceForm: React.FC<PropertyFinanceFormProps> = ({ propertyId, p
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <Label htmlFor="auctionCommission">Comissão do Leiloeiro</Label>
-                    <Input
+                    <CurrencyInput
                       id="auctionCommission"
-                      placeholder="0,00"
-                      {...register('auctionCommission')}
+                      value={auctionCommission}
+                      onChange={(value) => handleCurrencyChange('auctionCommission', value)}
                     />
                     {errors.auctionCommission && (
                       <p className="text-sm text-red-500">Valor inválido</p>
@@ -232,10 +238,10 @@ const PropertyFinanceForm: React.FC<PropertyFinanceFormProps> = ({ propertyId, p
                   
                   <div className="space-y-2">
                     <Label htmlFor="itbiTax">ITBI (Imposto de Transmissão)</Label>
-                    <Input
+                    <CurrencyInput
                       id="itbiTax"
-                      placeholder="0,00"
-                      {...register('itbiTax')}
+                      value={itbiTax}
+                      onChange={(value) => handleCurrencyChange('itbiTax', value)}
                     />
                     {errors.itbiTax && (
                       <p className="text-sm text-red-500">Valor inválido</p>
@@ -244,10 +250,10 @@ const PropertyFinanceForm: React.FC<PropertyFinanceFormProps> = ({ propertyId, p
                   
                   <div className="space-y-2">
                     <Label htmlFor="registryFees">Taxas de Cartório</Label>
-                    <Input
+                    <CurrencyInput
                       id="registryFees"
-                      placeholder="0,00"
-                      {...register('registryFees')}
+                      value={registryFees}
+                      onChange={(value) => handleCurrencyChange('registryFees', value)}
                     />
                     {errors.registryFees && (
                       <p className="text-sm text-red-500">Valor inválido</p>
@@ -256,10 +262,10 @@ const PropertyFinanceForm: React.FC<PropertyFinanceFormProps> = ({ propertyId, p
                   
                   <div className="space-y-2">
                     <Label htmlFor="possessionOfficer">Oficial de Posse</Label>
-                    <Input
+                    <CurrencyInput
                       id="possessionOfficer"
-                      placeholder="0,00"
-                      {...register('possessionOfficer')}
+                      value={possessionOfficer}
+                      onChange={(value) => handleCurrencyChange('possessionOfficer', value)}
                     />
                     {errors.possessionOfficer && (
                       <p className="text-sm text-red-500">Valor inválido</p>
@@ -268,10 +274,10 @@ const PropertyFinanceForm: React.FC<PropertyFinanceFormProps> = ({ propertyId, p
                   
                   <div className="space-y-2">
                     <Label htmlFor="deedIssuance">Emissão de Escritura</Label>
-                    <Input
+                    <CurrencyInput
                       id="deedIssuance"
-                      placeholder="0,00"
-                      {...register('deedIssuance')}
+                      value={deedIssuance}
+                      onChange={(value) => handleCurrencyChange('deedIssuance', value)}
                     />
                     {errors.deedIssuance && (
                       <p className="text-sm text-red-500">Valor inválido</p>
@@ -280,10 +286,10 @@ const PropertyFinanceForm: React.FC<PropertyFinanceFormProps> = ({ propertyId, p
                   
                   <div className="space-y-2">
                     <Label htmlFor="legalFees">Despesas Jurídicas</Label>
-                    <Input
+                    <CurrencyInput
                       id="legalFees"
-                      placeholder="0,00"
-                      {...register('legalFees')}
+                      value={legalFees}
+                      onChange={(value) => handleCurrencyChange('legalFees', value)}
                     />
                     {errors.legalFees && (
                       <p className="text-sm text-red-500">Valor inválido</p>
@@ -316,10 +322,10 @@ const PropertyFinanceForm: React.FC<PropertyFinanceFormProps> = ({ propertyId, p
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <Label htmlFor="monthlyIptu">IPTU Mensal</Label>
-                    <Input
+                    <CurrencyInput
                       id="monthlyIptu"
-                      placeholder="0,00"
-                      {...register('monthlyIptu')}
+                      value={monthlyIptu}
+                      onChange={(value) => handleCurrencyChange('monthlyIptu', value)}
                     />
                     {errors.monthlyIptu && (
                       <p className="text-sm text-red-500">Valor inválido</p>
@@ -328,10 +334,10 @@ const PropertyFinanceForm: React.FC<PropertyFinanceFormProps> = ({ propertyId, p
                   
                   <div className="space-y-2">
                     <Label htmlFor="condoFee">Taxa de Condomínio</Label>
-                    <Input
+                    <CurrencyInput
                       id="condoFee"
-                      placeholder="0,00"
-                      {...register('condoFee')}
+                      value={condoFee}
+                      onChange={(value) => handleCurrencyChange('condoFee', value)}
                     />
                     {errors.condoFee && (
                       <p className="text-sm text-red-500">Valor inválido</p>
@@ -340,10 +346,10 @@ const PropertyFinanceForm: React.FC<PropertyFinanceFormProps> = ({ propertyId, p
                   
                   <div className="space-y-2">
                     <Label htmlFor="utilities">Contas (Água, Luz, etc)</Label>
-                    <Input
+                    <CurrencyInput
                       id="utilities"
-                      placeholder="0,00"
-                      {...register('utilities')}
+                      value={utilities}
+                      onChange={(value) => handleCurrencyChange('utilities', value)}
                     />
                     {errors.utilities && (
                       <p className="text-sm text-red-500">Valor inválido</p>
@@ -352,10 +358,10 @@ const PropertyFinanceForm: React.FC<PropertyFinanceFormProps> = ({ propertyId, p
                   
                   <div className="space-y-2">
                     <Label htmlFor="maintenance">Manutenção</Label>
-                    <Input
+                    <CurrencyInput
                       id="maintenance"
-                      placeholder="0,00"
-                      {...register('maintenance')}
+                      value={maintenance}
+                      onChange={(value) => handleCurrencyChange('maintenance', value)}
                     />
                     {errors.maintenance && (
                       <p className="text-sm text-red-500">Valor inválido</p>
@@ -399,10 +405,10 @@ const PropertyFinanceForm: React.FC<PropertyFinanceFormProps> = ({ propertyId, p
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <Label htmlFor="rentalIncome">Renda de Aluguel Mensal</Label>
-                    <Input
+                    <CurrencyInput
                       id="rentalIncome"
-                      placeholder="0,00"
-                      {...register('rentalIncome')}
+                      value={rentalIncome}
+                      onChange={(value) => handleCurrencyChange('rentalIncome', value)}
                     />
                     {errors.rentalIncome && (
                       <p className="text-sm text-red-500">Valor inválido</p>
@@ -411,10 +417,10 @@ const PropertyFinanceForm: React.FC<PropertyFinanceFormProps> = ({ propertyId, p
                   
                   <div className="space-y-2">
                     <Label htmlFor="otherIncome">Outras Receitas Mensais</Label>
-                    <Input
+                    <CurrencyInput
                       id="otherIncome"
-                      placeholder="0,00"
-                      {...register('otherIncome')}
+                      value={otherIncome}
+                      onChange={(value) => handleCurrencyChange('otherIncome', value)}
                     />
                     {errors.otherIncome && (
                       <p className="text-sm text-red-500">Valor inválido</p>
@@ -455,10 +461,10 @@ const PropertyFinanceForm: React.FC<PropertyFinanceFormProps> = ({ propertyId, p
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <Label htmlFor="brokerCommission">Comissão do Corretor</Label>
-                    <Input
+                    <CurrencyInput
                       id="brokerCommission"
-                      placeholder="0,00"
-                      {...register('brokerCommission')}
+                      value={brokerCommission}
+                      onChange={(value) => handleCurrencyChange('brokerCommission', value)}
                     />
                     {errors.brokerCommission && (
                       <p className="text-sm text-red-500">Valor inválido</p>
@@ -467,10 +473,10 @@ const PropertyFinanceForm: React.FC<PropertyFinanceFormProps> = ({ propertyId, p
                   
                   <div className="space-y-2">
                     <Label htmlFor="appraisalFees">Custos de Avaliação</Label>
-                    <Input
+                    <CurrencyInput
                       id="appraisalFees"
-                      placeholder="0,00"
-                      {...register('appraisalFees')}
+                      value={appraisalFees}
+                      onChange={(value) => handleCurrencyChange('appraisalFees', value)}
                     />
                     {errors.appraisalFees && (
                       <p className="text-sm text-red-500">Valor inválido</p>
@@ -479,10 +485,10 @@ const PropertyFinanceForm: React.FC<PropertyFinanceFormProps> = ({ propertyId, p
                   
                   <div className="space-y-2">
                     <Label htmlFor="advertisingCosts">Custos de Publicidade</Label>
-                    <Input
+                    <CurrencyInput
                       id="advertisingCosts"
-                      placeholder="0,00"
-                      {...register('advertisingCosts')}
+                      value={advertisingCosts}
+                      onChange={(value) => handleCurrencyChange('advertisingCosts', value)}
                     />
                     {errors.advertisingCosts && (
                       <p className="text-sm text-red-500">Valor inválido</p>
