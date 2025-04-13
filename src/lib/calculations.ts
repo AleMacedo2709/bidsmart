@@ -1,18 +1,10 @@
+
 /**
  * Calculation utilities for property profit and tax simulation
  */
 
 // Types for calculation inputs
 export interface InitialValues {
-  purchasePrice: number;
-  renovationCosts: number;
-  sellingPrice: number;
-  sellingCosts: number;
-  mortgageAmount: number;
-  interestRate: number;
-  monthsHeld: number;
-  taxRate: number;
-  deductions: number;
   auctionPrice: number;
   assessedValue: number;
   resalePrice: number;
@@ -275,9 +267,7 @@ export const calculateResults = (
 export const formatCurrency = (value: number): string => {
   return new Intl.NumberFormat('pt-BR', {
     style: 'currency',
-    currency: 'BRL',
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2
+    currency: 'BRL'
   }).format(value);
 };
 

@@ -25,19 +25,13 @@ interface AuthContextType {
   calculatePasswordStrength: (password: string) => number;
 }
 
-// Create a context with undefined as the default value
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-// The provider component
-export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  // Use the hook to get authentication state and methods
+export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const auth = useAuthProvider();
-  
-  // Provide the auth object to all child components
   return <AuthContext.Provider value={auth}>{children}</AuthContext.Provider>;
 };
 
-// Hook to use the auth context
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (context === undefined) {

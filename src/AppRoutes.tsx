@@ -20,7 +20,7 @@ const NotFound = React.lazy(() => import('@/pages/NotFound'));
 const AppRoutes: React.FC = () => {
   return (
     <Routes>
-      {/* Default route points to Dashboard if authenticated, otherwise to Index */}
+      {/* Public routes */}
       <Route 
         path="/" 
         element={
