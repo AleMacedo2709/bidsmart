@@ -39,29 +39,29 @@ const InvestmentChart: React.FC<InvestmentChartProps> = ({ className }) => {
           Comparação entre o valor investido e o valor estimado dos imóveis ao longo do tempo
         </CardDescription>
       </CardHeader>
-      <CardContent>
-        <div className="h-[250px] w-full">
+      <CardContent className="p-1 sm:p-2">
+        <div className="h-[220px] w-full">
           <ChartContainer config={chartConfig}>
             <AreaChart 
               data={mockFinancialData.monthlyData}
-              margin={{ top: 10, right: 0, left: 0, bottom: 20 }}
+              margin={{ top: 10, right: 30, left: 5, bottom: 20 }}
             >
               <CartesianGrid strokeDasharray="3 3" />
               <XAxis 
                 dataKey="month" 
-                tick={{ fontSize: 10 }}
-                height={30}
-                tickMargin={8}
-              >
-                <Label value="Mês" position="insideBottom" offset={-10} style={{ fontSize: 11 }} />
-              </XAxis>
-              <YAxis 
-                tick={{ fontSize: 10 }}
-                tickFormatter={formatCurrency}
-                width={50}
+                tick={{ fontSize: 9 }}
+                height={20}
                 tickMargin={5}
               >
-                <Label value="Valor (R$)" angle={-90} position="insideLeft" style={{ textAnchor: 'middle', fontSize: 11 }} />
+                <Label value="Mês" position="insideBottom" offset={-10} style={{ fontSize: 10 }} />
+              </XAxis>
+              <YAxis 
+                tick={{ fontSize: 9 }}
+                tickFormatter={formatCurrency}
+                width={45}
+                tickMargin={3}
+              >
+                <Label value="Valor (R$)" angle={-90} position="insideLeft" style={{ textAnchor: 'middle', fontSize: 10 }} />
               </YAxis>
               <ChartTooltip 
                 content={<ChartTooltipContent />}

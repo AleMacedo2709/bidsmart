@@ -23,7 +23,7 @@ const Finances: React.FC = () => {
 
         <FinancialMetrics />
         
-        <Tabs defaultValue="overview" className="mt-6 sm:mt-8">
+        <Tabs defaultValue="overview" className="mt-4 sm:mt-6">
           <TabsList className="w-full max-w-md grid grid-cols-3">
             <TabsTrigger value="overview" className="text-xs sm:text-sm">Visão Geral</TabsTrigger>
             <TabsTrigger value="roi" className="text-xs sm:text-sm">ROI</TabsTrigger>
@@ -31,19 +31,19 @@ const Finances: React.FC = () => {
           </TabsList>
           
           <TabsContent value="overview" className="mt-3 sm:mt-4">
-            <div className="w-full overflow-hidden">
-              <InvestmentChart className="mb-4 sm:mb-6" />
+            <div className="w-full max-w-4xl mx-auto overflow-hidden">
+              <InvestmentChart className="mb-0" />
             </div>
           </TabsContent>
           
           <TabsContent value="roi" className="mt-3 sm:mt-4">
-            <div className="w-full overflow-hidden">
+            <div className="w-full max-w-4xl mx-auto overflow-hidden">
               <ROIBarChart />
             </div>
           </TabsContent>
           
           <TabsContent value="portfolio" className="mt-3 sm:mt-4">
-            <div className="w-full overflow-hidden">
+            <div className="w-full max-w-4xl mx-auto overflow-hidden">
               <PortfolioPieChart />
             </div>
           </TabsContent>

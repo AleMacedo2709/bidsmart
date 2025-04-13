@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { PieChart, Pie, Cell, Legend, Tooltip, Label } from 'recharts';
+import { PieChart, Pie, Cell, Legend, Tooltip } from 'recharts';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart';
 import { mockFinancialData } from '@/data/mockData';
@@ -60,17 +60,17 @@ const PortfolioPieChart: React.FC<PortfolioPieChartProps> = ({ className }) => {
           Distribuição dos imóveis por status
         </CardDescription>
       </CardHeader>
-      <CardContent>
-        <div className="h-[250px] w-full">
+      <CardContent className="p-1 sm:p-2">
+        <div className="h-[220px] w-full flex items-center justify-center">
           <ChartContainer config={chartConfig}>
-            <PieChart margin={{ top: 5, right: 0, left: 0, bottom: 5 }}>
+            <PieChart width={250} height={200} margin={{ top: 0, right: 0, left: 0, bottom: 0 }}>
               <Pie
                 data={data}
                 cx="50%"
-                cy="45%"
+                cy="50%"
                 labelLine={false}
                 label={renderCustomizedLabel}
-                outerRadius={60}
+                outerRadius={50}
                 fill="#8884d8"
                 dataKey="value"
                 nameKey="name"
