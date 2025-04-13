@@ -66,7 +66,7 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
 
   if (isIndexPage) {
     return (
-      <div className="min-h-screen bg-background flex flex-col">
+      <div className="min-h-screen bg-background flex flex-col overflow-hidden">
         {children}
         
         {/* Local Password Dialog */}
@@ -113,9 +113,11 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
   // For other pages, use the SidebarLayout
   return (
     <>
-      <SidebarLayout>
-        {children}
-      </SidebarLayout>
+      <div className="w-full h-screen overflow-hidden">
+        <SidebarLayout>
+          {children}
+        </SidebarLayout>
+      </div>
       
       {/* Local Password Dialog */}
       <Dialog open={passwordDialogOpen} onOpenChange={setPasswordDialogOpen}>

@@ -47,7 +47,7 @@ const SidebarLayout: React.FC<SidebarLayoutProps> = ({ children }) => {
 
   return (
     <SidebarProvider defaultOpen={!isMobile}>
-      <div className="flex h-screen w-full">
+      <div className="flex h-screen w-full overflow-hidden">
         {isMobile && (
           <Button 
             variant="ghost" 
@@ -60,7 +60,7 @@ const SidebarLayout: React.FC<SidebarLayoutProps> = ({ children }) => {
         )}
         
         <div className={`${isMobile ? (mobileSidebarOpen ? 'block' : 'hidden') : 'block'} h-full`}>
-          <Sidebar className="h-screen border-r-0 border-gray-200">
+          <Sidebar className="h-full">
             <SidebarHeader className="p-0">
               <div className="py-3 px-4 bg-blue-700 text-white flex items-center">
                 <img 
@@ -148,7 +148,7 @@ const SidebarLayout: React.FC<SidebarLayoutProps> = ({ children }) => {
           </Sidebar>
         </div>
         
-        <main className="flex-1 h-screen bg-background p-0 m-0">
+        <main className="flex-1 h-full overflow-hidden bg-background">
           {children}
         </main>
       </div>

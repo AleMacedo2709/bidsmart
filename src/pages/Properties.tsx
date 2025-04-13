@@ -1,7 +1,6 @@
 
 import React from 'react';
 import { useLocation, useParams } from 'react-router-dom';
-import SidebarLayout from '@/components/layout/SidebarLayout';
 import PropertyManager from '@/components/properties/PropertyManager';
 import PropertyForm from '@/components/properties/PropertyForm';
 import PropertyDetail from '@/components/properties/PropertyDetail';
@@ -14,8 +13,8 @@ const Properties: React.FC = () => {
   const propertyId = params.id;
 
   return (
-    <SidebarLayout>
-      <div className="container mx-auto px-4 py-6 min-h-screen">
+    <div className="w-full h-full overflow-auto">
+      <div className="container mx-auto px-4 py-6">
         {!isAddRoute && !isDetailRoute && (
           <>
             <div className="mb-8">
@@ -36,7 +35,7 @@ const Properties: React.FC = () => {
           <PropertyDetail propertyId={propertyId} />
         )}
       </div>
-    </SidebarLayout>
+    </div>
   );
 };
 

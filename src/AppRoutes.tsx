@@ -1,9 +1,9 @@
 
 import React, { Suspense } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
-import SidebarLayout from '@/components/layout/SidebarLayout';
 import ProtectedRoute from '@/components/auth/ProtectedRoute';
 import { Skeleton } from '@/components/ui/skeleton'; 
+import AppLayout from '@/components/layout/AppLayout';
 
 // Lazy load pages
 const Dashboard = React.lazy(() => import('@/pages/Dashboard'));
@@ -32,11 +32,11 @@ const AppRoutes: React.FC = () => {
         path="/dashboard" 
         element={
           <ProtectedRoute>
-            <SidebarLayout>
+            <AppLayout>
               <Suspense fallback={<div className="flex items-center justify-center h-screen"><Skeleton className="h-32 w-32 rounded-full" /></div>}>
                 <Dashboard />
               </Suspense>
-            </SidebarLayout>
+            </AppLayout>
           </ProtectedRoute>
         } 
       />
@@ -44,11 +44,11 @@ const AppRoutes: React.FC = () => {
         path="/imoveis/*" 
         element={
           <ProtectedRoute>
-            <SidebarLayout>
+            <AppLayout>
               <Suspense fallback={<div className="flex items-center justify-center h-screen"><Skeleton className="h-32 w-32 rounded-full" /></div>}>
                 <Properties />
               </Suspense>
-            </SidebarLayout>
+            </AppLayout>
           </ProtectedRoute>
         } 
       />
@@ -56,11 +56,11 @@ const AppRoutes: React.FC = () => {
         path="/calculator" 
         element={
           <ProtectedRoute>
-            <SidebarLayout>
+            <AppLayout>
               <Suspense fallback={<div className="flex items-center justify-center h-screen"><Skeleton className="h-32 w-32 rounded-full" /></div>}>
                 <Calculator />
               </Suspense>
-            </SidebarLayout>
+            </AppLayout>
           </ProtectedRoute>
         } 
       />
@@ -68,11 +68,11 @@ const AppRoutes: React.FC = () => {
         path="/financas" 
         element={
           <ProtectedRoute>
-            <SidebarLayout>
+            <AppLayout>
               <Suspense fallback={<div className="flex items-center justify-center h-screen"><Skeleton className="h-32 w-32 rounded-full" /></div>}>
                 <Finances />
               </Suspense>
-            </SidebarLayout>
+            </AppLayout>
           </ProtectedRoute>
         } 
       />
@@ -80,11 +80,11 @@ const AppRoutes: React.FC = () => {
         path="/about" 
         element={
           <ProtectedRoute>
-            <SidebarLayout>
+            <AppLayout>
               <Suspense fallback={<div className="flex items-center justify-center h-screen"><Skeleton className="h-32 w-32 rounded-full" /></div>}>
                 <About />
               </Suspense>
-            </SidebarLayout>
+            </AppLayout>
           </ProtectedRoute>
         } 
       />
@@ -92,11 +92,11 @@ const AppRoutes: React.FC = () => {
         path="/backup" 
         element={
           <ProtectedRoute>
-            <SidebarLayout>
+            <AppLayout>
               <Suspense fallback={<div className="flex items-center justify-center h-screen"><Skeleton className="h-32 w-32 rounded-full" /></div>}>
                 <Backup />
               </Suspense>
-            </SidebarLayout>
+            </AppLayout>
           </ProtectedRoute>
         } 
       />
