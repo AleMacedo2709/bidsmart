@@ -2,7 +2,7 @@
 import React from 'react';
 import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip } from 'recharts';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart';
+import { ChartContainer, ChartTooltip, ChartTooltipContent, ChartLegend, ChartLegendContent } from '@/components/ui/chart';
 import { mockFinancialData } from '@/data/mockData';
 
 interface PortfolioPieChartProps {
@@ -40,15 +40,15 @@ const PortfolioPieChart: React.FC<PortfolioPieChartProps> = ({ className }) => {
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <div className="h-[300px]">
+        <div className="h-[300px] w-full">
           <ChartContainer config={chartConfig}>
-            <PieChart>
+            <PieChart margin={{ top: 10, right: 10, left: 10, bottom: 10 }}>
               <Pie
                 data={data}
                 cx="50%"
                 cy="50%"
                 labelLine={false}
-                outerRadius={90}
+                outerRadius={80}
                 fill="#8884d8"
                 dataKey="value"
                 nameKey="name"
@@ -58,7 +58,7 @@ const PortfolioPieChart: React.FC<PortfolioPieChartProps> = ({ className }) => {
                 ))}
               </Pie>
               <ChartTooltip content={<ChartTooltipContent />} />
-              <Legend />
+              <Legend layout="horizontal" verticalAlign="bottom" align="center" />
             </PieChart>
           </ChartContainer>
         </div>

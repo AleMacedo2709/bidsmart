@@ -57,24 +57,27 @@ const ROIBarChart: React.FC<ROIBarChartProps> = ({ className }) => {
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <div className="h-[250px] sm:h-[300px]">
+        <div className="h-[250px] sm:h-[300px] w-full">
           <ChartContainer config={chartConfig}>
             <BarChart 
               data={data} 
               layout="vertical" 
               margin={{ 
                 top: 5, 
-                right: isMobile ? 10 : 30, 
-                left: isMobile ? 50 : 20, 
+                right: isMobile ? 20 : 30, 
+                left: isMobile ? 60 : 80, 
                 bottom: 5 
               }}
             >
               <CartesianGrid strokeDasharray="3 3" />
-              <XAxis type="number" />
+              <XAxis 
+                type="number" 
+                tick={{ fontSize: isMobile ? 10 : 12 }}
+              />
               <YAxis 
                 type="category" 
                 dataKey="name" 
-                width={isMobile ? 60 : 80}
+                width={isMobile ? 55 : 75}
                 tick={{ fontSize: isMobile ? 10 : 12 }}
               />
               <Tooltip content={<CustomTooltip />} />

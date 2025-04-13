@@ -30,12 +30,15 @@ const InvestmentChart: React.FC<InvestmentChartProps> = ({ className }) => {
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <div className="h-[300px]">
+        <div className="h-[300px] w-full">
           <ChartContainer config={chartConfig}>
-            <AreaChart data={mockFinancialData.monthlyData}>
+            <AreaChart 
+              data={mockFinancialData.monthlyData}
+              margin={{ top: 10, right: 10, left: 0, bottom: 5 }}
+            >
               <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="month" />
-              <YAxis />
+              <XAxis dataKey="month" tick={{ fontSize: 12 }} />
+              <YAxis tick={{ fontSize: 12 }} />
               <ChartTooltip content={<ChartTooltipContent />} />
               <Area
                 type="monotone"
