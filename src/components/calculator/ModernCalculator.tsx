@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -248,9 +247,10 @@ const ModernCalculator: React.FC = () => {
       const margin = 15;
       const usableWidth = pageWidth - (margin * 2);
       
+      // Manter proporção da logo
       const imgData = "/lovable-uploads/45f7cfb2-2b06-4da9-85fa-6fd6e3dfde32.png";
-      const imgWidth = 40;
-      const imgHeight = 40;
+      const imgWidth = 30;
+      const imgHeight = 30; // Mantendo a proporção 1:1
       doc.addImage(imgData, 'PNG', (pageWidth - imgWidth) / 2, margin, imgWidth, imgHeight);
       
       doc.setFontSize(18);
@@ -265,6 +265,7 @@ const ModernCalculator: React.FC = () => {
       
       currentY += 5;
       
+      // Dados do imóvel
       const propertyData = [
         ["Valor de Compra", formatCurrency(initialValues.auctionPrice)],
         ["Valor de Venda Esperado", formatCurrency(initialValues.resalePrice)],
@@ -286,6 +287,7 @@ const ModernCalculator: React.FC = () => {
       
       currentY = (doc as any).lastAutoTable.finalY + 10;
       
+      // Custos de aquisição
       const acquisitionData = [
         ["Comissão do Leiloeiro", `${acquisitionCosts.auctioneerCommission}% (${formatCurrency(initialValues.auctionPrice * (acquisitionCosts.auctioneerCommission / 100))})`],
         ["ITBI", `${acquisitionCosts.itbiTax}% (${formatCurrency(initialValues.auctionPrice * (acquisitionCosts.itbiTax / 100))})`],
@@ -307,11 +309,11 @@ const ModernCalculator: React.FC = () => {
       
       currentY = (doc as any).lastAutoTable.finalY + 10;
       
-      if (currentY > pageHeight - 50) {
-        doc.addPage();
-        currentY = margin;
-      }
+      // Forçar quebra de página para garantir duas páginas
+      doc.addPage();
+      currentY = margin;
       
+      // Custos de manutenção na segunda página
       const maintenanceData = [
         ["IPTU Mensal", formatCurrency(maintenanceCosts.monthlyIptu)],
         ["Outras Despesas Mensais", formatCurrency(maintenanceCosts.otherMonthlyExpenses)],
@@ -332,6 +334,7 @@ const ModernCalculator: React.FC = () => {
       
       currentY = (doc as any).lastAutoTable.finalY + 10;
       
+      // Custos de venda
       const saleData = [
         ["Comissão de Venda", `${saleCosts.brokerCommission}% (${formatCurrency(initialValues.resalePrice * (saleCosts.brokerCommission / 100))})`],
         ["Taxas de Avaliação", formatCurrency(saleCosts.appraisalFees)]
@@ -349,11 +352,7 @@ const ModernCalculator: React.FC = () => {
       
       currentY = (doc as any).lastAutoTable.finalY + 10;
       
-      if (currentY > pageHeight - 70) {
-        doc.addPage();
-        currentY = margin;
-      }
-      
+      // Resultados finais
       const resultsData = [
         ["Investimento Total", formatCurrency(initialValues.auctionPrice + results.totalAcquisitionCosts + maintenanceCosts.renovation)],
         ["Despesas Totais", formatCurrency(results.totalAcquisitionCosts + results.totalMaintenanceCosts + results.totalSaleCosts)],
@@ -375,13 +374,9 @@ const ModernCalculator: React.FC = () => {
         styles: { overflow: 'linebreak' }
       });
       
+      // Adicionar observações, se existirem
       if (simulationNotes) {
         currentY = (doc as any).lastAutoTable.finalY + 10;
-        
-        if (currentY > pageHeight - 70) {
-          doc.addPage();
-          currentY = margin;
-        }
         
         doc.setFontSize(14);
         doc.setTextColor(0, 51, 153);
@@ -395,6 +390,7 @@ const ModernCalculator: React.FC = () => {
         doc.text(splitNotes, margin, currentY);
       }
       
+      // Adicionar rodapé em ambas as páginas
       const pageCount = doc.getNumberOfPages();
       for (let i = 1; i <= pageCount; i++) {
         doc.setPage(i);
@@ -863,154 +859,4 @@ const ModernCalculator: React.FC = () => {
                       <Input
                         id="simulationNotes"
                         placeholder="Adicione observações sobre esta simulação..."
-                        value={simulationNotes}
-                        onChange={(e) => setSimulationNotes(e.target.value)}
-                        className="resize-none"
-                      />
-                    </div>
-                    
-                    <div className="flex justify-end pt-4">
-                      <Button
-                        onClick={generatePDF}
-                        className="space-x-2"
-                        variant="default"
-                      >
-                        <FileText className="h-4 w-4" />
-                        <span>Salvar em PDF</span>
-                      </Button>
-                    </div>
-                  </TabsContent>
-                  
-                  <TabsContent value="details" className="pt-4">
-                    <Card>
-                      <CardContent className="pt-6">
-                        <div className="space-y-4">
-                          <h3 className="text-xl font-semibold">Detalhamento de Custos</h3>
-                          
-                          <div className="space-y-3">
-                            <div>
-                              <h4 className="text-lg font-medium">Custos de Aquisição</h4>
-                              <ul className="mt-2 space-y-1">
-                                <li className="flex justify-between">
-                                  <span className="text-muted-foreground">Comissão do Leiloeiro ({acquisitionCosts.auctioneerCommission}%)</span>
-                                  <span>{formatCurrency(initialValues.auctionPrice * (acquisitionCosts.auctioneerCommission / 100))}</span>
-                                </li>
-                                <li className="flex justify-between">
-                                  <span className="text-muted-foreground">ITBI ({acquisitionCosts.itbiTax}%)</span>
-                                  <span>{formatCurrency(initialValues.auctionPrice * (acquisitionCosts.itbiTax / 100))}</span>
-                                </li>
-                                <li className="flex justify-between">
-                                  <span className="text-muted-foreground">Taxas de Registro</span>
-                                  <span>{formatCurrency(acquisitionCosts.registryFees)}</span>
-                                </li>
-                                <li className="flex justify-between">
-                                  <span className="text-muted-foreground">Oficial de Posse</span>
-                                  <span>{formatCurrency(acquisitionCosts.possessionOfficer)}</span>
-                                </li>
-                                <li className="flex justify-between">
-                                  <span className="text-muted-foreground">Emissão de Escritura</span>
-                                  <span>{formatCurrency(acquisitionCosts.deedIssuance)}</span>
-                                </li>
-                                <li className="flex justify-between">
-                                  <span className="text-muted-foreground">Honorários Advocatícios</span>
-                                  <span>{formatCurrency(acquisitionCosts.legalFees)}</span>
-                                </li>
-                                <li className="flex justify-between font-medium pt-2 border-t">
-                                  <span>Total Custos de Aquisição</span>
-                                  <span>{formatCurrency(results.totalAcquisitionCosts)}</span>
-                                </li>
-                              </ul>
-                            </div>
-                            
-                            <div>
-                              <h4 className="text-lg font-medium">Custos de Manutenção</h4>
-                              <ul className="mt-2 space-y-1">
-                                {needsRenovation && (
-                                  <li className="flex justify-between">
-                                    <span className="text-muted-foreground">Reforma</span>
-                                    <span>{formatCurrency(maintenanceCosts.renovation)}</span>
-                                  </li>
-                                )}
-                                <li className="flex justify-between">
-                                  <span className="text-muted-foreground">IPTU Mensal</span>
-                                  <span>{formatCurrency(maintenanceCosts.monthlyIptu)}</span>
-                                </li>
-                                <li className="flex justify-between">
-                                  <span className="text-muted-foreground">Outras Despesas Mensais</span>
-                                  <span>{formatCurrency(maintenanceCosts.otherMonthlyExpenses)}</span>
-                                </li>
-                                <li className="flex justify-between">
-                                  <span className="text-muted-foreground">Período</span>
-                                  <span>{maintenanceCosts.holdingPeriod} meses</span>
-                                </li>
-                                <li className="flex justify-between font-medium pt-2 border-t">
-                                  <span>Total Custos de Manutenção</span>
-                                  <span>{formatCurrency(results.totalMaintenanceCosts)}</span>
-                                </li>
-                              </ul>
-                            </div>
-                            
-                            <div>
-                              <h4 className="text-lg font-medium">Custos de Venda</h4>
-                              <ul className="mt-2 space-y-1">
-                                <li className="flex justify-between">
-                                  <span className="text-muted-foreground">Comissão de Venda ({saleCosts.brokerCommission}%)</span>
-                                  <span>{formatCurrency(initialValues.resalePrice * (saleCosts.brokerCommission / 100))}</span>
-                                </li>
-                                <li className="flex justify-between">
-                                  <span className="text-muted-foreground">Taxas de Avaliação</span>
-                                  <span>{formatCurrency(saleCosts.appraisalFees)}</span>
-                                </li>
-                                <li className="flex justify-between font-medium pt-2 border-t">
-                                  <span>Total Custos de Venda</span>
-                                  <span>{formatCurrency(results.totalSaleCosts)}</span>
-                                </li>
-                              </ul>
-                            </div>
-                            
-                            <div>
-                              <h4 className="text-lg font-medium">Imposto sobre Ganho de Capital</h4>
-                              <ul className="mt-2 space-y-1">
-                                <li className="flex justify-between">
-                                  <span className="text-muted-foreground">Ganho de Capital Tributável</span>
-                                  <span>{formatCurrency(results.taxableCapitalGain)}</span>
-                                </li>
-                                <li className="flex justify-between">
-                                  <span className="text-muted-foreground">Alíquota</span>
-                                  <span>{results.taxRate * 100}%</span>
-                                </li>
-                                <li className="flex justify-between font-medium pt-2 border-t">
-                                  <span>Imposto Devido</span>
-                                  <span>{formatCurrency(results.capitalGainsTaxDue)}</span>
-                                </li>
-                              </ul>
-                            </div>
-                          </div>
-                          
-                          <div className="pt-6">
-                            <div className="flex justify-end">
-                              <Button
-                                onClick={generatePDF}
-                                className="space-x-2"
-                                variant="default"
-                              >
-                                <FileText className="h-4 w-4" />
-                                <span>Salvar em PDF</span>
-                              </Button>
-                            </div>
-                          </div>
-                        </div>
-                      </CardContent>
-                    </Card>
-                  </TabsContent>
-                </Tabs>
-              </div>
-            )}
-          </TabsContent>
-        </Tabs>
-      </Card>
-    </div>
-  );
-};
-
-export default ModernCalculator;
+                        value
