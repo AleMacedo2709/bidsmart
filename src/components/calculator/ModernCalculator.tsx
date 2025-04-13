@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -11,13 +10,15 @@ import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/components/auth/AuthProvider';
 import { storeData } from '@/lib/storage';
-import { DollarSign, ArrowRight, Calculator, Calendar, Info, AlertTriangle, ExternalLink } from 'lucide-react';
+import { DollarSign, ArrowRight, Calculator, Calendar, Info, AlertTriangle, ExternalLink, Download, FilePdf } from 'lucide-react';
 import { format } from 'date-fns';
 import { cn } from '@/lib/utils';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Calendar as CalendarComponent } from '@/components/ui/calendar';
 import CurrencyInput from '@/components/ui/currency-input';
 import PercentageInput from '@/components/ui/percentage-input';
+import jsPDF from 'jspdf';
+import autoTable from 'jspdf-autotable';
 import {
   calculateResults,
   formatCurrency,
@@ -31,7 +32,6 @@ import {
   SimulationResult
 } from '@/lib/calculations';
 
-// Valores padrão para ambiente de desenvolvimento
 const DEV_DEFAULT_VALUES = {
   initialValues: {
     auctionPrice: 300000,
@@ -67,7 +67,6 @@ const DEV_DEFAULT_VALUES = {
   paymentMethod: "cash"
 };
 
-// Valores padrão para ambiente de produção
 const PROD_DEFAULT_VALUES = {
   initialValues: {
     auctionPrice: 0,
@@ -103,7 +102,6 @@ const PROD_DEFAULT_VALUES = {
   paymentMethod: "cash"
 };
 
-// Determine qual conjunto de valores padrão usar com base no ambiente
 const isProduction = process.env.NODE_ENV === 'production';
 const DEFAULT_VALUES = isProduction ? PROD_DEFAULT_VALUES : DEV_DEFAULT_VALUES;
 
@@ -204,7 +202,6 @@ const ModernCalculator: React.FC = () => {
   const handleIptuRateChange = (value: number[]) => {
     setIptuRate(value[0]);
     
-    // Also update the monthly IPTU based on the rate
     const monthlyIptu = (initialValues.assessedValue * (value[0] / 100)) / 12;
     setMaintenanceCosts({
       ...maintenanceCosts,
@@ -230,6 +227,206 @@ const ModernCalculator: React.FC = () => {
       setMaintenanceCosts({
         ...maintenanceCosts,
         renovation: 30000
+      });
+    }
+  };
+  
+  const generatePDF = () => {
+    if (!results) {
+      toast({
+        title: "Sem resultados",
+        description: "Por favor, calcule os resultados antes de gerar o PDF.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    try {
+      const doc = new jsPDF();
+      const pageWidth = doc.internal.pageSize.getWidth();
+      const pageHeight = doc.internal.pageSize.getHeight();
+      const margin = 15;
+      const usableWidth = pageWidth - (margin * 2);
+      
+      const imgData = "/lovable-uploads/45f7cfb2-2b06-4da9-85fa-6fd6e3dfde32.png";
+      const imgWidth = 40;
+      const imgHeight = 40;
+      doc.addImage(imgData, 'PNG', (pageWidth - imgWidth) / 2, margin, imgWidth, imgHeight);
+      
+      doc.setFontSize(18);
+      doc.setTextColor(0, 51, 153);
+      doc.text("Relatório de Simulação - BidSmart", margin, margin + imgHeight + 10);
+      
+      doc.setFontSize(10);
+      doc.setTextColor(100, 100, 100);
+      doc.text(`Data: ${format(new Date(), 'dd/MM/yyyy')}`, margin, margin + imgHeight + 20);
+      
+      if (simulationName) {
+        doc.setFontSize(12);
+        doc.setTextColor(0, 0, 0);
+        doc.text(`Nome da Simulação: ${simulationName}`, margin, margin + imgHeight + 30);
+        var currentY = margin + imgHeight + 35;
+      } else {
+        var currentY = margin + imgHeight + 25;
+      }
+      
+      currentY += 5;
+      
+      const propertyData = [
+        ["Valor de Compra", formatCurrency(initialValues.auctionPrice)],
+        ["Valor de Venda Esperado", formatCurrency(initialValues.resalePrice)],
+        ["Reforma Necessária", needsRenovation ? "Sim" : "Não"],
+        ["Valor da Reforma", needsRenovation ? formatCurrency(maintenanceCosts.renovation) : "N/A"],
+        ["Taxa de IPTU", `${iptuRate.toFixed(2)}%`],
+        ["Tempo de Retenção", `${maintenanceCosts.holdingPeriod} meses`]
+      ];
+      
+      autoTable(doc, {
+        startY: currentY,
+        head: [['Descrição', 'Valor']],
+        body: propertyData,
+        theme: 'striped',
+        headStyles: { fillColor: [0, 51, 153], textColor: [255, 255, 255] },
+        margin: { top: currentY, left: margin, right: margin },
+        styles: { overflow: 'linebreak' }
+      });
+      
+      currentY = (doc as any).lastAutoTable.finalY + 10;
+      
+      const acquisitionData = [
+        ["Comissão do Leiloeiro", `${acquisitionCosts.auctioneerCommission}% (${formatCurrency(initialValues.auctionPrice * (acquisitionCosts.auctioneerCommission / 100))})`],
+        ["ITBI", `${acquisitionCosts.itbiTax}% (${formatCurrency(initialValues.auctionPrice * (acquisitionCosts.itbiTax / 100))})`],
+        ["Taxas de Registro", formatCurrency(acquisitionCosts.registryFees)],
+        ["Oficial de Posse", formatCurrency(acquisitionCosts.possessionOfficer)],
+        ["Emissão de Escritura", formatCurrency(acquisitionCosts.deedIssuance)],
+        ["Honorários Advocatícios", formatCurrency(acquisitionCosts.legalFees)]
+      ];
+      
+      autoTable(doc, {
+        startY: currentY,
+        head: [['Descrição', 'Valor']],
+        body: acquisitionData,
+        theme: 'striped',
+        headStyles: { fillColor: [0, 51, 153], textColor: [255, 255, 255] },
+        margin: { top: currentY, left: margin, right: margin },
+        styles: { overflow: 'linebreak' }
+      });
+      
+      currentY = (doc as any).lastAutoTable.finalY + 10;
+      
+      if (currentY > pageHeight - 50) {
+        doc.addPage();
+        currentY = margin;
+      }
+      
+      const maintenanceData = [
+        ["IPTU Mensal", formatCurrency(maintenanceCosts.monthlyIptu)],
+        ["Outras Despesas Mensais", formatCurrency(maintenanceCosts.otherMonthlyExpenses)],
+        ["Total Custos Mensais", formatCurrency(maintenanceCosts.monthlyIptu + maintenanceCosts.otherMonthlyExpenses)],
+        ["Período Total", `${maintenanceCosts.holdingPeriod} meses`],
+        ["Total Custos de Manutenção", formatCurrency((maintenanceCosts.monthlyIptu + maintenanceCosts.otherMonthlyExpenses) * maintenanceCosts.holdingPeriod)]
+      ];
+      
+      autoTable(doc, {
+        startY: currentY,
+        head: [['Descrição', 'Valor']],
+        body: maintenanceData,
+        theme: 'striped',
+        headStyles: { fillColor: [0, 51, 153], textColor: [255, 255, 255] },
+        margin: { top: currentY, left: margin, right: margin },
+        styles: { overflow: 'linebreak' }
+      });
+      
+      currentY = (doc as any).lastAutoTable.finalY + 10;
+      
+      const saleData = [
+        ["Comissão de Venda", `${saleCosts.brokerCommission}% (${formatCurrency(initialValues.resalePrice * (saleCosts.brokerCommission / 100))})`],
+        ["Taxas de Avaliação", formatCurrency(saleCosts.appraisalFees)]
+      ];
+      
+      autoTable(doc, {
+        startY: currentY,
+        head: [['Descrição', 'Valor']],
+        body: saleData,
+        theme: 'striped',
+        headStyles: { fillColor: [0, 51, 153], textColor: [255, 255, 255] },
+        margin: { top: currentY, left: margin, right: margin },
+        styles: { overflow: 'linebreak' }
+      });
+      
+      currentY = (doc as any).lastAutoTable.finalY + 10;
+      
+      if (currentY > pageHeight - 70) {
+        doc.addPage();
+        currentY = margin;
+      }
+      
+      const resultsData = [
+        ["Investimento Total", formatCurrency(initialValues.auctionPrice + results.totalAcquisitionCosts + maintenanceCosts.renovation)],
+        ["Despesas Totais", formatCurrency(results.totalAcquisitionCosts + results.totalMaintenanceCosts + results.totalSaleCosts)],
+        ["Valor de Venda", formatCurrency(initialValues.resalePrice)],
+        ["Lucro Bruto", formatCurrency(results.grossProfit)],
+        ["Imposto sobre Ganho de Capital", formatCurrency(results.capitalGainsTaxDue)],
+        ["Lucro Líquido Final", formatCurrency(results.netProfit)],
+        ["ROI Total", formatPercentage(results.roi)],
+        ["ROI Anualizado", formatPercentage(results.roi / (maintenanceCosts.holdingPeriod / 12))]
+      ];
+      
+      autoTable(doc, {
+        startY: currentY,
+        head: [['Métrica', 'Valor']],
+        body: resultsData,
+        theme: 'striped',
+        headStyles: { fillColor: [0, 51, 153], textColor: [255, 255, 255] },
+        margin: { top: currentY, left: margin, right: margin },
+        styles: { overflow: 'linebreak' }
+      });
+      
+      if (simulationNotes) {
+        currentY = (doc as any).lastAutoTable.finalY + 10;
+        
+        if (currentY > pageHeight - 70) {
+          doc.addPage();
+          currentY = margin;
+        }
+        
+        doc.setFontSize(14);
+        doc.setTextColor(0, 51, 153);
+        doc.text("Observações", margin, currentY);
+        currentY += 5;
+        
+        doc.setFontSize(10);
+        doc.setTextColor(0, 0, 0);
+        
+        const splitNotes = doc.splitTextToSize(simulationNotes, usableWidth);
+        doc.text(splitNotes, margin, currentY);
+      }
+      
+      const pageCount = doc.getNumberOfPages();
+      for (let i = 1; i <= pageCount; i++) {
+        doc.setPage(i);
+        doc.setFontSize(8);
+        doc.setTextColor(150, 150, 150);
+        doc.text(`BidSmart - Relatório de Simulação - Página ${i} de ${pageCount}`, margin, pageHeight - 10);
+        doc.text(`Gerado em: ${format(new Date(), 'dd/MM/yyyy HH:mm')}`, pageWidth - margin - 60, pageHeight - 10, { align: 'right' });
+      }
+      
+      const fileName = simulationName 
+        ? `BidSmart_Simulacao_${simulationName.replace(/\s+/g, '_')}.pdf`
+        : `BidSmart_Simulacao_${format(new Date(), 'dd-MM-yyyy_HH-mm')}.pdf`;
+      
+      doc.save(fileName);
+      
+      toast({
+        title: "PDF gerado com sucesso",
+        description: `O relatório foi salvo como "${fileName}".`,
+      });
+    } catch (error) {
+      console.error('Error generating PDF:', error);
+      toast({
+        title: "Erro ao gerar PDF",
+        description: "Houve um erro ao gerar o relatório em PDF.",
+        variant: "destructive",
       });
     }
   };
@@ -685,10 +882,11 @@ const ModernCalculator: React.FC = () => {
                             </div>
                             
                             <Button 
-                              onClick={saveSimulation}
-                              className="w-full bg-blue-600 hover:bg-blue-700"
+                              onClick={generatePDF}
+                              className="w-full bg-blue-600 hover:bg-blue-700 flex items-center justify-center gap-2"
                             >
-                              Salvar Simulação
+                              <FilePdf className="h-4 w-4" />
+                              Salvar em PDF
                             </Button>
                             
                             <Button
