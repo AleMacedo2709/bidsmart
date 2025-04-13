@@ -1,10 +1,18 @@
-
 /**
  * Calculation utilities for property profit and tax simulation
  */
 
 // Types for calculation inputs
 export interface InitialValues {
+  purchasePrice: number;
+  renovationCosts: number;
+  sellingPrice: number;
+  sellingCosts: number;
+  mortgageAmount: number;
+  interestRate: number;
+  monthsHeld: number;
+  taxRate: number;
+  deductions: number;
   auctionPrice: number;
   assessedValue: number;
   resalePrice: number;

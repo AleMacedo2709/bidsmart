@@ -38,6 +38,15 @@ const CalculatorWizard: React.FC = () => {
   const [isProcessing, setIsProcessing] = useState(false);
   
   const [initialValues, setInitialValues] = useState<InitialValuesType>({
+    purchasePrice: 0,
+    renovationCosts: 0,
+    sellingPrice: 0,
+    sellingCosts: 0,
+    mortgageAmount: 0,
+    interestRate: 0,
+    monthsHeld: 0,
+    taxRate: 0,
+    deductions: 0,
     auctionPrice: 0,
     assessedValue: 0,
     resalePrice: 0
@@ -168,7 +177,7 @@ const CalculatorWizard: React.FC = () => {
     switch (currentStep) {
       case 1:
         return (
-          initialValues.auctionPrice > 0 &&
+          initialValues.purchasePrice > 0 &&
           initialValues.assessedValue > 0 &&
           initialValues.resalePrice > 0
         );
