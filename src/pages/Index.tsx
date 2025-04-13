@@ -37,7 +37,7 @@ const Index = () => {
                 </Link>
               </Button>
             ) : (
-              <div className="space-y-4 sm:space-y-0 sm:mx-auto sm:inline-grid sm:grid-cols-2 sm:gap-5">
+              <div className="space-y-4 sm:space-y-0 sm:mx-auto sm:inline-grid sm:grid-cols-1 sm:gap-5">
                 <Button asChild variant="gradient" size="lg" className="gap-2">
                   <Link to="/auth?mode=signup">
                     Começar Agora
