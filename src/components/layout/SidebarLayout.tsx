@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { 
@@ -37,7 +38,7 @@ const SidebarLayout: React.FC<SidebarLayoutProps> = ({ children }) => {
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
   
   const isActive = (path: string) => {
-    return location.pathname === path;
+    return location.pathname.startsWith(path);
   };
 
   const toggleMobileSidebar = () => {
@@ -59,7 +60,7 @@ const SidebarLayout: React.FC<SidebarLayoutProps> = ({ children }) => {
         )}
         
         <div className={`${isMobile ? (mobileSidebarOpen ? 'block' : 'hidden') : 'block'} h-full`}>
-          <Sidebar className="h-screen">
+          <Sidebar className="h-screen border-r border-gray-200">
             <SidebarHeader className="p-0">
               <div className="py-3 px-4 bg-blue-700 text-white flex items-center">
                 <img 
