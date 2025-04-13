@@ -1,8 +1,8 @@
 
 import React from 'react';
-import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip } from 'recharts';
+import { PieChart, Pie, Cell, Legend, Tooltip, Label } from 'recharts';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { ChartContainer, ChartTooltip, ChartTooltipContent, ChartLegend, ChartLegendContent } from '@/components/ui/chart';
+import { ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart';
 import { mockFinancialData } from '@/data/mockData';
 
 interface PortfolioPieChartProps {
@@ -31,6 +31,27 @@ const PortfolioPieChart: React.FC<PortfolioPieChartProps> = ({ className }) => {
     },
   };
 
+  // Custom renderer for the pie chart labels
+  const renderCustomizedLabel = (props: any) => {
+    const { cx, cy, midAngle, innerRadius, outerRadius, percent, index, value } = props;
+    const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
+    const x = cx + radius * Math.cos(-midAngle * Math.PI / 180);
+    const y = cy + radius * Math.sin(-midAngle * Math.PI / 180);
+    
+    return (
+      <text 
+        x={x} 
+        y={y} 
+        fill="white" 
+        textAnchor={x > cx ? 'start' : 'end'} 
+        dominantBaseline="central"
+        fontSize={11}
+      >
+        {`${value} (${(percent * 100).toFixed(0)}%)`}
+      </text>
+    );
+  };
+
   return (
     <Card className={className}>
       <CardHeader>
@@ -40,15 +61,16 @@ const PortfolioPieChart: React.FC<PortfolioPieChartProps> = ({ className }) => {
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <div className="h-[300px] w-full">
+        <div className="h-[280px] w-full">
           <ChartContainer config={chartConfig}>
-            <PieChart margin={{ top: 10, right: 10, left: 10, bottom: 10 }}>
+            <PieChart margin={{ top: 5, right: 5, left: 5, bottom: 5 }}>
               <Pie
                 data={data}
                 cx="50%"
-                cy="50%"
+                cy="45%"
                 labelLine={false}
-                outerRadius={80}
+                label={renderCustomizedLabel}
+                outerRadius={70}
                 fill="#8884d8"
                 dataKey="value"
                 nameKey="name"

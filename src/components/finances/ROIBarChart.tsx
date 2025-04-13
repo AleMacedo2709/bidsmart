@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LabelList } from 'recharts';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart';
 import { mockProperties } from '@/data/mockData';
@@ -21,13 +21,14 @@ const ROIBarChart: React.FC<ROIBarChartProps> = ({ className }) => {
       const roi = (investmentGain / property.purchasePrice) * 100;
       
       return {
-        name: isMobile ? property.name.substring(0, 10) + (property.name.length > 10 ? '...' : '') : property.name,
+        name: isMobile ? property.name.substring(0, 8) + (property.name.length > 8 ? '...' : '') : property.name.substring(0, 12) + (property.name.length > 12 ? '...' : ''),
         fullName: property.name,
-        roi: parseFloat(roi.toFixed(2)),
+        roi: parseFloat(roi.toFixed(1)),
         gain: investmentGain
       };
     })
-    .sort((a, b) => b.roi - a.roi);
+    .sort((a, b) => b.roi - a.roi)
+    .slice(0, 6); // Limit to top 6 properties for better display
 
   const chartConfig = {
     roi: {
@@ -57,31 +58,39 @@ const ROIBarChart: React.FC<ROIBarChartProps> = ({ className }) => {
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <div className="h-[250px] sm:h-[300px] w-full">
+        <div className="h-[250px] sm:h-[280px] w-full">
           <ChartContainer config={chartConfig}>
             <BarChart 
               data={data} 
               layout="vertical" 
               margin={{ 
                 top: 5, 
-                right: isMobile ? 20 : 30, 
-                left: isMobile ? 60 : 80, 
+                right: isMobile ? 25 : 40, 
+                left: isMobile ? 50 : 70, 
                 bottom: 5 
               }}
             >
               <CartesianGrid strokeDasharray="3 3" />
               <XAxis 
                 type="number" 
-                tick={{ fontSize: isMobile ? 10 : 12 }}
+                tick={{ fontSize: isMobile ? 10 : 11 }}
+                domain={[0, 'dataMax']}
               />
               <YAxis 
                 type="category" 
                 dataKey="name" 
-                width={isMobile ? 55 : 75}
-                tick={{ fontSize: isMobile ? 10 : 12 }}
+                width={isMobile ? 50 : 65}
+                tick={{ fontSize: isMobile ? 9 : 11 }}
               />
               <Tooltip content={<CustomTooltip />} />
-              <Bar dataKey="roi" fill="#F43F5E" radius={[0, 4, 4, 0]} />
+              <Bar dataKey="roi" fill="#F43F5E" radius={[0, 4, 4, 0]}>
+                <LabelList 
+                  dataKey="roi" 
+                  position="right" 
+                  formatter={(value: number) => `${value}%`}
+                  style={{ fontSize: isMobile ? 9 : 11 }}
+                />
+              </Bar>
             </BarChart>
           </ChartContainer>
         </div>
