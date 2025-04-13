@@ -3,8 +3,22 @@ import React from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { InitialValues as InitialValuesType } from '@/lib/calculations';
 import { DollarSign } from 'lucide-react';
+
+export interface InitialValuesType {
+  purchasePrice: number;
+  renovationCosts: number;
+  sellingPrice: number;
+  sellingCosts: number;
+  mortgageAmount: number;
+  interestRate: number;
+  monthsHeld: number;
+  taxRate: number;
+  deductions: number;
+  auctionPrice: number;
+  assessedValue: number;
+  resalePrice: number;
+}
 
 interface InitialValuesProps {
   values: InitialValuesType;

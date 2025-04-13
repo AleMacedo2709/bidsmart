@@ -41,6 +41,7 @@ const ModernCalculator = () => {
   const [step, setStep] = useState(1);
   const [values, setValues] = useState<CalculatorValues>(defaultValues);
   const [calculatedResults, setCalculatedResults] = useState<any>(null);
+  const [canGoNext, setCanGoNext] = useState(true);
   
   useEffect(() => {
     // Initialize with default values
@@ -93,6 +94,27 @@ const ModernCalculator = () => {
     });
   };
   
+  const handleNextStep = () => {
+    if (step < 3) {
+      setStep(step + 1);
+    }
+  };
+
+  const handlePreviousStep = () => {
+    if (step > 1) {
+      setStep(step - 1);
+    }
+  };
+
+  const handleComplete = () => {
+    handleCalculate();
+    // Additional completion logic can be added here
+  };
+  
+  const handleValuesChange = (newValues: CalculatorValues) => {
+    setValues(newValues);
+  };
+  
   return (
     <div className="bg-white rounded-lg border shadow-sm">
       <div className="border-b p-6">
@@ -104,7 +126,10 @@ const ModernCalculator = () => {
       
       <div className="p-6">
         {step === 1 && (
-          <InitialValues values={values} setValues={setValues} />
+          <InitialValues 
+            values={values} 
+            onChange={handleValuesChange} 
+          />
         )}
         
         {step > 1 && (
@@ -113,7 +138,14 @@ const ModernCalculator = () => {
       </div>
       
       <div className="border-t p-4 flex justify-between">
-        <StepNavigation />
+        <StepNavigation 
+          currentStep={step}
+          totalSteps={3}
+          onNext={handleNextStep}
+          onPrevious={handlePreviousStep}
+          canGoNext={canGoNext}
+          onComplete={handleComplete}
+        />
       </div>
     </div>
   );
