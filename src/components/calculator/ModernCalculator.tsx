@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -30,6 +31,82 @@ import {
   SimulationResult
 } from '@/lib/calculations';
 
+// Valores padrão para ambiente de desenvolvimento
+const DEV_DEFAULT_VALUES = {
+  initialValues: {
+    auctionPrice: 300000,
+    assessedValue: 300000,
+    resalePrice: 450000
+  },
+  needsRenovation: true,
+  acquisitionCosts: {
+    auctioneerCommission: 5,
+    itbiTax: 3,
+    registryFees: 2000,
+    possessionOfficer: 1000,
+    deedIssuance: 500,
+    legalFees: 1500
+  },
+  maintenanceCosts: {
+    renovation: 30000,
+    monthlyIptu: 375,
+    otherMonthlyExpenses: 200,
+    holdingPeriod: 6
+  },
+  saleCosts: {
+    brokerCommission: 5,
+    appraisalFees: 1000
+  },
+  capitalGainsTax: {
+    acquisitionDate: new Date(),
+    deedCost: 0,
+    isOnlyProperty: false,
+    willReinvest: false
+  },
+  iptuRate: 1.5,
+  paymentMethod: "cash"
+};
+
+// Valores padrão para ambiente de produção
+const PROD_DEFAULT_VALUES = {
+  initialValues: {
+    auctionPrice: 0,
+    assessedValue: 0,
+    resalePrice: 0
+  },
+  needsRenovation: false,
+  acquisitionCosts: {
+    auctioneerCommission: 5,
+    itbiTax: 3,
+    registryFees: 0,
+    possessionOfficer: 0,
+    deedIssuance: 0,
+    legalFees: 0
+  },
+  maintenanceCosts: {
+    renovation: 0,
+    monthlyIptu: 0,
+    otherMonthlyExpenses: 0,
+    holdingPeriod: 6
+  },
+  saleCosts: {
+    brokerCommission: 5,
+    appraisalFees: 0
+  },
+  capitalGainsTax: {
+    acquisitionDate: new Date(),
+    deedCost: 0,
+    isOnlyProperty: false,
+    willReinvest: false
+  },
+  iptuRate: 1.5,
+  paymentMethod: "cash"
+};
+
+// Determine qual conjunto de valores padrão usar com base no ambiente
+const isProduction = process.env.NODE_ENV === 'production';
+const DEFAULT_VALUES = isProduction ? PROD_DEFAULT_VALUES : DEV_DEFAULT_VALUES;
+
 const ModernCalculator: React.FC = () => {
   const { toast } = useToast();
   const { encryptionKey } = useAuth();
@@ -38,44 +115,14 @@ const ModernCalculator: React.FC = () => {
   const [activeTab, setActiveTab] = useState<string>('property-data');
   const [showDetailedCosts, setShowDetailedCosts] = useState(false);
   
-  const [initialValues, setInitialValues] = useState<InitialValues>({
-    auctionPrice: 300000,
-    assessedValue: 300000,
-    resalePrice: 450000
-  });
-  
-  const [needsRenovation, setNeedsRenovation] = useState(true);
-  
-  const [acquisitionCosts, setAcquisitionCosts] = useState<AcquisitionCosts>({
-    auctioneerCommission: 5,
-    itbiTax: 3,
-    registryFees: 2000,
-    possessionOfficer: 1000,
-    deedIssuance: 500,
-    legalFees: 1500
-  });
-  
-  const [maintenanceCosts, setMaintenanceCosts] = useState<MaintenanceCosts>({
-    renovation: 30000,
-    monthlyIptu: 375,
-    otherMonthlyExpenses: 200,
-    holdingPeriod: 6
-  });
-  
-  const [saleCosts, setSaleCosts] = useState<SaleCosts>({
-    brokerCommission: 5,
-    appraisalFees: 1000
-  });
-  
-  const [capitalGainsTax, setCapitalGainsTax] = useState<CapitalGainsTax>({
-    acquisitionDate: new Date(),
-    deedCost: 0,
-    isOnlyProperty: false,
-    willReinvest: false
-  });
-  
-  const [paymentMethod, setPaymentMethod] = useState<string>("cash");
-  const [iptuRate, setIptuRate] = useState<number>(1.5);
+  const [initialValues, setInitialValues] = useState<InitialValues>(DEFAULT_VALUES.initialValues);
+  const [needsRenovation, setNeedsRenovation] = useState(DEFAULT_VALUES.needsRenovation);
+  const [acquisitionCosts, setAcquisitionCosts] = useState<AcquisitionCosts>(DEFAULT_VALUES.acquisitionCosts);
+  const [maintenanceCosts, setMaintenanceCosts] = useState<MaintenanceCosts>(DEFAULT_VALUES.maintenanceCosts);
+  const [saleCosts, setSaleCosts] = useState<SaleCosts>(DEFAULT_VALUES.saleCosts);
+  const [capitalGainsTax, setCapitalGainsTax] = useState<CapitalGainsTax>(DEFAULT_VALUES.capitalGainsTax);
+  const [paymentMethod, setPaymentMethod] = useState<string>(DEFAULT_VALUES.paymentMethod);
+  const [iptuRate, setIptuRate] = useState<number>(DEFAULT_VALUES.iptuRate);
   
   const [results, setResults] = useState<SimulationResult | null>(null);
   
