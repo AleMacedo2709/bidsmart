@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
-import { useSearchParams, useNavigate } from 'react-router-dom';
+import { useSearchParams, useNavigate, useLocation } from 'react-router-dom';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import LoginForm from '@/components/auth/LoginForm';
 import SignupForm from '@/components/auth/SignupForm';
@@ -14,12 +14,17 @@ const Auth = () => {
   const [activeTab, setActiveTab] = useState(initialMode);
   const { isAuthenticated } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
+  
+  // Get the redirect path from location state or default to dashboard
+  const from = location.state?.from?.pathname || '/dashboard';
 
   useEffect(() => {
     if (isAuthenticated) {
-      navigate('/dashboard');
+      // Navigate to the path they tried to visit or dashboard
+      navigate(from, { replace: true });
     }
-  }, [isAuthenticated, navigate]);
+  }, [isAuthenticated, navigate, from]);
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-b from-blue-50 to-white px-4 py-10">

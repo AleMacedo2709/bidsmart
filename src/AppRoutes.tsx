@@ -1,4 +1,3 @@
-
 import React, { Suspense } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import SidebarLayout from '@/components/layout/SidebarLayout';
@@ -12,10 +11,22 @@ const Calculator = React.lazy(() => import('@/pages/Calculator'));
 const Finances = React.lazy(() => import('@/pages/Finances'));
 const About = React.lazy(() => import('@/pages/About'));
 const Backup = React.lazy(() => import('@/pages/Backup'));
+const Auth = React.lazy(() => import('@/pages/Auth'));
 
 const AppRoutes: React.FC = () => {
   return (
     <Routes>
+      {/* Authentication route - should not be protected */}
+      <Route 
+        path="/auth" 
+        element={
+          <Suspense fallback={<div className="flex items-center justify-center h-screen"><Skeleton className="h-32 w-32 rounded-full" /></div>}>
+            <Auth />
+          </Suspense>
+        } 
+      />
+      
+      {/* Protected routes */}
       <Route 
         path="/dashboard" 
         element={
@@ -88,6 +99,8 @@ const AppRoutes: React.FC = () => {
           </ProtectedRoute>
         } 
       />
+      
+      {/* Default routes */}
       <Route path="/" element={<Navigate to="/dashboard" replace />} />
       <Route path="*" element={<Navigate to="/dashboard" replace />} />
     </Routes>
