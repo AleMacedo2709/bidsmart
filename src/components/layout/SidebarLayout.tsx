@@ -46,113 +46,111 @@ const SidebarLayout: React.FC<SidebarLayoutProps> = ({ children }) => {
   };
 
   return (
-    <SidebarProvider defaultOpen={!isMobile}>
-      <div className="flex h-screen w-full overflow-hidden">
-        {isMobile && (
-          <Button 
-            variant="ghost" 
-            size="icon" 
-            className="fixed top-2 left-2 z-50 lg:hidden"
-            onClick={toggleMobileSidebar}
-          >
-            {mobileSidebarOpen ? <X className="h-5 w-5" /> : <MenuIcon className="h-5 w-5" />}
-          </Button>
-        )}
-        
-        <div className={`${isMobile ? (mobileSidebarOpen ? 'block' : 'hidden') : 'block'} h-full`}>
-          <Sidebar className="h-full">
-            <SidebarHeader className="p-0">
-              <div className="py-3 px-4 bg-blue-700 text-white flex items-center">
-                <img 
-                  src="/lovable-uploads/08ed5091-1137-4b1f-845e-9821bdc77e69.png" 
-                  alt="BidSmart Logo" 
-                  className="h-8 w-auto mr-2"
-                />
-              </div>
-            </SidebarHeader>
-            <SidebarContent className="bg-blue-600 text-white h-full flex flex-col">
-              <SidebarGroup className="flex-grow">
-                <SidebarGroupContent>
-                  <SidebarMenu>
-                    <SidebarMenuItem>
-                      <SidebarMenuButton asChild isActive={isActive('/dashboard')} onClick={() => isMobile && setMobileSidebarOpen(false)}>
-                        <Link to="/dashboard" className="flex items-center gap-2 text-white">
-                          <Home className="h-5 w-5" />
-                          <span>Dashboard</span>
-                        </Link>
-                      </SidebarMenuButton>
-                    </SidebarMenuItem>
-                    
-                    <SidebarMenuItem>
-                      <SidebarMenuButton asChild isActive={isActive('/imoveis')} onClick={() => isMobile && setMobileSidebarOpen(false)}>
-                        <Link to="/imoveis" className="flex items-center gap-2 text-white">
-                          <Building2 className="h-5 w-5" />
-                          <span>Imóveis</span>
-                        </Link>
-                      </SidebarMenuButton>
-                    </SidebarMenuItem>
-                    
-                    <SidebarMenuItem>
-                      <SidebarMenuButton asChild isActive={isActive('/calculator')} onClick={() => isMobile && setMobileSidebarOpen(false)}>
-                        <Link to="/calculator" className="flex items-center gap-2 text-white">
-                          <Calculator className="h-5 w-5" />
-                          <span>Calculadora</span>
-                        </Link>
-                      </SidebarMenuButton>
-                    </SidebarMenuItem>
-                    
-                    <SidebarMenuItem>
-                      <SidebarMenuButton asChild isActive={isActive('/financas')} onClick={() => isMobile && setMobileSidebarOpen(false)}>
-                        <Link to="/financas" className="flex items-center gap-2 text-white">
-                          <DollarSign className="h-5 w-5" />
-                          <span>Finanças</span>
-                        </Link>
-                      </SidebarMenuButton>
-                    </SidebarMenuItem>
-                    
-                    <SidebarMenuItem>
-                      <SidebarMenuButton asChild isActive={isActive('/about')} onClick={() => isMobile && setMobileSidebarOpen(false)}>
-                        <Link to="/about" className="flex items-center gap-2 text-white">
-                          <Info className="h-5 w-5" />
-                          <span>Sobre</span>
-                        </Link>
-                      </SidebarMenuButton>
-                    </SidebarMenuItem>
-                    
-                    <SidebarMenuItem>
-                      <SidebarMenuButton asChild isActive={isActive('/backup')} onClick={() => isMobile && setMobileSidebarOpen(false)}>
-                        <Link to="/backup" className="flex items-center gap-2 text-white">
-                          <Database className="h-5 w-5" />
-                          <span>Backup de Dados</span>
-                        </Link>
-                      </SidebarMenuButton>
-                    </SidebarMenuItem>
-                  </SidebarMenu>
-                </SidebarGroupContent>
-              </SidebarGroup>
-              
-              <div className="p-4 mt-auto">
-                <button 
-                  onClick={signOut}
-                  className="flex items-center gap-2 text-white hover:text-blue-200 transition-colors"
-                >
-                  <LogOut className="h-5 w-5" />
-                  <span>Sair</span>
-                </button>
-              </div>
-              
-              <div className="p-4 text-xs text-blue-100">
-                © 2025 BidSmart
-              </div>
-            </SidebarContent>
-          </Sidebar>
-        </div>
-        
-        <main className="flex-1 h-full overflow-hidden bg-background">
-          {children}
-        </main>
+    <div className="flex h-screen w-full">
+      {isMobile && (
+        <Button 
+          variant="ghost" 
+          size="icon" 
+          className="fixed top-2 left-2 z-50 lg:hidden"
+          onClick={toggleMobileSidebar}
+        >
+          {mobileSidebarOpen ? <X className="h-5 w-5" /> : <MenuIcon className="h-5 w-5" />}
+        </Button>
+      )}
+      
+      <div className={`${isMobile ? (mobileSidebarOpen ? 'block' : 'hidden') : 'block'} h-full`}>
+        <Sidebar className="h-full border-r-0">
+          <SidebarHeader className="p-0">
+            <div className="py-3 px-4 bg-blue-700 text-white flex items-center">
+              <img 
+                src="/lovable-uploads/08ed5091-1137-4b1f-845e-9821bdc77e69.png" 
+                alt="BidSmart Logo" 
+                className="h-8 w-auto mr-2"
+              />
+            </div>
+          </SidebarHeader>
+          <SidebarContent className="bg-blue-600 text-white h-full flex flex-col">
+            <SidebarGroup className="flex-grow">
+              <SidebarGroupContent>
+                <SidebarMenu>
+                  <SidebarMenuItem>
+                    <SidebarMenuButton asChild isActive={isActive('/dashboard')} onClick={() => isMobile && setMobileSidebarOpen(false)}>
+                      <Link to="/dashboard" className="flex items-center gap-2 text-white">
+                        <Home className="h-5 w-5" />
+                        <span>Dashboard</span>
+                      </Link>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                  
+                  <SidebarMenuItem>
+                    <SidebarMenuButton asChild isActive={isActive('/imoveis')} onClick={() => isMobile && setMobileSidebarOpen(false)}>
+                      <Link to="/imoveis" className="flex items-center gap-2 text-white">
+                        <Building2 className="h-5 w-5" />
+                        <span>Imóveis</span>
+                      </Link>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                  
+                  <SidebarMenuItem>
+                    <SidebarMenuButton asChild isActive={isActive('/calculator')} onClick={() => isMobile && setMobileSidebarOpen(false)}>
+                      <Link to="/calculator" className="flex items-center gap-2 text-white">
+                        <Calculator className="h-5 w-5" />
+                        <span>Calculadora</span>
+                      </Link>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                  
+                  <SidebarMenuItem>
+                    <SidebarMenuButton asChild isActive={isActive('/financas')} onClick={() => isMobile && setMobileSidebarOpen(false)}>
+                      <Link to="/financas" className="flex items-center gap-2 text-white">
+                        <DollarSign className="h-5 w-5" />
+                        <span>Finanças</span>
+                      </Link>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                  
+                  <SidebarMenuItem>
+                    <SidebarMenuButton asChild isActive={isActive('/about')} onClick={() => isMobile && setMobileSidebarOpen(false)}>
+                      <Link to="/about" className="flex items-center gap-2 text-white">
+                        <Info className="h-5 w-5" />
+                        <span>Sobre</span>
+                      </Link>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                  
+                  <SidebarMenuItem>
+                    <SidebarMenuButton asChild isActive={isActive('/backup')} onClick={() => isMobile && setMobileSidebarOpen(false)}>
+                      <Link to="/backup" className="flex items-center gap-2 text-white">
+                        <Database className="h-5 w-5" />
+                        <span>Backup de Dados</span>
+                      </Link>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                </SidebarMenu>
+              </SidebarGroupContent>
+            </SidebarGroup>
+            
+            <div className="p-4 mt-auto">
+              <button 
+                onClick={signOut}
+                className="flex items-center gap-2 text-white hover:text-blue-200 transition-colors"
+              >
+                <LogOut className="h-5 w-5" />
+                <span>Sair</span>
+              </button>
+            </div>
+            
+            <div className="p-4 text-xs text-blue-100">
+              © 2025 BidSmart
+            </div>
+          </SidebarContent>
+        </Sidebar>
       </div>
-    </SidebarProvider>
+      
+      <main className="flex-1 bg-background">
+        {children}
+      </main>
+    </div>
   );
 };
 
