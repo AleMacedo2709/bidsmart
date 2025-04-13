@@ -42,7 +42,15 @@ const financialSchema = z.object({
   brokerCommission: z.coerce.number().min(0),
   appraisalFees: z.coerce.number().min(0),
   advertisingCosts: z.coerce.number().min(0),
+  
+  acquisitionCosts: z.coerce.number().min(0),
+  monthlyCosts: z.coerce.number().min(0),
+  income: z.coerce.number().min(0),
+  saleCosts: z.coerce.number().min(0),
 });
+
+// Define the type for form values based on the schema
+type FinancialFormValues = z.infer<typeof financialSchema>;
 
 const PropertyFinanceForm: React.FC<PropertyFinanceFormProps> = ({ propertyId, property, onSave }) => {
   const [activeTab, setActiveTab] = useState('acquisition');
@@ -75,7 +83,7 @@ const PropertyFinanceForm: React.FC<PropertyFinanceFormProps> = ({ propertyId, p
     saleCosts: property?.finances?.saleCosts || 0,
   };
 
-  const { register, handleSubmit, watch, setValue, formState: { errors } } = useForm({
+  const { register, handleSubmit, watch, setValue, formState: { errors } } = useForm<FinancialFormValues>({
     resolver: zodResolver(financialSchema),
     defaultValues,
   });
@@ -185,7 +193,7 @@ const PropertyFinanceForm: React.FC<PropertyFinanceFormProps> = ({ propertyId, p
 
   const financialMetrics = getFinancialMetrics();
 
-  const onSubmit = async (data: any) => {
+  const onSubmit = async (data: FinancialFormValues) => {
     setIsSaving(true);
     try {
       await onSave(data);
@@ -194,7 +202,8 @@ const PropertyFinanceForm: React.FC<PropertyFinanceFormProps> = ({ propertyId, p
     }
   };
 
-  const handleCurrencyChange = (field: string, value: number) => {
+  // Type-safe handler for currency inputs
+  const handleCurrencyChange = (field: keyof FinancialFormValues, value: number) => {
     setValue(field, value);
   };
 
