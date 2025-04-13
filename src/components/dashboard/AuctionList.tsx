@@ -1,7 +1,6 @@
 
 import React from 'react';
 import { mockAuctions } from '@/data/mockData';
-import { ArrowRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 const AuctionList: React.FC = () => {
@@ -34,14 +33,6 @@ const AuctionList: React.FC = () => {
               </div>
               <div className="text-sm text-gray-500">{totalProperties} imóveis disponíveis</div>
             </div>
-            
-            <Link 
-              to={`/leiloes/${auction.id}`} 
-              className="text-blue-600 hover:text-blue-700 text-sm font-medium"
-              aria-label={`Ver detalhes do leilão ${auction.name}`}
-            >
-              <ArrowRight className="h-4 w-4" />
-            </Link>
           </div>
         );
       })}
