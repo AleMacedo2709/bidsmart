@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -8,7 +7,7 @@ import { ArrowLeft, Edit, Banknote, Home, MapPin, Calendar, BarChart } from 'luc
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/components/auth/AuthProvider';
 import { retrieveData, updateData } from '@/lib/storage';
-import { formatCurrency } from '@/lib/calculations';
+import { formatCurrency, formatPercentage, calculateResults } from '@/lib/calculations';
 import PropertyFinanceForm from './PropertyFinanceForm';
 import { mockProperties } from '@/data/mockData';
 
@@ -23,14 +22,13 @@ const PropertyDetail: React.FC<PropertyDetailProps> = ({ propertyId }) => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const { encryptionKey } = useAuth();
-  const { id } = useParams(); // Get the ID from URL params
+  const { id } = useParams();
 
   useEffect(() => {
     const loadPropertyData = async () => {
       try {
         setLoading(true);
         
-        // First try to get from localStorage (for demo purposes)
         const storedProperty = localStorage.getItem('currentViewProperty');
         if (storedProperty) {
           setProperty(JSON.parse(storedProperty));
@@ -38,7 +36,6 @@ const PropertyDetail: React.FC<PropertyDetailProps> = ({ propertyId }) => {
           return;
         }
         
-        // If not in localStorage, try to fetch from IndexedDB if encryption key exists
         if (encryptionKey) {
           try {
             const fetchedProperty = await retrieveData('properties', propertyId, encryptionKey);
@@ -51,7 +48,6 @@ const PropertyDetail: React.FC<PropertyDetailProps> = ({ propertyId }) => {
           }
         }
         
-        // As a fallback for demo, use mock data
         const mockProperty = mockProperties.find(p => p.id === propertyId);
         if (mockProperty) {
           setProperty(mockProperty);
@@ -83,7 +79,6 @@ const PropertyDetail: React.FC<PropertyDetailProps> = ({ propertyId }) => {
   };
 
   const handleEdit = () => {
-    // Implementação futura para edição do imóvel
     toast({
       title: "Editar imóvel",
       description: "Funcionalidade de edição será implementada em breve.",
@@ -118,6 +113,33 @@ const PropertyDetail: React.FC<PropertyDetailProps> = ({ propertyId }) => {
       });
     }
   };
+
+  const getFinancialMetrics = () => {
+    if (!property) return null;
+
+    const acquisitionCosts = property.finances?.acquisitionCosts || 0;
+    const monthlyCosts = property.finances?.monthlyCosts || 0;
+    const income = property.finances?.income || 0;
+    const saleCosts = property.finances?.saleCosts || 0;
+
+    const totalInvestment = property.purchasePrice + acquisitionCosts + monthlyCosts;
+    const projectedProfit = property.estimatedValue - property.purchasePrice - 
+                          acquisitionCosts - monthlyCosts + income - saleCosts;
+    const roi = (projectedProfit / totalInvestment) * 100;
+    
+    const operationalResult = income - monthlyCosts;
+    const appreciation = property.estimatedValue - property.purchasePrice;
+    
+    return {
+      totalInvestment,
+      projectedProfit,
+      roi,
+      operationalResult,
+      appreciation
+    };
+  };
+
+  const financialMetrics = getFinancialMetrics();
 
   if (loading) {
     return (
@@ -283,7 +305,9 @@ const PropertyDetail: React.FC<PropertyDetailProps> = ({ propertyId }) => {
               <CardContent className="space-y-4">
                 <div className="flex justify-between border-b pb-2">
                   <span className="text-gray-500">Investimento Total:</span>
-                  <span className="font-medium">{formatCurrency(property.purchasePrice)}</span>
+                  <span className="font-medium">
+                    {financialMetrics ? formatCurrency(financialMetrics.totalInvestment) : formatCurrency(property.purchasePrice)}
+                  </span>
                 </div>
                 
                 {property.finances && (
@@ -306,13 +330,28 @@ const PropertyDetail: React.FC<PropertyDetailProps> = ({ propertyId }) => {
                 <div className="flex justify-between border-b pb-2">
                   <span className="text-gray-500">Valorização:</span>
                   <span className="font-medium text-green-600">
-                    {formatCurrency(property.estimatedValue - property.purchasePrice)}
+                    {financialMetrics ? formatCurrency(financialMetrics.appreciation) : formatCurrency(property.estimatedValue - property.purchasePrice)}
                   </span>
                 </div>
+
+                <div className="flex justify-between border-b pb-2">
+                  <span className="text-gray-500">Resultado Operacional:</span>
+                  <span className={`font-medium ${(property.finances?.income || 0) > (property.finances?.monthlyCosts || 0) ? 'text-green-600' : 'text-red-600'}`}>
+                    {property.finances ? formatCurrency((property.finances.income || 0) - (property.finances.monthlyCosts || 0)) : "N/A"}
+                  </span>
+                </div>
+
+                <div className="flex justify-between border-b pb-2">
+                  <span className="text-gray-500">Lucro Projetado (na venda):</span>
+                  <span className="font-medium text-green-600">
+                    {financialMetrics ? formatCurrency(financialMetrics.projectedProfit) : "N/A"}
+                  </span>
+                </div>
+                
                 <div className="flex justify-between border-b pb-2">
                   <span className="text-gray-500">ROI Estimado:</span>
                   <span className="font-medium text-green-600">
-                    {((property.estimatedValue - property.purchasePrice) / property.purchasePrice * 100).toFixed(2)}%
+                    {financialMetrics ? formatPercentage(financialMetrics.roi) : "N/A"}
                   </span>
                 </div>
               </CardContent>

@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -8,7 +7,13 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { formatCurrency } from '@/lib/calculations';
+import { 
+  formatCurrency, 
+  formatPercentage,
+  calculateAcquisitionCostsTotal,
+  calculateMaintenanceCostsTotal,
+  calculateSaleCostsTotal
+} from '@/lib/calculations';
 
 interface PropertyFinanceFormProps {
   propertyId: string;
@@ -16,9 +21,7 @@ interface PropertyFinanceFormProps {
   onSave: (financialData: any) => Promise<void>;
 }
 
-// Esquema de validação para os dados financeiros
 const financialSchema = z.object({
-  // Custos de Aquisição
   auctionCommission: z.coerce.number().min(0),
   itbiTax: z.coerce.number().min(0),
   registryFees: z.coerce.number().min(0),
@@ -26,36 +29,25 @@ const financialSchema = z.object({
   deedIssuance: z.coerce.number().min(0),
   legalFees: z.coerce.number().min(0),
   
-  // Custos Mensais
   monthlyIptu: z.coerce.number().min(0),
   condoFee: z.coerce.number().min(0),
   utilities: z.coerce.number().min(0),
   maintenance: z.coerce.number().min(0),
   
-  // Receitas
   rentalIncome: z.coerce.number().min(0),
   otherIncome: z.coerce.number().min(0),
   
-  // Custos de Venda
   brokerCommission: z.coerce.number().min(0),
   appraisalFees: z.coerce.number().min(0),
   advertisingCosts: z.coerce.number().min(0),
-  
-  // Valores Acumulados (calculados automaticamente)
-  acquisitionCosts: z.number().optional(),
-  monthlyCosts: z.number().optional(),
-  income: z.number().optional(),
-  saleCosts: z.number().optional(),
 });
 
 const PropertyFinanceForm: React.FC<PropertyFinanceFormProps> = ({ propertyId, property, onSave }) => {
   const [activeTab, setActiveTab] = useState('acquisition');
   const [isSaving, setIsSaving] = useState(false);
-  const [timeOwned, setTimeOwned] = useState(0); // meses
+  const [timeOwned, setTimeOwned] = useState(0);
 
-  // Definir valores padrão a partir dos dados existentes ou usar zeros
   const defaultValues = {
-    // Custos de Aquisição
     auctionCommission: property?.finances?.auctionCommission || 0,
     itbiTax: property?.finances?.itbiTax || 0,
     registryFees: property?.finances?.registryFees || 0,
@@ -63,22 +55,18 @@ const PropertyFinanceForm: React.FC<PropertyFinanceFormProps> = ({ propertyId, p
     deedIssuance: property?.finances?.deedIssuance || 0,
     legalFees: property?.finances?.legalFees || 0,
     
-    // Custos Mensais
     monthlyIptu: property?.finances?.monthlyIptu || 0,
     condoFee: property?.finances?.condoFee || 0,
     utilities: property?.finances?.utilities || 0,
     maintenance: property?.finances?.maintenance || 0,
     
-    // Receitas
     rentalIncome: property?.finances?.rentalIncome || 0,
     otherIncome: property?.finances?.otherIncome || 0,
     
-    // Custos de Venda
     brokerCommission: property?.finances?.brokerCommission || 0,
     appraisalFees: property?.finances?.appraisalFees || 0,
     advertisingCosts: property?.finances?.advertisingCosts || 0,
     
-    // Valores Acumulados
     acquisitionCosts: property?.finances?.acquisitionCosts || 0,
     monthlyCosts: property?.finances?.monthlyCosts || 0,
     income: property?.finances?.income || 0,
@@ -90,7 +78,6 @@ const PropertyFinanceForm: React.FC<PropertyFinanceFormProps> = ({ propertyId, p
     defaultValues,
   });
 
-  // Calcular o tempo de posse do imóvel em meses
   useEffect(() => {
     if (property?.purchaseDate) {
       const purchaseDate = new Date(property.purchaseDate);
@@ -101,7 +88,6 @@ const PropertyFinanceForm: React.FC<PropertyFinanceFormProps> = ({ propertyId, p
     }
   }, [property]);
 
-  // Observar mudanças nos custos de aquisição para cálculo automático
   const auctionCommission = watch('auctionCommission');
   const itbiTax = watch('itbiTax');
   const registryFees = watch('registryFees');
@@ -109,23 +95,34 @@ const PropertyFinanceForm: React.FC<PropertyFinanceFormProps> = ({ propertyId, p
   const deedIssuance = watch('deedIssuance');
   const legalFees = watch('legalFees');
 
-  // Observar mudanças nos custos mensais
   const monthlyIptu = watch('monthlyIptu');
   const condoFee = watch('condoFee');
   const utilities = watch('utilities');
   const maintenance = watch('maintenance');
 
-  // Observar mudanças nas receitas
   const rentalIncome = watch('rentalIncome');
   const otherIncome = watch('otherIncome');
 
-  // Observar mudanças nos custos de venda
   const brokerCommission = watch('brokerCommission');
   const appraisalFees = watch('appraisalFees');
   const advertisingCosts = watch('advertisingCosts');
 
-  // Calcular custos totais de aquisição
   useEffect(() => {
+    const initialValues = {
+      auctionPrice: property.purchasePrice,
+      assessedValue: property.estimatedValue,
+      resalePrice: property.estimatedValue
+    };
+
+    const acquisitionCosts = {
+      auctioneerCommission: parseFloat(auctionCommission || 0),
+      itbiTax: parseFloat(itbiTax || 0),
+      registryFees: parseFloat(registryFees || 0),
+      possessionOfficer: parseFloat(possessionOfficer || 0),
+      deedIssuance: parseFloat(deedIssuance || 0),
+      legalFees: parseFloat(legalFees || 0)
+    };
+
     const totalAcquisitionCosts = 
       parseFloat(auctionCommission || 0) +
       parseFloat(itbiTax || 0) +
@@ -135,9 +132,8 @@ const PropertyFinanceForm: React.FC<PropertyFinanceFormProps> = ({ propertyId, p
       parseFloat(legalFees || 0);
     
     setValue('acquisitionCosts', totalAcquisitionCosts);
-  }, [auctionCommission, itbiTax, registryFees, possessionOfficer, deedIssuance, legalFees, setValue]);
+  }, [auctionCommission, itbiTax, registryFees, possessionOfficer, deedIssuance, legalFees, setValue, property.purchasePrice, property.estimatedValue]);
 
-  // Calcular custos mensais acumulados
   useEffect(() => {
     const monthlyTotal = 
       parseFloat(monthlyIptu || 0) +
@@ -149,7 +145,6 @@ const PropertyFinanceForm: React.FC<PropertyFinanceFormProps> = ({ propertyId, p
     setValue('monthlyCosts', totalMonthlyCosts);
   }, [monthlyIptu, condoFee, utilities, maintenance, timeOwned, setValue]);
 
-  // Calcular receita acumulada
   useEffect(() => {
     const monthlyIncome = 
       parseFloat(rentalIncome || 0) +
@@ -159,7 +154,6 @@ const PropertyFinanceForm: React.FC<PropertyFinanceFormProps> = ({ propertyId, p
     setValue('income', totalIncome);
   }, [rentalIncome, otherIncome, timeOwned, setValue]);
 
-  // Calcular custos de venda
   useEffect(() => {
     const totalSaleCosts = 
       parseFloat(brokerCommission || 0) +
@@ -168,6 +162,26 @@ const PropertyFinanceForm: React.FC<PropertyFinanceFormProps> = ({ propertyId, p
     
     setValue('saleCosts', totalSaleCosts);
   }, [brokerCommission, appraisalFees, advertisingCosts, setValue]);
+
+  const getFinancialMetrics = () => {
+    const acquisitionCosts = watch('acquisitionCosts');
+    const monthlyCosts = watch('monthlyCosts');
+    const income = watch('income');
+    const saleCosts = watch('saleCosts');
+
+    const totalInvestment = property.purchasePrice + acquisitionCosts + monthlyCosts;
+    const projectedProfit = property.estimatedValue - property.purchasePrice - 
+                          acquisitionCosts - monthlyCosts + income - saleCosts;
+    const roi = (projectedProfit / totalInvestment) * 100;
+
+    return {
+      totalInvestment,
+      projectedProfit,
+      roi
+    };
+  };
+
+  const financialMetrics = getFinancialMetrics();
 
   const onSubmit = async (data: any) => {
     setIsSaving(true);
@@ -538,13 +552,7 @@ const PropertyFinanceForm: React.FC<PropertyFinanceFormProps> = ({ propertyId, p
             <div className="pt-4">
               <div className="flex justify-between font-semibold">
                 <span>Investimento Total:</span>
-                <span>
-                  {formatCurrency(
-                    property.purchasePrice + 
-                    watch('acquisitionCosts') + 
-                    watch('monthlyCosts')
-                  )}
-                </span>
+                <span>{formatCurrency(financialMetrics.totalInvestment)}</span>
               </div>
               <div className="flex justify-between font-semibold">
                 <span>Resultado Operacional:</span>
@@ -555,22 +563,13 @@ const PropertyFinanceForm: React.FC<PropertyFinanceFormProps> = ({ propertyId, p
               <div className="flex justify-between font-semibold">
                 <span>Lucro Projetado (na venda):</span>
                 <span className="text-green-600 font-bold">
-                  {formatCurrency(
-                    property.estimatedValue - property.purchasePrice - 
-                    watch('acquisitionCosts') - watch('monthlyCosts') + 
-                    watch('income') - watch('saleCosts')
-                  )}
+                  {formatCurrency(financialMetrics.projectedProfit)}
                 </span>
               </div>
               <div className="flex justify-between font-semibold mt-2">
                 <span>ROI Projetado:</span>
                 <span className="text-green-600 font-bold">
-                  {(
-                    (property.estimatedValue - property.purchasePrice - 
-                    watch('acquisitionCosts') - watch('monthlyCosts') + 
-                    watch('income') - watch('saleCosts')) / 
-                    (property.purchasePrice + watch('acquisitionCosts') + watch('monthlyCosts')) * 100
-                  ).toFixed(2)}%
+                  {formatPercentage(financialMetrics.roi)}
                 </span>
               </div>
             </div>
