@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Gavel, Calendar, MapPin, Search, Filter, Eye, Home, Building, DollarSign, Briefcase, Clock, Plus } from 'lucide-react';
 import { mockAuctions } from '@/data/mockData';
@@ -39,10 +38,8 @@ const Auctions = () => {
   const [newAuctionDialogOpen, setNewAuctionDialogOpen] = useState(false);
   const { toast } = useToast();
   
-  // Extract unique locations from auctions
   const uniqueLocations = Array.from(new Set(mockAuctions.map(auction => auction.location.split(',')[1].trim())));
   
-  // Filter auctions based on search term and location filters
   const filteredAuctions = mockAuctions.filter(auction => {
     const matchesSearch = auction.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       auction.location.toLowerCase().includes(searchTerm.toLowerCase());
@@ -53,7 +50,6 @@ const Auctions = () => {
     return matchesSearch && matchesLocation;
   });
 
-  // Calculate property counts for each auction
   const getAuctionPropertyCounts = (totalProperties: number) => {
     const apartments = Math.floor(totalProperties * 0.6);
     const houses = Math.floor(totalProperties * 0.3);
@@ -70,7 +66,6 @@ const Auctions = () => {
     setSelectedAuction(auction);
     setDialogOpen(true);
     
-    // Keep toast for consistency with previous behavior
     toast({
       title: "Detalhes do Leilão",
       description: `Visualizando detalhes do leilão ${auction.id}`,
@@ -87,15 +82,20 @@ const Auctions = () => {
     });
   };
 
-  // Form schema for new auction
   const formSchema = z.object({
     name: z.string().min(5, "Nome deve ter pelo menos 5 caracteres"),
     date: z.string().regex(/^\d{2}\/\d{2}\/\d{4}$/, "Data deve estar no formato DD/MM/YYYY"),
     location: z.string().min(5, "Localização deve ter pelo menos 5 caracteres"),
     description: z.string().min(10, "Descrição deve ter pelo menos 10 caracteres"),
-    properties: z.number().min(1, "Número de propriedades deve ser maior que 0"),
+    apartmentCount: z.number().min(0, "Quantidade não pode ser negativa"),
+    apartmentValue: z.number().min(0, "Valor não pode ser negativo"),
+    houseCount: z.number().min(0, "Quantidade não pode ser negativa"),
+    houseValue: z.number().min(0, "Valor não pode ser negativo"),
+    landCount: z.number().min(0, "Quantidade não pode ser negativa"),
+    landValue: z.number().min(0, "Valor não pode ser negativo"),
     auctioneerName: z.string().min(3, "Nome do leiloeiro deve ter pelo menos 3 caracteres"),
     auctioneerContact: z.string().regex(/^\(\d{2}\) \d{5}-\d{4}$/, "Contato deve estar no formato (XX) XXXXX-XXXX"),
+    auctionTime: z.string().min(1, "Horário é obrigatório"),
   });
 
   type FormValues = z.infer<typeof formSchema>;
@@ -107,14 +107,24 @@ const Auctions = () => {
       date: "",
       location: "",
       description: "",
-      properties: 0,
+      apartmentCount: 0,
+      apartmentValue: 300000,
+      houseCount: 0,
+      houseValue: 450000,
+      landCount: 0,
+      landValue: 180000,
       auctioneerName: "",
       auctioneerContact: "",
+      auctionTime: "14:00",
     },
   });
 
+  const getTotalProperties = () => {
+    const { apartmentCount, houseCount, landCount } = form.watch();
+    return apartmentCount + houseCount + landCount;
+  };
+
   const onSubmit = (data: FormValues) => {
-    // In a real app, this would save to a database
     toast({
       title: "Leilão Cadastrado",
       description: `O leilão ${data.name} foi cadastrado com sucesso!`,
@@ -131,7 +141,6 @@ const Auctions = () => {
   return (
     <AppLayout>
       <div className="container mx-auto px-6 py-8">
-        {/* Header section with title and search */}
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8">
           <div>
             <h1 className="text-3xl font-bold flex items-center gap-2">
@@ -180,7 +189,6 @@ const Auctions = () => {
               </DropdownMenuContent>
             </DropdownMenu>
             
-            {/* Novo botão "Incluir Novo Leilão" */}
             <Button 
               onClick={openNewAuctionDialog}
               className="ml-2 hidden md:flex"
@@ -192,7 +200,6 @@ const Auctions = () => {
           </div>
         </div>
 
-        {/* Botão móvel para adicionar novo leilão */}
         <div className="mb-4 md:hidden">
           <Button 
             onClick={openNewAuctionDialog}
@@ -204,7 +211,6 @@ const Auctions = () => {
           </Button>
         </div>
 
-        {/* Active filters section */}
         {selectedLocations.length > 0 && (
           <div className="flex gap-2 mb-4 flex-wrap">
             <span className="text-sm text-gray-500 mt-1">Filtros:</span>
@@ -229,10 +235,8 @@ const Auctions = () => {
           </div>
         )}
 
-        {/* List of upcoming auctions */}
         <div className="grid gap-6">
           {filteredAuctions.map((auction) => {
-            // Calculate property counts for this auction
             const { apartments, houses, lands } = getAuctionPropertyCounts(auction.properties);
             const totalCalculatedProperties = apartments + houses + lands;
             
@@ -326,7 +330,6 @@ const Auctions = () => {
         )}
       </div>
 
-      {/* Auction Details Dialog */}
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
         <DialogContent className="sm:max-w-[700px]">
           {selectedAuction && (
@@ -457,7 +460,6 @@ const Auctions = () => {
         </DialogContent>
       </Dialog>
 
-      {/* New Auction Dialog */}
       <Dialog open={newAuctionDialogOpen} onOpenChange={setNewAuctionDialogOpen}>
         <DialogContent className="sm:max-w-[700px]">
           <DialogHeader>
@@ -517,17 +519,12 @@ const Auctions = () => {
 
                 <FormField
                   control={form.control}
-                  name="properties"
+                  name="auctionTime"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Número de Imóveis</FormLabel>
+                      <FormLabel>Horário</FormLabel>
                       <FormControl>
-                        <Input 
-                          type="number" 
-                          placeholder="Total de propriedades" 
-                          {...field}
-                          onChange={e => field.onChange(parseInt(e.target.value) || 0)}
-                        />
+                        <Input placeholder="14:00" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -583,31 +580,138 @@ const Auctions = () => {
 
               <div className="border-t pt-4">
                 <h3 className="font-medium mb-3">Distribuição de Imóveis</h3>
-                <div className="text-sm text-gray-500 italic mb-2">
-                  A distribuição será calculada automaticamente com base no número total de imóveis:
-                  <ul className="list-disc ml-5 mt-1">
-                    <li>60% Apartamentos</li>
-                    <li>30% Casas</li>
-                    <li>10% Terrenos</li>
-                  </ul>
-                </div>
                 
-                {form.watch("properties") > 0 && (
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
-                    <div className="p-3 bg-blue-50 rounded-md">
-                      <p className="text-sm text-blue-800">Apartamentos</p>
-                      <p className="font-medium">{Math.floor(form.watch("properties") * 0.6)} unidades</p>
-                    </div>
-                    <div className="p-3 bg-green-50 rounded-md">
-                      <p className="text-sm text-green-800">Casas</p>
-                      <p className="font-medium">{Math.floor(form.watch("properties") * 0.3)} unidades</p>
-                    </div>
-                    <div className="p-3 bg-amber-50 rounded-md">
-                      <p className="text-sm text-amber-800">Terrenos</p>
-                      <p className="font-medium">{Math.floor(form.watch("properties") * 0.1)} unidades</p>
+                <div className="grid gap-6">
+                  <div className="bg-blue-50 p-4 rounded-md">
+                    <h4 className="text-sm text-blue-800 font-medium mb-3">Apartamentos</h4>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <FormField
+                        control={form.control}
+                        name="apartmentCount"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Quantidade</FormLabel>
+                            <FormControl>
+                              <Input 
+                                type="number" 
+                                {...field}
+                                onChange={e => field.onChange(parseInt(e.target.value) || 0)}
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      
+                      <FormField
+                        control={form.control}
+                        name="apartmentValue"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Valor Médio (R$)</FormLabel>
+                            <FormControl>
+                              <Input 
+                                type="number" 
+                                {...field}
+                                onChange={e => field.onChange(parseInt(e.target.value) || 0)}
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
                     </div>
                   </div>
-                )}
+                  
+                  <div className="bg-green-50 p-4 rounded-md">
+                    <h4 className="text-sm text-green-800 font-medium mb-3">Casas</h4>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <FormField
+                        control={form.control}
+                        name="houseCount"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Quantidade</FormLabel>
+                            <FormControl>
+                              <Input 
+                                type="number" 
+                                {...field}
+                                onChange={e => field.onChange(parseInt(e.target.value) || 0)}
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      
+                      <FormField
+                        control={form.control}
+                        name="houseValue"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Valor Médio (R$)</FormLabel>
+                            <FormControl>
+                              <Input 
+                                type="number" 
+                                {...field}
+                                onChange={e => field.onChange(parseInt(e.target.value) || 0)}
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+                  </div>
+                  
+                  <div className="bg-amber-50 p-4 rounded-md">
+                    <h4 className="text-sm text-amber-800 font-medium mb-3">Terrenos</h4>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <FormField
+                        control={form.control}
+                        name="landCount"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Quantidade</FormLabel>
+                            <FormControl>
+                              <Input 
+                                type="number" 
+                                {...field}
+                                onChange={e => field.onChange(parseInt(e.target.value) || 0)}
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      
+                      <FormField
+                        control={form.control}
+                        name="landValue"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Valor Médio (R$)</FormLabel>
+                            <FormControl>
+                              <Input 
+                                type="number" 
+                                {...field}
+                                onChange={e => field.onChange(parseInt(e.target.value) || 0)}
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+                  </div>
+                </div>
+                
+                <div className="mt-4 p-3 bg-gray-50 rounded-md">
+                  <div className="flex justify-between">
+                    <span className="font-medium">Total de Imóveis:</span>
+                    <span className="font-medium">{getTotalProperties()}</span>
+                  </div>
+                </div>
               </div>
 
               <div className="border-t pt-4">
