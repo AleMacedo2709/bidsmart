@@ -1,81 +1,42 @@
 
 import React from 'react';
-import { Button } from '@/components/ui/button';
-import { ArrowLeft, ArrowRight, Check } from 'lucide-react';
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { cn } from '@/lib/utils';
 
 interface StepNavigationProps {
-  currentStep: number;
-  totalSteps: number;
-  onNext: () => void;
-  onPrevious: () => void;
-  canGoNext: boolean;
-  onComplete?: () => void;
+  activeStep: number;
+  setActiveStep: (step: number) => void;
 }
 
-const StepNavigation: React.FC<StepNavigationProps> = ({
-  currentStep,
-  totalSteps,
-  onNext,
-  onPrevious,
-  canGoNext,
-  onComplete,
-}) => {
-  const isLastStep = currentStep === totalSteps;
+const StepNavigation: React.FC<StepNavigationProps> = ({ activeStep, setActiveStep }) => {
+  const steps = [
+    { id: 1, label: 'Valores Iniciais' },
+    { id: 2, label: 'Custos de Aquisição' },
+    { id: 3, label: 'Custos de Manutenção' },
+    { id: 4, label: 'Resultados' }
+  ];
 
   return (
-    <div className="flex justify-between items-center mt-6">
-      {currentStep > 1 ? (
-        <Button
-          type="button"
-          variant="outline"
-          onClick={onPrevious}
-          className="flex items-center"
-        >
-          <ArrowLeft className="mr-2 h-4 w-4" />
-          Voltar
-        </Button>
-      ) : (
-        <div></div>
-      )}
-
-      <div className="flex items-center">
-        {Array.from({ length: totalSteps }, (_, i) => (
-          <div
-            key={i}
-            className={`h-2 w-2 rounded-full mx-1 ${
-              i + 1 === currentStep
-                ? 'bg-primary'
-                : i + 1 < currentStep
-                ? 'bg-primary/40'
-                : 'bg-gray-200'
-            }`}
-          />
-        ))}
-      </div>
-
-      {isLastStep ? (
-        <Button
-          type="button"
-          variant="default"
-          onClick={onComplete}
-          disabled={!canGoNext}
-          className="flex items-center"
-        >
-          <Check className="mr-2 h-4 w-4" />
-          Concluir
-        </Button>
-      ) : (
-        <Button
-          type="button"
-          variant="default"
-          onClick={onNext}
-          disabled={!canGoNext}
-          className="flex items-center"
-        >
-          Avançar
-          <ArrowRight className="ml-2 h-4 w-4" />
-        </Button>
-      )}
+    <div className="border-b">
+      <Tabs value={activeStep.toString()} className="w-full">
+        <TabsList className="flex w-full">
+          {steps.map((step) => (
+            <TabsTrigger
+              key={step.id}
+              value={step.id.toString()}
+              onClick={() => setActiveStep(step.id)}
+              className={cn(
+                "flex-1 text-xs sm:text-sm",
+                step.id > activeStep && "text-gray-400 pointer-events-none"
+              )}
+              disabled={step.id > activeStep}
+            >
+              <span className="hidden sm:inline">{step.label}</span>
+              <span className="sm:hidden">{step.id}</span>
+            </TabsTrigger>
+          ))}
+        </TabsList>
+      </Tabs>
     </div>
   );
 };

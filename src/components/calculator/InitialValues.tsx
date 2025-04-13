@@ -3,7 +3,6 @@ import React from 'react';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent } from '@/components/ui/card';
-import { FormField } from '@/components/ui/form';
 
 interface InitialValuesProps {
   valorArremate: number;

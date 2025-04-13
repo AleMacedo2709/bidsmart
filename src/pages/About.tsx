@@ -1,289 +1,159 @@
 
-import React from 'react';
+import { useState } from 'react';
 import AppLayout from '@/components/layout/AppLayout';
-import { 
-  Shield, 
-  Lock, 
-  Key, 
-  FileDigit, 
-  Database, 
-  RefreshCw, 
-  Info, 
-  HelpCircle, 
-  Mail, 
-  Globe, 
-  MapPin,
-  BadgeInfo
-} from 'lucide-react';
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { useAuth } from '@/components/auth/AuthProvider';
-import { toast } from '@/hooks/use-toast';
-import { 
-  Card, 
-  CardHeader, 
-  CardTitle, 
-  CardDescription, 
-  CardContent, 
-  CardFooter 
-} from '@/components/ui/card';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { 
-  Accordion, 
-  AccordionContent, 
-  AccordionItem, 
-  AccordionTrigger 
-} from '@/components/ui/accordion';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Separator } from '@/components/ui/separator';
+import { useToast } from '@/hooks/use-toast';
 
-const About = () => {
-  const { verifyDataIntegrity } = useAuth();
+const AboutPage = () => {
+  const { toast } = useToast();
+  const [feedbackSent, setFeedbackSent] = useState(false);
   
-  const handleVerifyIntegrity = async () => {
-    try {
-      await verifyDataIntegrity();
-      toast({
-        title: "Verificação concluída",
-        description: "A integridade dos dados foi verificada com sucesso.",
-        variant: "success"
-      });
-    } catch (error) {
-      console.error("Erro de verificação de integridade:", error);
-      toast({
-        title: "Erro na verificação",
-        description: "Houve um problema ao verificar a integridade dos dados.",
-        variant: "destructive"
-      });
-    }
+  const handleFeedback = () => {
+    setFeedbackSent(true);
+    toast({
+      title: "Feedback enviado",
+      description: "Agradecemos seu interesse em nosso aplicativo!",
+      variant: "default", // Alterado de "success" para "default"
+    });
   };
   
   return (
     <AppLayout>
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="flex items-center gap-3 mb-6">
-          <BadgeInfo className="h-8 w-8 text-primary" />
-          <h1 className="text-4xl font-bold">Sobre Nós</h1>
+      <div className="max-w-6xl mx-auto px-4 py-8">
+        <div className="text-center mb-12">
+          <h1 className="text-4xl font-bold mb-4">Sobre o Leilão Lucrativo</h1>
+          <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+            Uma plataforma completa para investidores de leilões imobiliários calcularem custos, impostos e lucro potencial.
+          </p>
         </div>
         
-        <Tabs defaultValue="empresa" className="w-full mb-8">
-          <TabsList className="grid w-full grid-cols-3 mb-6">
-            <TabsTrigger value="empresa">Nossa Empresa</TabsTrigger>
-            <TabsTrigger value="privacidade">Privacidade & Segurança</TabsTrigger>
-            <TabsTrigger value="tecnico">Detalhes Técnicos</TabsTrigger>
-          </TabsList>
+        <div className="grid md:grid-cols-2 gap-8 mb-16">
+          <Card>
+            <CardHeader>
+              <CardTitle>Nossa Missão</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-gray-700">
+                Fornecer ferramentas precisas e intuitivas para que investidores possam tomar decisões
+                informadas sobre investimentos em leilões imobiliários, compreendendo todos os custos, 
+                impostos e potencial retorno sobre investimento.
+              </p>
+            </CardContent>
+          </Card>
           
-          {/* Aba da Empresa */}
-          <TabsContent value="empresa" className="space-y-6">
-            <Card className="border-t-4 border-t-primary">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Info className="h-5 w-5 text-primary" />
-                  Sobre a BidSmart
-                </CardTitle>
-                <CardDescription>Conheça mais sobre nossa empresa e missão</CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <p className="text-gray-700">
-                  BidSmart é uma ferramenta especializada para investidores e indivíduos
-                  que adquirem imóveis através de leilões. Nossa missão é ajudar você
-                  a tomar decisões financeiras informadas, mantendo controle total sobre seus dados.
-                </p>
-                <p className="text-gray-700">
-                  Este aplicativo foi desenvolvido por uma equipe especializada em tecnologias
-                  imobiliárias, com larga experiência no mercado de leilões.
-                </p>
-                
-                <div className="bg-blue-50 p-4 rounded-lg mt-6 border border-blue-100">
-                  <h3 className="text-lg font-medium mb-3 text-blue-700">Informações de Contato</h3>
-                  <div className="space-y-2">
-                    <div className="flex items-center gap-2">
-                      <Mail className="h-4 w-4 text-blue-600" />
-                      <p><strong>Email:</strong> contato@bidsmart.com.br</p>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <Globe className="h-4 w-4 text-blue-600" />
-                      <p><strong>Website:</strong> www.bidsmart.com.br</p>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <MapPin className="h-4 w-4 text-blue-600" />
-                      <p><strong>Endereço:</strong> Av. Paulista 1000, São Paulo, Brasil</p>
-                    </div>
-                  </div>
+          <Card>
+            <CardHeader>
+              <CardTitle>Por que Escolher Nossa Plataforma</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="flex items-start">
+                <div className="bg-blue-100 p-2 rounded-full mr-3">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-blue-600">
+                    <path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"></path>
+                    <path d="m9 12 2 2 4-4"></path>
+                  </svg>
                 </div>
+                <div>
+                  <h3 className="font-semibold mb-1">Cálculos Precisos</h3>
+                  <p className="text-gray-600">Algoritmos avançados que consideram todos os custos e impostos relacionados.</p>
+                </div>
+              </div>
+              
+              <div className="flex items-start">
+                <div className="bg-blue-100 p-2 rounded-full mr-3">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-blue-600">
+                    <path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"></path>
+                    <path d="m9 12 2 2 4-4"></path>
+                  </svg>
+                </div>
+                <div>
+                  <h3 className="font-semibold mb-1">Segurança de Dados</h3>
+                  <p className="text-gray-600">Criptografia de ponta a ponta para proteger suas informações financeiras.</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+        
+        <Separator className="my-10" />
+        
+        <div className="mb-16">
+          <h2 className="text-3xl font-bold text-center mb-10">Nossa Equipe</h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <Card className="text-center">
+              <CardContent className="pt-6">
+                <Avatar className="h-24 w-24 mx-auto mb-4">
+                  <AvatarImage src="/placeholder.svg" />
+                  <AvatarFallback>JP</AvatarFallback>
+                </Avatar>
+                <h3 className="font-bold text-xl mb-1">João Paulo</h3>
+                <p className="text-gray-500 mb-4">Fundador & CEO</p>
+                <p className="text-gray-700 text-sm">
+                  Especialista em mercado imobiliário com mais de 10 anos de experiência em leilões.
+                </p>
               </CardContent>
-              <CardFooter className="bg-gray-50 text-sm text-gray-500 rounded-b-lg">
-                © {new Date().getFullYear()} BidSmart. Todos os direitos reservados.
-              </CardFooter>
             </Card>
             
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <HelpCircle className="h-5 w-5 text-primary" />
-                  Informações Legais
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <p className="text-gray-700">
-                  Nosso aplicativo está em conformidade com a LGPD (Lei Geral de Proteção de Dados),
-                  a Lei Brasileira de Proteção de Dados.
+            <Card className="text-center">
+              <CardContent className="pt-6">
+                <Avatar className="h-24 w-24 mx-auto mb-4">
+                  <AvatarImage src="/placeholder.svg" />
+                  <AvatarFallback>AM</AvatarFallback>
+                </Avatar>
+                <h3 className="font-bold text-xl mb-1">Ana Maria</h3>
+                <p className="text-gray-500 mb-4">CFO & Especialista Tributária</p>
+                <p className="text-gray-700 text-sm">
+                  Contadora com especialização em tributação imobiliária e ganho de capital.
                 </p>
               </CardContent>
             </Card>
-          </TabsContent>
-          
-          {/* Aba de Privacidade */}
-          <TabsContent value="privacidade" className="space-y-6">
-            <Card className="border-t-4 border-t-blue-600">
-              <CardHeader className="bg-blue-50 border-b">
-                <CardTitle className="flex items-center gap-2 text-blue-800">
-                  <Shield className="h-5 w-5 text-blue-600" />
-                  Privacidade & Segurança
-                </CardTitle>
-                <CardDescription className="text-blue-700">
-                  Como protegemos seus dados e garantimos sua privacidade
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="py-6">
-                <div className="border-l-4 border-primary pl-4 py-3 mb-6 bg-primary/5 rounded-r">
-                  <p className="text-gray-800 font-medium">
-                    Seus dados são criptografados usando criptografia avançada AES-256-GCM e armazenados exclusivamente no seu dispositivo. 
-                    Mesmo a empresa fornecedora não pode visualizar, acessar ou gerenciar qualquer informação inserida no aplicativo.
-                  </p>
-                  <p className="mt-2 text-gray-800">
-                    Para sua privacidade e proteção, é essencial que você salve um backup criptografado em um local seguro.
-                    Em caso de perda do dispositivo ou exclusão do aplicativo, seus dados não poderão ser recuperados sem este arquivo de backup.
-                  </p>
-                </div>
-                
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 my-6">
-                  <div className="flex flex-col p-4 border rounded-lg bg-blue-50 hover:shadow-md transition-shadow">
-                    <div className="flex items-center gap-2 mb-2">
-                      <Lock className="w-5 h-5 text-blue-600" />
-                      <h3 className="font-medium text-blue-800">Criptografia Avançada</h3>
-                    </div>
-                    <p className="text-sm text-gray-700">
-                      Usamos AES-256-GCM, o padrão de criptografia considerado inquebrável à força bruta com a tecnologia atual.
-                    </p>
-                  </div>
-                  
-                  <div className="flex flex-col p-4 border rounded-lg bg-blue-50 hover:shadow-md transition-shadow">
-                    <div className="flex items-center gap-2 mb-2">
-                      <Key className="w-5 h-5 text-blue-600" />
-                      <h3 className="font-medium text-blue-800">Chaves Derivadas</h3>
-                    </div>
-                    <p className="text-sm text-gray-700">
-                      Derivação de chaves PBKDF2 com mais de 310.000 iterações para proteção contra ataques de força bruta.
-                    </p>
-                  </div>
-                  
-                  <div className="flex flex-col p-4 border rounded-lg bg-blue-50 hover:shadow-md transition-shadow">
-                    <div className="flex items-center gap-2 mb-2">
-                      <FileDigit className="w-5 h-5 text-blue-600" />
-                      <h3 className="font-medium text-blue-800">Verificação de Integridade</h3>
-                    </div>
-                    <p className="text-sm text-gray-700">
-                      Cada dado armazenado tem uma assinatura digital para verificar se não foi alterado ou corrompido.
-                    </p>
-                  </div>
-                  
-                  <div className="flex flex-col p-4 border rounded-lg bg-blue-50 hover:shadow-md transition-shadow">
-                    <div className="flex items-center gap-2 mb-2">
-                      <Database className="w-5 h-5 text-blue-600" />
-                      <h3 className="font-medium text-blue-800">Armazenamento Local</h3>
-                    </div>
-                    <p className="text-sm text-gray-700">
-                      Todos os dados permanecem no seu dispositivo, nunca enviarmos seus dados para servidores externos.
-                    </p>
-                  </div>
-                </div>
-                
-                <div className="flex justify-center mt-8">
-                  <Button onClick={handleVerifyIntegrity} variant="outline" className="flex items-center gap-2 bg-blue-50 hover:bg-blue-100 border-blue-200 text-blue-700">
-                    <RefreshCw className="w-4 h-4" />
-                    Verificar Integridade dos Dados
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
-          
-          {/* Aba de Detalhes Técnicos */}
-          <TabsContent value="tecnico" className="space-y-4">
-            <Card>
-              <CardHeader className="bg-gray-50 border-b">
-                <CardTitle>Detalhes Técnicos de Segurança</CardTitle>
-                <CardDescription>Informações detalhadas sobre nossas tecnologias de segurança</CardDescription>
-              </CardHeader>
+            
+            <Card className="text-center">
               <CardContent className="pt-6">
-                <Accordion type="single" collapsible className="w-full">
-                  <AccordionItem value="item-1">
-                    <AccordionTrigger className="text-primary">
-                      Armazenamento e Criptografia
-                    </AccordionTrigger>
-                    <AccordionContent>
-                      <ul className="list-disc pl-5 space-y-2 text-gray-700">
-                        <li>
-                          <span className="font-semibold">Criptografia AES-256-GCM</span>: Algoritmo de criptografia simétrica com verificação de autenticidade integrada.
-                        </li>
-                        <li>
-                          <span className="font-semibold">Derivação de chave PBKDF2</span>: 310.000+ iterações para proteção contra ataques de força bruta.
-                        </li>
-                        <li>
-                          <span className="font-semibold">Verificação de integridade</span>: Hashes SHA-256 para verificar a integridade de todos os dados.
-                        </li>
-                        <li>
-                          <span className="font-semibold">Proteção contra modificação</span>: Dados são verificados a cada acesso para detectar alterações não autorizadas.
-                        </li>
-                      </ul>
-                    </AccordionContent>
-                  </AccordionItem>
-                  
-                  <AccordionItem value="item-2">
-                    <AccordionTrigger className="text-primary">
-                      Melhores Práticas de Segurança
-                    </AccordionTrigger>
-                    <AccordionContent>
-                      <ul className="list-disc pl-5 space-y-2 text-gray-700">
-                        <li>
-                          Realize backups regulares e armazene-os em locais seguros.
-                        </li>
-                        <li>
-                          Use senhas fortes com pelo menos 12 caracteres, incluindo maiúsculas, minúsculas, números e símbolos.
-                        </li>
-                        <li>
-                          Verifique a integridade dos dados regularmente usando o botão na aba de Privacidade.
-                        </li>
-                        <li>
-                          Atualize sua senha de criptografia quando solicitado pelo aplicativo.
-                        </li>
-                      </ul>
-                    </AccordionContent>
-                  </AccordionItem>
-                  
-                  <AccordionItem value="item-3">
-                    <AccordionTrigger className="text-primary">
-                      Rotação de Chaves e Atualizações
-                    </AccordionTrigger>
-                    <AccordionContent>
-                      <div className="space-y-2 text-gray-700">
-                        <p>Recomendamos atualizar suas chaves de criptografia a cada 90 dias para maior segurança.</p>
-                        <p>O aplicativo realizará verificações regulares de integridade e alertará caso detecte alguma inconsistência nos dados.</p>
-                        <Separator className="my-4" />
-                        <div className="pt-2 text-sm bg-amber-50 p-3 rounded-lg border border-amber-100">
-                          <span className="font-semibold text-amber-800">Atenção:</span>
-                          <p className="text-amber-700 mt-1">Para garantir máxima segurança, nunca compartilhe sua senha de criptografia com ninguém, nem mesmo com nossa equipe de suporte.</p>
-                        </div>
-                      </div>
-                    </AccordionContent>
-                  </AccordionItem>
-                </Accordion>
+                <Avatar className="h-24 w-24 mx-auto mb-4">
+                  <AvatarImage src="/placeholder.svg" />
+                  <AvatarFallback>CS</AvatarFallback>
+                </Avatar>
+                <h3 className="font-bold text-xl mb-1">Carlos Silva</h3>
+                <p className="text-gray-500 mb-4">CTO</p>
+                <p className="text-gray-700 text-sm">
+                  Desenvolvedor com foco em criar soluções tecnológicas para o mercado imobiliário.
+                </p>
               </CardContent>
             </Card>
-          </TabsContent>
-        </Tabs>
+          </div>
+        </div>
+        
+        <Card className="max-w-2xl mx-auto">
+          <CardHeader>
+            <CardTitle>Entre em Contato</CardTitle>
+            <CardDescription>
+              Tem dúvidas ou sugestões? Ficaremos felizes em ajudar.
+            </CardDescription>
+          </CardHeader>
+          <CardFooter className="flex flex-col space-y-4 sm:flex-row sm:space-y-0 sm:space-x-4">
+            <Button 
+              className="w-full sm:w-auto" 
+              onClick={handleFeedback}
+              disabled={feedbackSent}
+            >
+              {feedbackSent ? "Mensagem Enviada" : "Enviar Mensagem"}
+            </Button>
+            <Button 
+              variant="outline" 
+              className="w-full sm:w-auto"
+              onClick={() => window.location.href = 'mailto:contato@leilao-lucrativo.com.br'}
+            >
+              Email Direto
+            </Button>
+          </CardFooter>
+        </Card>
       </div>
     </AppLayout>
   );
 };
 
-export default About;
+export default AboutPage;

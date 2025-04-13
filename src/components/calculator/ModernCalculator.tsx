@@ -15,6 +15,8 @@ import { format } from 'date-fns';
 import { cn } from '@/lib/utils';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Calendar as CalendarComponent } from '@/components/ui/calendar';
+import CurrencyInput from '@/components/ui/currency-input';
+import PercentageInput from '@/components/ui/percentage-input';
 import {
   calculateResults,
   formatCurrency,
@@ -27,81 +29,6 @@ import {
   CapitalGainsTax,
   SimulationResult
 } from '@/lib/calculations';
-
-// Currency Formatter for Brazilian Real
-const formatToBRL = (value: number | string): string => {
-  if (!value && value !== 0) return 'R$ 0,00';
-  
-  const numValue = typeof value === 'string' ? parseFloat(value.replace(/\D/g, '')) / 100 : value;
-  
-  return new Intl.NumberFormat('pt-BR', {
-    style: 'currency',
-    currency: 'BRL',
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2
-  }).format(numValue);
-};
-
-// Parse BRL string to number
-const parseBRL = (value: string): number => {
-  return Number(value.replace(/\D/g, '')) / 100;
-};
-
-// Custom Currency Input Component
-const CurrencyInput = ({ 
-  value, 
-  onChange, 
-  id,
-  className = ""
-}: { 
-  value: number, 
-  onChange: (value: number) => void,
-  id: string,
-  className?: string
-}) => {
-  const [displayValue, setDisplayValue] = useState(formatToBRL(value));
-  
-  // When external value changes, update display value
-  useEffect(() => {
-    setDisplayValue(formatToBRL(value));
-  }, [value]);
-  
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    let input = e.target.value;
-    
-    // Keep only numbers
-    const numbers = input.replace(/\D/g, '');
-    
-    // Convert to cents/centavos
-    const cents = parseInt(numbers) || 0;
-    
-    // Format to display value
-    setDisplayValue(formatToBRL(cents / 100));
-    
-    // Update parent component with numeric value
-    onChange(cents / 100);
-  };
-  
-  const handleFocus = (e: React.FocusEvent<HTMLInputElement>) => {
-    e.target.select();
-  };
-  
-  const handleBlur = () => {
-    // Ensure proper formatting on blur
-    setDisplayValue(formatToBRL(value));
-  };
-  
-  return (
-    <Input
-      id={id}
-      className={className}
-      value={displayValue}
-      onChange={handleChange}
-      onFocus={handleFocus}
-      onBlur={handleBlur}
-    />
-  );
-};
 
 const ModernCalculator: React.FC = () => {
   const { toast } = useToast();
@@ -409,40 +336,26 @@ const ModernCalculator: React.FC = () => {
               <div className="space-y-4">
                 <div className="space-y-2">
                   <Label htmlFor="auctioneerCommission">Comissão do Leiloeiro (%)</Label>
-                  <div className="relative">
-                    <div className="absolute inset-y-0 right-3 flex items-center pointer-events-none text-gray-500">
-                      <span className="text-sm font-medium">%</span>
-                    </div>
-                    <Input
-                      id="auctioneerCommission"
-                      type="number"
-                      value={acquisitionCosts.auctioneerCommission || ''}
-                      onChange={(e) => setAcquisitionCosts({
-                        ...acquisitionCosts,
-                        auctioneerCommission: parseFloat(e.target.value) || 0
-                      })}
-                      className="pr-10"
-                    />
-                  </div>
+                  <PercentageInput
+                    id="auctioneerCommission"
+                    value={acquisitionCosts.auctioneerCommission}
+                    onChange={(value) => setAcquisitionCosts({
+                      ...acquisitionCosts,
+                      auctioneerCommission: value
+                    })}
+                  />
                 </div>
                 
                 <div className="space-y-2">
                   <Label htmlFor="itbiTax">ITBI (Imposto de Transferência) (%)</Label>
-                  <div className="relative">
-                    <div className="absolute inset-y-0 right-3 flex items-center pointer-events-none text-gray-500">
-                      <span className="text-sm font-medium">%</span>
-                    </div>
-                    <Input
-                      id="itbiTax"
-                      type="number"
-                      value={acquisitionCosts.itbiTax || ''}
-                      onChange={(e) => setAcquisitionCosts({
-                        ...acquisitionCosts,
-                        itbiTax: parseFloat(e.target.value) || 0
-                      })}
-                      className="pr-10"
-                    />
-                  </div>
+                  <PercentageInput
+                    id="itbiTax"
+                    value={acquisitionCosts.itbiTax}
+                    onChange={(value) => setAcquisitionCosts({
+                      ...acquisitionCosts,
+                      itbiTax: value
+                    })}
+                  />
                 </div>
                 
                 <div className="space-y-2">
@@ -461,21 +374,14 @@ const ModernCalculator: React.FC = () => {
                 
                 <div className="space-y-2">
                   <Label htmlFor="brokerCommission">Comissão de Venda (%)</Label>
-                  <div className="relative">
-                    <div className="absolute inset-y-0 right-3 flex items-center pointer-events-none text-gray-500">
-                      <span className="text-sm font-medium">%</span>
-                    </div>
-                    <Input
-                      id="brokerCommission"
-                      type="number"
-                      value={saleCosts.brokerCommission || ''}
-                      onChange={(e) => setSaleCosts({
-                        ...saleCosts,
-                        brokerCommission: parseFloat(e.target.value) || 0
-                      })}
-                      className="pr-10"
-                    />
-                  </div>
+                  <PercentageInput
+                    id="brokerCommission"
+                    value={saleCosts.brokerCommission}
+                    onChange={(value) => setSaleCosts({
+                      ...saleCosts,
+                      brokerCommission: value
+                    })}
+                  />
                 </div>
                 
                 <div className="space-y-2">
