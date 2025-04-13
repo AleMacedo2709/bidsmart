@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -7,6 +8,10 @@ import { ArrowRight, PlayCircle, ShieldCheck, Calculator, LineChart } from 'luci
 const Index = () => {
   const { isAuthenticated, signInAnonymously } = useAuth();
 
+  const handleTryDemo = async () => {
+    await signInAnonymously();
+  };
+
   return (
     <div className="min-h-screen flex flex-col">
       {/* Hero Section */}
@@ -14,7 +19,7 @@ const Index = () => {
         <div className="text-center">
           <div className="flex justify-center mb-6">
             <img 
-              src="/lovable-uploads/beb44d81-2944-4436-8fa1-4d4dc91797c3.png" 
+              src="/lovable-uploads/08ed5091-1137-4b1f-845e-9821bdc77e69.png" 
               alt="BidSmart Logo" 
               className="h-24 w-auto sm:h-32"
             />
@@ -32,12 +37,18 @@ const Index = () => {
                 </Link>
               </Button>
             ) : (
-              <Button asChild variant="gradient" size="lg" className="gap-2">
-                <Link to="/auth?mode=signup">
-                  Começar Agora
-                  <ArrowRight className="h-4 w-4" />
-                </Link>
-              </Button>
+              <div className="space-y-4 sm:space-y-0 sm:mx-auto sm:inline-grid sm:grid-cols-2 sm:gap-5">
+                <Button asChild variant="gradient" size="lg" className="gap-2">
+                  <Link to="/auth?mode=signup">
+                    Começar Agora
+                    <ArrowRight className="h-4 w-4" />
+                  </Link>
+                </Button>
+                <Button variant="outline" size="lg" onClick={handleTryDemo} className="gap-2">
+                  <PlayCircle className="h-4 w-4" />
+                  Experimentar Demo
+                </Button>
+              </div>
             )}
           </div>
         </div>
@@ -109,12 +120,6 @@ const Index = () => {
             </div>
           </div>
 
-          <div className="text-center pt-4">
-            <Button asChild variant="outline">
-              <Link to="/institutional">Saiba Mais</Link>
-            </Button>
-          </div>
-        </div>
       </div>
 
       {/* Footer */}
