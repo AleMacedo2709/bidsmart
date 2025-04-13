@@ -3,7 +3,8 @@ import React from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { DollarSign } from 'lucide-react';
+import { CurrencyReal } from 'lucide-react';
+import { formatCurrency } from '@/lib/calculations';
 
 export interface InitialValuesType {
   purchasePrice: number;
@@ -36,22 +37,28 @@ const InitialValues: React.FC<InitialValuesProps> = ({ values, onChange }) => {
     });
   };
 
+  // Format the input value for display
+  const formatInput = (value: number) => {
+    if (value === 0) return '';
+    return value.toString();
+  };
+
   return (
     <Card className="border-none shadow-none">
       <CardContent className="pt-6">
         <div className="space-y-5">
           <div className="space-y-2">
-            <Label htmlFor="auctionPrice">Auction Purchase Price (R$)</Label>
+            <Label htmlFor="auctionPrice">Preço de Compra no Leilão (R$)</Label>
             <div className="relative">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-500">
-                <DollarSign className="h-4 w-4" />
+                <CurrencyReal className="h-4 w-4" />
               </div>
               <Input
                 id="auctionPrice"
                 name="auctionPrice"
                 type="number"
-                placeholder="0.00"
-                value={values.auctionPrice || ''}
+                placeholder="0,00"
+                value={formatInput(values.auctionPrice)}
                 onChange={handleChange}
                 className="pl-10"
               />
@@ -59,17 +66,17 @@ const InitialValues: React.FC<InitialValuesProps> = ({ values, onChange }) => {
           </div>
           
           <div className="space-y-2">
-            <Label htmlFor="assessedValue">Government-Assessed Value (R$)</Label>
+            <Label htmlFor="assessedValue">Valor Avaliado pelo Governo (R$)</Label>
             <div className="relative">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-500">
-                <DollarSign className="h-4 w-4" />
+                <CurrencyReal className="h-4 w-4" />
               </div>
               <Input
                 id="assessedValue"
                 name="assessedValue"
                 type="number"
-                placeholder="0.00"
-                value={values.assessedValue || ''}
+                placeholder="0,00"
+                value={formatInput(values.assessedValue)}
                 onChange={handleChange}
                 className="pl-10"
               />
@@ -77,17 +84,17 @@ const InitialValues: React.FC<InitialValuesProps> = ({ values, onChange }) => {
           </div>
           
           <div className="space-y-2">
-            <Label htmlFor="resalePrice">Expected Resale Price (R$)</Label>
+            <Label htmlFor="resalePrice">Preço de Revenda Esperado (R$)</Label>
             <div className="relative">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-500">
-                <DollarSign className="h-4 w-4" />
+                <CurrencyReal className="h-4 w-4" />
               </div>
               <Input
                 id="resalePrice"
                 name="resalePrice"
                 type="number"
-                placeholder="0.00"
-                value={values.resalePrice || ''}
+                placeholder="0,00"
+                value={formatInput(values.resalePrice)}
                 onChange={handleChange}
                 className="pl-10"
               />

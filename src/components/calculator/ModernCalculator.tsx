@@ -3,24 +3,9 @@ import React, { useState, useEffect } from 'react';
 import CalculatorWizard from './CalculatorWizard';
 import InitialValues from './InitialValues';
 import StepNavigation from './StepNavigation';
+import { InitialValuesType } from './InitialValues';
 
-// Match the expected interface structure from InitialValues component
-type CalculatorValues = {
-  purchasePrice: number;
-  renovationCosts: number;
-  sellingPrice: number;
-  sellingCosts: number;
-  mortgageAmount: number;
-  interestRate: number;
-  monthsHeld: number;
-  taxRate: number;
-  deductions: number;
-  auctionPrice: number;
-  assessedValue: number;
-  resalePrice: number;
-};
-
-const defaultValues: CalculatorValues = {
+const defaultValues: InitialValuesType = {
   purchasePrice: 500000,
   renovationCosts: 50000,
   sellingPrice: 650000,
@@ -39,7 +24,7 @@ const defaultValues: CalculatorValues = {
 
 const ModernCalculator = () => {
   const [step, setStep] = useState(1);
-  const [values, setValues] = useState<CalculatorValues>(defaultValues);
+  const [values, setValues] = useState<InitialValuesType>(defaultValues);
   const [calculatedResults, setCalculatedResults] = useState<any>(null);
   const [canGoNext, setCanGoNext] = useState(true);
   
@@ -111,7 +96,7 @@ const ModernCalculator = () => {
     // Additional completion logic can be added here
   };
   
-  const handleValuesChange = (newValues: CalculatorValues) => {
+  const handleValuesChange = (newValues: InitialValuesType) => {
     setValues(newValues);
   };
   
