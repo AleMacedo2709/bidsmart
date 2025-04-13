@@ -135,7 +135,13 @@ export const calculateCapitalGainsTax = (
     deedCost;
 
   // Calculate capital gain
-  const capitalGain = resalePrice - acquisitionCostBasis;
+  let capitalGain = resalePrice - acquisitionCostBasis;
+
+  // Apply 25% reduction for properties acquired before 1988
+  const cutoffDate = new Date('1988-01-01');
+  if (acquisitionDate < cutoffDate) {
+    capitalGain = capitalGain * 0.75; // Apply 25% reduction
+  }
 
   // Check for exemptions
   if (capitalGain <= 0) {
