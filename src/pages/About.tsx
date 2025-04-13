@@ -16,7 +16,7 @@ const AboutPage = () => {
     toast({
       title: "Feedback enviado",
       description: "Agradecemos seu interesse em nosso aplicativo!",
-      variant: "default", // Alterado de "success" para "default"
+      variant: "default",
     });
   };
   
@@ -157,4 +157,3 @@ const AboutPage = () => {
 };
 
 export default AboutPage;
-
