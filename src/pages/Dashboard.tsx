@@ -1,7 +1,6 @@
 
 import React from 'react';
 import { DollarSign, Home, TrendingUp, PercentSquare, List } from 'lucide-react';
-import AppLayout from '@/components/layout/AppLayout';
 import StatCard from '@/components/dashboard/StatCard';
 import AuctionList from '@/components/dashboard/AuctionList';
 import FeaturedProperties from '@/components/dashboard/FeaturedProperties';
@@ -22,8 +21,8 @@ const Dashboard = () => {
   };
 
   return (
-    <AppLayout>
-      <div className="h-full px-8 py-6">
+    <div className="h-full overflow-auto">
+      <div className="px-8 py-6">
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-3xl font-bold">Olá, Alessandra Macedo</h1>
           <div className="flex gap-3">
@@ -98,9 +97,8 @@ const Dashboard = () => {
           </div>
         </div>
       </div>
-    </AppLayout>
+    </div>
   );
 };
 
 export default Dashboard;
-

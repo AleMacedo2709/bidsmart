@@ -33,7 +33,7 @@ const AppRoutes: React.FC = () => {
         element={
           <ProtectedRoute>
             <AppLayout>
-              <Suspense fallback={<div className="flex items-center justify-center h-screen"><Skeleton className="h-32 w-32 rounded-full" /></div>}>
+              <Suspense fallback={<div className="flex items-center justify-center h-full"><Skeleton className="h-32 w-32 rounded-full" /></div>}>
                 <Dashboard />
               </Suspense>
             </AppLayout>
@@ -45,7 +45,7 @@ const AppRoutes: React.FC = () => {
         element={
           <ProtectedRoute>
             <AppLayout>
-              <Suspense fallback={<div className="flex items-center justify-center h-screen"><Skeleton className="h-32 w-32 rounded-full" /></div>}>
+              <Suspense fallback={<div className="flex items-center justify-center h-full"><Skeleton className="h-32 w-32 rounded-full" /></div>}>
                 <Properties />
               </Suspense>
             </AppLayout>
@@ -57,7 +57,7 @@ const AppRoutes: React.FC = () => {
         element={
           <ProtectedRoute>
             <AppLayout>
-              <Suspense fallback={<div className="flex items-center justify-center h-screen"><Skeleton className="h-32 w-32 rounded-full" /></div>}>
+              <Suspense fallback={<div className="flex items-center justify-center h-full"><Skeleton className="h-32 w-32 rounded-full" /></div>}>
                 <Calculator />
               </Suspense>
             </AppLayout>
@@ -69,7 +69,7 @@ const AppRoutes: React.FC = () => {
         element={
           <ProtectedRoute>
             <AppLayout>
-              <Suspense fallback={<div className="flex items-center justify-center h-screen"><Skeleton className="h-32 w-32 rounded-full" /></div>}>
+              <Suspense fallback={<div className="flex items-center justify-center h-full"><Skeleton className="h-32 w-32 rounded-full" /></div>}>
                 <Finances />
               </Suspense>
             </AppLayout>
@@ -81,7 +81,7 @@ const AppRoutes: React.FC = () => {
         element={
           <ProtectedRoute>
             <AppLayout>
-              <Suspense fallback={<div className="flex items-center justify-center h-screen"><Skeleton className="h-32 w-32 rounded-full" /></div>}>
+              <Suspense fallback={<div className="flex items-center justify-center h-full"><Skeleton className="h-32 w-32 rounded-full" /></div>}>
                 <About />
               </Suspense>
             </AppLayout>
@@ -93,7 +93,7 @@ const AppRoutes: React.FC = () => {
         element={
           <ProtectedRoute>
             <AppLayout>
-              <Suspense fallback={<div className="flex items-center justify-center h-screen"><Skeleton className="h-32 w-32 rounded-full" /></div>}>
+              <Suspense fallback={<div className="flex items-center justify-center h-full"><Skeleton className="h-32 w-32 rounded-full" /></div>}>
                 <Backup />
               </Suspense>
             </AppLayout>

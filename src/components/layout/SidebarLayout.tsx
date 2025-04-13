@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { 
+  SidebarProvider,
   Sidebar, 
   SidebarContent, 
   SidebarGroup, 
@@ -10,7 +11,6 @@ import {
   SidebarMenu,
   SidebarMenuItem,
   SidebarMenuButton,
-  SidebarProvider,
 } from '@/components/ui/sidebar';
 import { 
   Home, 
