@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { 
@@ -65,7 +64,7 @@ const SidebarLayout: React.FC<SidebarLayoutProps> = ({ children }) => {
             <SidebarHeader className="p-0">
               <div className="py-3 px-4 bg-blue-700 text-white flex items-center">
                 <img 
-                  src="/lovable-uploads/08ed5091-1137-4b1f-845e-9821bdc77e69.png" 
+                  src="/lovable-uploads/beb44d81-2944-4436-8fa1-4d4dc91797c3.png" 
                   alt="BidSmart Logo" 
                   className="h-8 w-auto mr-2"
                 />

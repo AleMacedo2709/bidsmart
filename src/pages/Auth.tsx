@@ -29,6 +29,13 @@ const Auth = () => {
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-b from-blue-50 to-white px-4 py-10">
       <div className="text-center mb-6 animate-fade-in">
+        <div className="flex justify-center mb-3">
+          <img 
+            src="/lovable-uploads/beb44d81-2944-4436-8fa1-4d4dc91797c3.png" 
+            alt="BidSmart Logo" 
+            className="h-16 w-auto"
+          />
+        </div>
         <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-3">
           Bem-vindo ao BidSmart
         </h1>

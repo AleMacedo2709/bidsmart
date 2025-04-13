@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -19,7 +18,7 @@ const Index = () => {
         <div className="text-center">
           <div className="flex justify-center mb-6">
             <img 
-              src="/lovable-uploads/08ed5091-1137-4b1f-845e-9821bdc77e69.png" 
+              src="/lovable-uploads/beb44d81-2944-4436-8fa1-4d4dc91797c3.png" 
               alt="BidSmart Logo" 
               className="h-24 w-auto sm:h-32"
             />
