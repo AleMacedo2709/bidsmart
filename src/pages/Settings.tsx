@@ -6,11 +6,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Calendar } from "@/components/ui/calendar";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { CalendarIcon, Mail, Bell, Calendar as CalendarIcon2, User, Phone } from "lucide-react";
-import { cn } from "@/lib/utils";
-import SidebarLayout from "@/components/layout/SidebarLayout";
 import { useToast } from "@/hooks/use-toast";
 import { Switch } from "@/components/ui/switch";
 import { Separator } from "@/components/ui/separator";
@@ -61,8 +57,6 @@ const Settings = () => {
   useEffect(() => {
     const loadSettings = async () => {
       try {
-        // In a real app, we'd use encryption and proper key management
-        // This is simplified for demonstration purposes
         const key = await window.crypto.subtle.generateKey(
           { name: "AES-GCM", length: 256 },
           true,
@@ -90,11 +84,48 @@ const Settings = () => {
     loadSettings();
   }, []);
 
+  // Improved email sending simulation
+  const sendNotificationEmail = (
+    preference: keyof Preferences, 
+    userEmail: string, 
+    userName: string
+  ) => {
+    if (!preferences[preference]) return;
+
+    const emailTemplates = {
+      emailNotifications: {
+        subject: "Notificações Ativadas",
+        body: `Olá ${userName}, suas notificações por email foram ativadas com sucesso.`
+      },
+      auctionAlerts: {
+        subject: "Alertas de Leilão Ativados", 
+        body: `Olá ${userName}, você receberá alertas sobre novos leilões.`
+      },
+      monthlyReports: {
+        subject: "Relatórios Mensais",
+        body: `Olá ${userName}, seus relatórios mensais foram ativados.`
+      }
+    };
+
+    const template = emailTemplates[preference];
+    
+    console.log(`Sending email to: ${userEmail}`);
+    console.log(`Subject: ${template.subject}`);
+    console.log(`Body: ${template.body}`);
+    
+    // Simula o envio de email
+    setTimeout(() => {
+      console.log(`Email enviado para ${userEmail}`);
+      toast({
+        title: "Notificação Enviada",
+        description: template.body
+      });
+    }, 1500);
+  };
+
   // Save settings to storage
   const saveSettings = async () => {
     try {
-      // In a real app, we'd use encryption and proper key management
-      // This is simplified for demonstration purposes
       const key = await window.crypto.subtle.generateKey(
         { name: "AES-GCM", length: 256 },
         true,
@@ -129,35 +160,9 @@ const Settings = () => {
     
     setPreferences(newPreferences);
     
-    // Simulate notification being sent when turned on
+    // Envio de email baseado no perfil do usuário
     if (newPreferences[key]) {
-      let message = "";
-      
-      switch (key) {
-        case "emailNotifications":
-          message = "Você receberá notificações por email sobre atualizações de seus imóveis.";
-          // Simulate sending a welcome email
-          simulateSendEmail(userProfile.email, "Notificações ativadas", 
-            `Olá ${userProfile.name}, suas notificações por email foram ativadas com sucesso.`);
-          break;
-        case "auctionAlerts":
-          message = "Você receberá alertas sobre novos leilões.";
-          // Simulate sending an auction alert
-          simulateSendEmail(userProfile.email, "Alertas de Leilão ativados", 
-            `Olá ${userProfile.name}, seus alertas de leilão foram ativados. Iremos te avisar sobre novos leilões disponíveis.`);
-          break;
-        case "monthlyReports":
-          message = "Você receberá relatórios mensais de desempenho.";
-          // Simulate sending a monthly report notification
-          simulateSendEmail(userProfile.email, "Relatórios Mensais ativados", 
-            `Olá ${userProfile.name}, você começará a receber relatórios mensais a partir do próximo mês.`);
-          break;
-      }
-      
-      toast({
-        title: "Preferência ativada",
-        description: message
-      });
+      sendNotificationEmail(key, userProfile.email, userProfile.name);
     } else {
       toast({
         title: "Preferência desativada",
