@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -873,15 +872,6 @@ const ModernCalculator: React.FC = () => {
                         className="flex-1"
                       >
                         Voltar
-                      </Button>
-                      
-                      <Button 
-                        variant="outline" 
-                        onClick={saveSimulation}
-                        className="flex-1 bg-blue-50 text-blue-700 border-blue-200 hover:bg-blue-100 hover:text-blue-800"
-                      >
-                        <FileText className="h-4 w-4 mr-2" />
-                        Salvar Simulação
                       </Button>
                       
                       <Button 
