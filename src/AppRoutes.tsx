@@ -13,6 +13,7 @@ const Finances = React.lazy(() => import('@/pages/Finances'));
 const About = React.lazy(() => import('@/pages/About'));
 const Backup = React.lazy(() => import('@/pages/Backup'));
 const Auth = React.lazy(() => import('@/pages/Auth'));
+const Auctions = React.lazy(() => import('@/pages/Auctions'));
 
 const AppRoutes: React.FC = () => {
   return (
@@ -95,6 +96,18 @@ const AppRoutes: React.FC = () => {
             <AppLayout>
               <Suspense fallback={<div className="flex items-center justify-center h-full"><Skeleton className="h-32 w-32 rounded-full" /></div>}>
                 <Backup />
+              </Suspense>
+            </AppLayout>
+          </ProtectedRoute>
+        } 
+      />
+      <Route 
+        path="/leiloes" 
+        element={
+          <ProtectedRoute>
+            <AppLayout>
+              <Suspense fallback={<div className="flex items-center justify-center h-full"><Skeleton className="h-32 w-32 rounded-full" /></div>}>
+                <Auctions />
               </Suspense>
             </AppLayout>
           </ProtectedRoute>

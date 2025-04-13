@@ -1,6 +1,8 @@
 
 import React from 'react';
 import { mockAuctions } from '@/data/mockData';
+import { ArrowRight } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 const AuctionList: React.FC = () => {
   return (
@@ -18,16 +20,28 @@ const AuctionList: React.FC = () => {
         const totalProperties = apartments + houses + lands;
         
         return (
-          <div key={auction.id} className="flex items-center py-2">
+          <div key={auction.id} className="flex items-center py-2 hover:bg-gray-50 rounded-md px-2 transition-colors">
             <div className="mr-4 text-center">
               <div className="text-lg font-semibold">{day}</div>
               <div className="text-sm text-gray-500">{month}/24</div>
             </div>
             
             <div className="flex-grow">
-              <div className="font-medium">{auction.name}</div>
+              <div className="font-medium">
+                <Link to={`/leiloes/${auction.id}`} className="hover:text-blue-600 transition-colors">
+                  {auction.name}
+                </Link>
+              </div>
               <div className="text-sm text-gray-500">{totalProperties} imóveis disponíveis</div>
             </div>
+            
+            <Link 
+              to={`/leiloes/${auction.id}`} 
+              className="text-blue-600 hover:text-blue-700 text-sm font-medium"
+              aria-label={`Ver detalhes do leilão ${auction.name}`}
+            >
+              <ArrowRight className="h-4 w-4" />
+            </Link>
           </div>
         );
       })}
