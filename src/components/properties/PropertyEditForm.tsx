@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -22,7 +21,6 @@ import { useForm } from 'react-hook-form';
 import { Save, ArrowLeft, MapPin, Home, Banknote, Calendar } from 'lucide-react';
 import { updateData } from '@/lib/storage';
 
-// Define the schema for property data validation
 const propertySchema = z.object({
   name: z.string().optional(),
   address: z.string().min(5, { message: 'O endereço deve ter pelo menos 5 caracteres' }),
@@ -50,7 +48,6 @@ const PropertyEditForm: React.FC<PropertyEditFormProps> = ({ property, onSave, o
   const navigate = useNavigate();
   const { encryptionKey } = useAuth();
 
-  // Initialize form with react-hook-form and zod validation
   const form = useForm<PropertyFormData>({
     resolver: zodResolver(propertySchema),
     defaultValues: {
@@ -80,7 +77,6 @@ const PropertyEditForm: React.FC<PropertyEditFormProps> = ({ property, onSave, o
     try {
       setIsSubmitting(true);
 
-      // Prepare updated property data - ensure numbers are properly converted
       const updatedProperty = {
         ...property,
         name: data.name,
@@ -95,7 +91,6 @@ const PropertyEditForm: React.FC<PropertyEditFormProps> = ({ property, onSave, o
         notes: data.notes,
       };
 
-      // Save updated property
       await onSave(updatedProperty);
       
       toast({
@@ -114,7 +109,6 @@ const PropertyEditForm: React.FC<PropertyEditFormProps> = ({ property, onSave, o
     }
   };
 
-  // Property type options
   const propertyTypes = [
     'Apartamento',
     'Casa',
@@ -126,7 +120,6 @@ const PropertyEditForm: React.FC<PropertyEditFormProps> = ({ property, onSave, o
     'Outro'
   ];
 
-  // Property status options
   const propertyStatuses = [
     'Ativo',
     'Em Processo',
@@ -153,7 +146,6 @@ const PropertyEditForm: React.FC<PropertyEditFormProps> = ({ property, onSave, o
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {/* Nome do Imóvel */}
             <FormField
               control={form.control}
               name="name"
@@ -178,7 +170,6 @@ const PropertyEditForm: React.FC<PropertyEditFormProps> = ({ property, onSave, o
               )}
             />
 
-            {/* Tipo de Imóvel */}
             <FormField
               control={form.control}
               name="type"
@@ -202,7 +193,6 @@ const PropertyEditForm: React.FC<PropertyEditFormProps> = ({ property, onSave, o
               )}
             />
 
-            {/* Endereço */}
             <FormField
               control={form.control}
               name="address"
@@ -226,7 +216,6 @@ const PropertyEditForm: React.FC<PropertyEditFormProps> = ({ property, onSave, o
               )}
             />
 
-            {/* Cidade */}
             <FormField
               control={form.control}
               name="city"
@@ -244,7 +233,6 @@ const PropertyEditForm: React.FC<PropertyEditFormProps> = ({ property, onSave, o
               )}
             />
 
-            {/* Estado */}
             <FormField
               control={form.control}
               name="state"
@@ -262,7 +250,6 @@ const PropertyEditForm: React.FC<PropertyEditFormProps> = ({ property, onSave, o
               )}
             />
 
-            {/* Status */}
             <FormField
               control={form.control}
               name="status"
@@ -286,7 +273,6 @@ const PropertyEditForm: React.FC<PropertyEditFormProps> = ({ property, onSave, o
               )}
             />
 
-            {/* Data de Compra */}
             <FormField
               control={form.control}
               name="purchaseDate"
@@ -310,7 +296,6 @@ const PropertyEditForm: React.FC<PropertyEditFormProps> = ({ property, onSave, o
               )}
             />
 
-            {/* Valor de Compra */}
             <FormField
               control={form.control}
               name="purchasePrice"
@@ -334,7 +319,6 @@ const PropertyEditForm: React.FC<PropertyEditFormProps> = ({ property, onSave, o
               )}
             />
 
-            {/* Valor Estimado */}
             <FormField
               control={form.control}
               name="estimatedValue"
@@ -359,7 +343,6 @@ const PropertyEditForm: React.FC<PropertyEditFormProps> = ({ property, onSave, o
             />
           </div>
 
-          {/* Observações */}
           <FormField
             control={form.control}
             name="notes"

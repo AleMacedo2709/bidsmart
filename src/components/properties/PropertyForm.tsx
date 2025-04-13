@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -23,7 +22,6 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { Save, ArrowLeft, MapPin, Home, Banknote, Calendar } from 'lucide-react';
 
-// Define the schema for property data validation
 const propertySchema = z.object({
   name: z.string().min(3, { message: 'O nome deve ter pelo menos 3 caracteres' }),
   address: z.string().min(5, { message: 'O endereço deve ter pelo menos 5 caracteres' }),
@@ -45,7 +43,6 @@ const PropertyForm: React.FC = () => {
   const navigate = useNavigate();
   const { encryptionKey } = useAuth();
 
-  // Initialize form with react-hook-form and zod validation
   const form = useForm<PropertyFormData>({
     resolver: zodResolver(propertySchema),
     defaultValues: {
@@ -75,9 +72,6 @@ const PropertyForm: React.FC = () => {
     try {
       setIsSubmitting(true);
 
-      // In a real app, this would be saved to a database
-      // For now, we'll just show a success message and navigate back
-      
       toast({
         title: "Imóvel adicionado",
         description: "O imóvel foi adicionado com sucesso.",
@@ -102,7 +96,6 @@ const PropertyForm: React.FC = () => {
     navigate('/imoveis');
   };
 
-  // Property type options
   const propertyTypes = [
     'Apartamento',
     'Casa',
@@ -114,7 +107,6 @@ const PropertyForm: React.FC = () => {
     'Outro'
   ];
 
-  // Property status options
   const propertyStatuses = [
     'Ativo',
     'Em Processo',
@@ -141,7 +133,6 @@ const PropertyForm: React.FC = () => {
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {/* Nome do Imóvel */}
             <FormField
               control={form.control}
               name="name"
@@ -165,7 +156,6 @@ const PropertyForm: React.FC = () => {
               )}
             />
 
-            {/* Tipo de Imóvel */}
             <FormField
               control={form.control}
               name="type"
@@ -189,7 +179,6 @@ const PropertyForm: React.FC = () => {
               )}
             />
 
-            {/* Endereço */}
             <FormField
               control={form.control}
               name="address"
@@ -213,7 +202,6 @@ const PropertyForm: React.FC = () => {
               )}
             />
 
-            {/* Cidade */}
             <FormField
               control={form.control}
               name="city"
@@ -231,7 +219,6 @@ const PropertyForm: React.FC = () => {
               )}
             />
 
-            {/* Estado */}
             <FormField
               control={form.control}
               name="state"
@@ -249,7 +236,6 @@ const PropertyForm: React.FC = () => {
               )}
             />
 
-            {/* Status */}
             <FormField
               control={form.control}
               name="status"
@@ -273,7 +259,6 @@ const PropertyForm: React.FC = () => {
               )}
             />
 
-            {/* Data de Compra */}
             <FormField
               control={form.control}
               name="purchaseDate"
@@ -297,7 +282,6 @@ const PropertyForm: React.FC = () => {
               )}
             />
 
-            {/* Valor de Compra */}
             <FormField
               control={form.control}
               name="purchasePrice"
@@ -321,7 +305,6 @@ const PropertyForm: React.FC = () => {
               )}
             />
 
-            {/* Valor Estimado */}
             <FormField
               control={form.control}
               name="estimatedValue"
@@ -346,7 +329,6 @@ const PropertyForm: React.FC = () => {
             />
           </div>
 
-          {/* Observações */}
           <FormField
             control={form.control}
             name="notes"
