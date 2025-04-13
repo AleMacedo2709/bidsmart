@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { DollarSign, Home, TrendingUp, PercentSquare } from 'lucide-react';
+import { DollarSign, Home, TrendingUp, PercentSquare, List } from 'lucide-react';
 import AppLayout from '@/components/layout/AppLayout';
 import StatCard from '@/components/dashboard/StatCard';
 import AuctionList from '@/components/dashboard/AuctionList';
@@ -78,7 +78,10 @@ const Dashboard = () => {
             <div className="flex justify-between items-center mb-4">
               <h2 className="text-xl font-semibold">Próximos Leilões</h2>
               <Button variant="outline" size="sm" asChild>
-                <Link to="/leiloes">Ver Todos</Link>
+                <Link to="/leiloes" className="flex items-center gap-2">
+                  <List size={16} />
+                  Ver Todos
+                </Link>
               </Button>
             </div>
             <AuctionList />
@@ -100,3 +103,4 @@ const Dashboard = () => {
 };
 
 export default Dashboard;
+
