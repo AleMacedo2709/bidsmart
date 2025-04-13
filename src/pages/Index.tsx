@@ -19,9 +19,9 @@ const Index = () => {
         <div className="text-center">
           <div className="flex justify-center mb-6">
             <img 
-              src="/lovable-uploads/08ed5091-1137-4b1f-845e-9821bdc77e69.png" 
+              src="/lovable-uploads/45f7cfb2-2b06-4da9-85fa-6fd6e3dfde32.png" 
               alt="BidSmart Logo" 
-              className="h-24 w-auto sm:h-32"
+              className="h-32 w-auto sm:h-40"
             />
           </div>
           <p className="mt-3 max-w-md mx-auto text-base text-gray-500 sm:text-lg md:mt-5 md:text-xl md:max-w-3xl">

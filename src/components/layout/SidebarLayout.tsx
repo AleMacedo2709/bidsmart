@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { 
@@ -62,11 +63,11 @@ const SidebarLayout: React.FC<SidebarLayoutProps> = ({ children }) => {
         <div className={`${isMobile ? (mobileSidebarOpen ? 'block' : 'hidden') : 'block'} h-full`}>
           <Sidebar className="h-screen">
             <SidebarHeader className="p-0">
-              <div className="py-3 px-4 bg-blue-700 text-white flex items-center">
+              <div className="py-4 px-4 bg-white flex justify-center items-center">
                 <img 
-                  src="/lovable-uploads/08ed5091-1137-4b1f-845e-9821bdc77e69.png" 
+                  src="/lovable-uploads/45f7cfb2-2b06-4da9-85fa-6fd6e3dfde32.png" 
                   alt="BidSmart Logo" 
-                  className="h-8 w-auto mr-2"
+                  className="h-12 w-auto"
                 />
               </div>
             </SidebarHeader>
