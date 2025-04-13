@@ -100,7 +100,7 @@ const BackupPage: React.FC = () => {
         toast({
           title: "Aviso de Integridade",
           description: "Dados importados, mas algumas inconsistências foram detectadas.",
-          variant: "warning"
+          variant: "destructive"
         });
       }
     } catch (error) {
