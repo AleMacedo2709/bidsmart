@@ -44,10 +44,6 @@ const Index = () => {
                     <ArrowRight className="h-4 w-4" />
                   </Link>
                 </Button>
-                <Button variant="outline" size="lg" onClick={handleTryDemo} className="gap-2">
-                  <PlayCircle className="h-4 w-4" />
-                  Experimentar Demo
-                </Button>
               </div>
             )}
           </div>
@@ -120,6 +116,11 @@ const Index = () => {
             </div>
           </div>
 
+          <div className="text-center pt-4">
+            <Button asChild variant="outline">
+              <Link to="/institutional">Saiba Mais</Link>
+            </Button>
+          </div>
         </div>
       </div>
 
