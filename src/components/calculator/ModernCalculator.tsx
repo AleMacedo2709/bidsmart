@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -858,9 +859,158 @@ const ModernCalculator: React.FC = () => {
                     </div>
                     
                     <div className="pt-4 space-y-3">
-                      <Card className="border border-gray-200">
-                        <CardContent className="pt-6">
-                          <div className="space-y-4">
+                      <Label htmlFor="simulationNotes">Observações (opcional)</Label>
+                      <Input
+                        id="simulationNotes"
+                        placeholder="Adicione observações sobre esta simulação..."
+                        value={simulationNotes}
+                        onChange={(e) => setSimulationNotes(e.target.value)}
+                        className="resize-none"
+                      />
+                    </div>
+                    
+                    <div className="flex justify-end pt-4">
+                      <Button
+                        onClick={generatePDF}
+                        className="space-x-2"
+                        variant="default"
+                      >
+                        <FileText className="h-4 w-4" />
+                        <span>Salvar em PDF</span>
+                      </Button>
+                    </div>
+                  </TabsContent>
+                  
+                  <TabsContent value="details" className="pt-4">
+                    <Card>
+                      <CardContent className="pt-6">
+                        <div className="space-y-4">
+                          <h3 className="text-xl font-semibold">Detalhamento de Custos</h3>
+                          
+                          <div className="space-y-3">
+                            <div>
+                              <h4 className="text-lg font-medium">Custos de Aquisição</h4>
+                              <ul className="mt-2 space-y-1">
+                                <li className="flex justify-between">
+                                  <span className="text-muted-foreground">Comissão do Leiloeiro ({acquisitionCosts.auctioneerCommission}%)</span>
+                                  <span>{formatCurrency(initialValues.auctionPrice * (acquisitionCosts.auctioneerCommission / 100))}</span>
+                                </li>
+                                <li className="flex justify-between">
+                                  <span className="text-muted-foreground">ITBI ({acquisitionCosts.itbiTax}%)</span>
+                                  <span>{formatCurrency(initialValues.auctionPrice * (acquisitionCosts.itbiTax / 100))}</span>
+                                </li>
+                                <li className="flex justify-between">
+                                  <span className="text-muted-foreground">Taxas de Registro</span>
+                                  <span>{formatCurrency(acquisitionCosts.registryFees)}</span>
+                                </li>
+                                <li className="flex justify-between">
+                                  <span className="text-muted-foreground">Oficial de Posse</span>
+                                  <span>{formatCurrency(acquisitionCosts.possessionOfficer)}</span>
+                                </li>
+                                <li className="flex justify-between">
+                                  <span className="text-muted-foreground">Emissão de Escritura</span>
+                                  <span>{formatCurrency(acquisitionCosts.deedIssuance)}</span>
+                                </li>
+                                <li className="flex justify-between">
+                                  <span className="text-muted-foreground">Honorários Advocatícios</span>
+                                  <span>{formatCurrency(acquisitionCosts.legalFees)}</span>
+                                </li>
+                                <li className="flex justify-between font-medium pt-2 border-t">
+                                  <span>Total Custos de Aquisição</span>
+                                  <span>{formatCurrency(results.totalAcquisitionCosts)}</span>
+                                </li>
+                              </ul>
+                            </div>
                             
+                            <div>
+                              <h4 className="text-lg font-medium">Custos de Manutenção</h4>
+                              <ul className="mt-2 space-y-1">
+                                {needsRenovation && (
+                                  <li className="flex justify-between">
+                                    <span className="text-muted-foreground">Reforma</span>
+                                    <span>{formatCurrency(maintenanceCosts.renovation)}</span>
+                                  </li>
+                                )}
+                                <li className="flex justify-between">
+                                  <span className="text-muted-foreground">IPTU Mensal</span>
+                                  <span>{formatCurrency(maintenanceCosts.monthlyIptu)}</span>
+                                </li>
+                                <li className="flex justify-between">
+                                  <span className="text-muted-foreground">Outras Despesas Mensais</span>
+                                  <span>{formatCurrency(maintenanceCosts.otherMonthlyExpenses)}</span>
+                                </li>
+                                <li className="flex justify-between">
+                                  <span className="text-muted-foreground">Período</span>
+                                  <span>{maintenanceCosts.holdingPeriod} meses</span>
+                                </li>
+                                <li className="flex justify-between font-medium pt-2 border-t">
+                                  <span>Total Custos de Manutenção</span>
+                                  <span>{formatCurrency(results.totalMaintenanceCosts)}</span>
+                                </li>
+                              </ul>
+                            </div>
                             
-                            <Button
+                            <div>
+                              <h4 className="text-lg font-medium">Custos de Venda</h4>
+                              <ul className="mt-2 space-y-1">
+                                <li className="flex justify-between">
+                                  <span className="text-muted-foreground">Comissão de Venda ({saleCosts.brokerCommission}%)</span>
+                                  <span>{formatCurrency(initialValues.resalePrice * (saleCosts.brokerCommission / 100))}</span>
+                                </li>
+                                <li className="flex justify-between">
+                                  <span className="text-muted-foreground">Taxas de Avaliação</span>
+                                  <span>{formatCurrency(saleCosts.appraisalFees)}</span>
+                                </li>
+                                <li className="flex justify-between font-medium pt-2 border-t">
+                                  <span>Total Custos de Venda</span>
+                                  <span>{formatCurrency(results.totalSaleCosts)}</span>
+                                </li>
+                              </ul>
+                            </div>
+                            
+                            <div>
+                              <h4 className="text-lg font-medium">Imposto sobre Ganho de Capital</h4>
+                              <ul className="mt-2 space-y-1">
+                                <li className="flex justify-between">
+                                  <span className="text-muted-foreground">Ganho de Capital Tributável</span>
+                                  <span>{formatCurrency(results.taxableCapitalGain)}</span>
+                                </li>
+                                <li className="flex justify-between">
+                                  <span className="text-muted-foreground">Alíquota</span>
+                                  <span>{results.taxRate * 100}%</span>
+                                </li>
+                                <li className="flex justify-between font-medium pt-2 border-t">
+                                  <span>Imposto Devido</span>
+                                  <span>{formatCurrency(results.capitalGainsTaxDue)}</span>
+                                </li>
+                              </ul>
+                            </div>
+                          </div>
+                          
+                          <div className="pt-6">
+                            <div className="flex justify-end">
+                              <Button
+                                onClick={generatePDF}
+                                className="space-x-2"
+                                variant="default"
+                              >
+                                <FileText className="h-4 w-4" />
+                                <span>Salvar em PDF</span>
+                              </Button>
+                            </div>
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </TabsContent>
+                </Tabs>
+              </div>
+            )}
+          </TabsContent>
+        </Tabs>
+      </Card>
+    </div>
+  );
+};
+
+export default ModernCalculator;
