@@ -1,5 +1,6 @@
+
 import React, { useState } from 'react';
-import { Gavel, Calendar, MapPin, Search, Filter, Eye, Home, Building, DollarSign, Briefcase, Clock } from 'lucide-react';
+import { Gavel, Calendar, MapPin, Search, Filter, Eye, Home, Building, DollarSign, Briefcase, Clock, Plus } from 'lucide-react';
 import { mockAuctions } from '@/data/mockData';
 import AppLayout from '@/components/layout/AppLayout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -22,6 +23,12 @@ import {
   DialogTitle,
   DialogFooter,
 } from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { z } from "zod";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 const Auctions = () => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -29,6 +36,7 @@ const Auctions = () => {
   const [selectedLocations, setSelectedLocations] = useState<string[]>([]);
   const [selectedAuction, setSelectedAuction] = useState<typeof mockAuctions[0] | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [newAuctionDialogOpen, setNewAuctionDialogOpen] = useState(false);
   const { toast } = useToast();
   
   // Extract unique locations from auctions
@@ -77,6 +85,47 @@ const Auctions = () => {
         return [...prev, location];
       }
     });
+  };
+
+  // Form schema for new auction
+  const formSchema = z.object({
+    name: z.string().min(5, "Nome deve ter pelo menos 5 caracteres"),
+    date: z.string().regex(/^\d{2}\/\d{2}\/\d{4}$/, "Data deve estar no formato DD/MM/YYYY"),
+    location: z.string().min(5, "Localização deve ter pelo menos 5 caracteres"),
+    description: z.string().min(10, "Descrição deve ter pelo menos 10 caracteres"),
+    properties: z.number().min(1, "Número de propriedades deve ser maior que 0"),
+    auctioneerName: z.string().min(3, "Nome do leiloeiro deve ter pelo menos 3 caracteres"),
+    auctioneerContact: z.string().regex(/^\(\d{2}\) \d{5}-\d{4}$/, "Contato deve estar no formato (XX) XXXXX-XXXX"),
+  });
+
+  type FormValues = z.infer<typeof formSchema>;
+
+  const form = useForm<FormValues>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      name: "",
+      date: "",
+      location: "",
+      description: "",
+      properties: 0,
+      auctioneerName: "",
+      auctioneerContact: "",
+    },
+  });
+
+  const onSubmit = (data: FormValues) => {
+    // In a real app, this would save to a database
+    toast({
+      title: "Leilão Cadastrado",
+      description: `O leilão ${data.name} foi cadastrado com sucesso!`,
+    });
+    setNewAuctionDialogOpen(false);
+    form.reset();
+  };
+
+  const openNewAuctionDialog = () => {
+    form.reset();
+    setNewAuctionDialogOpen(true);
   };
 
   return (
@@ -130,7 +179,29 @@ const Auctions = () => {
                 </div>
               </DropdownMenuContent>
             </DropdownMenu>
+            
+            {/* Novo botão "Incluir Novo Leilão" */}
+            <Button 
+              onClick={openNewAuctionDialog}
+              className="ml-2 hidden md:flex"
+              variant="default"
+            >
+              <Plus className="h-4 w-4 mr-1" />
+              Incluir Novo Leilão
+            </Button>
           </div>
+        </div>
+
+        {/* Botão móvel para adicionar novo leilão */}
+        <div className="mb-4 md:hidden">
+          <Button 
+            onClick={openNewAuctionDialog}
+            className="w-full"
+            variant="default"
+          >
+            <Plus className="h-4 w-4 mr-1" />
+            Incluir Novo Leilão
+          </Button>
         </div>
 
         {/* Active filters section */}
@@ -383,6 +454,189 @@ const Auctions = () => {
               </DialogFooter>
             </>
           )}
+        </DialogContent>
+      </Dialog>
+
+      {/* New Auction Dialog */}
+      <Dialog open={newAuctionDialogOpen} onOpenChange={setNewAuctionDialogOpen}>
+        <DialogContent className="sm:max-w-[700px]">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2 text-xl">
+              <Gavel className="h-5 w-5 text-blue-500" />
+              Incluir Novo Leilão
+            </DialogTitle>
+            <DialogDescription>
+              Preencha os dados para cadastrar um novo leilão
+            </DialogDescription>
+          </DialogHeader>
+
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="name"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Nome do Leilão</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Leilão de Imóveis Caixa Econômica" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="date"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Data do Leilão</FormLabel>
+                      <FormControl>
+                        <Input placeholder="DD/MM/AAAA" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="location"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Localização</FormLabel>
+                      <FormControl>
+                        <Input placeholder="São Paulo, SP" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="properties"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Número de Imóveis</FormLabel>
+                      <FormControl>
+                        <Input 
+                          type="number" 
+                          placeholder="Total de propriedades" 
+                          {...field}
+                          onChange={e => field.onChange(parseInt(e.target.value) || 0)}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="auctioneerName"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Nome do Leiloeiro</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Nome do leiloeiro responsável" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="auctioneerContact"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Contato do Leiloeiro</FormLabel>
+                      <FormControl>
+                        <Input placeholder="(XX) XXXXX-XXXX" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <FormField
+                control={form.control}
+                name="description"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Descrição do Leilão</FormLabel>
+                    <FormControl>
+                      <Textarea 
+                        placeholder="Descreva as informações principais sobre o leilão" 
+                        className="min-h-[100px]"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <div className="border-t pt-4">
+                <h3 className="font-medium mb-3">Distribuição de Imóveis</h3>
+                <div className="text-sm text-gray-500 italic mb-2">
+                  A distribuição será calculada automaticamente com base no número total de imóveis:
+                  <ul className="list-disc ml-5 mt-1">
+                    <li>60% Apartamentos</li>
+                    <li>30% Casas</li>
+                    <li>10% Terrenos</li>
+                  </ul>
+                </div>
+                
+                {form.watch("properties") > 0 && (
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
+                    <div className="p-3 bg-blue-50 rounded-md">
+                      <p className="text-sm text-blue-800">Apartamentos</p>
+                      <p className="font-medium">{Math.floor(form.watch("properties") * 0.6)} unidades</p>
+                    </div>
+                    <div className="p-3 bg-green-50 rounded-md">
+                      <p className="text-sm text-green-800">Casas</p>
+                      <p className="font-medium">{Math.floor(form.watch("properties") * 0.3)} unidades</p>
+                    </div>
+                    <div className="p-3 bg-amber-50 rounded-md">
+                      <p className="text-sm text-amber-800">Terrenos</p>
+                      <p className="font-medium">{Math.floor(form.watch("properties") * 0.1)} unidades</p>
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              <div className="border-t pt-4">
+                <h3 className="font-medium mb-3">Condições do Leilão</h3>
+                <div className="text-sm text-gray-500 space-y-2">
+                  <p>• Os imóveis serão vendidos no estado físico e de ocupação em que se encontram.</p>
+                  <p>• A comissão do leiloeiro, a ser paga pelo arrematante, será de 5% sobre o valor da arrematação.</p>
+                  <p>• O pagamento poderá ser à vista ou financiado em até 420 meses, sujeito à aprovação de crédito.</p>
+                </div>
+              </div>
+
+              <DialogFooter>
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => setNewAuctionDialogOpen(false)}
+                >
+                  Cancelar
+                </Button>
+                <Button 
+                  type="submit"
+                  className="gap-2"
+                >
+                  <Plus className="h-4 w-4" />
+                  Cadastrar Leilão
+                </Button>
+              </DialogFooter>
+            </form>
+          </Form>
         </DialogContent>
       </Dialog>
     </AppLayout>
