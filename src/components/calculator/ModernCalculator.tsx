@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -859,4 +860,111 @@ const ModernCalculator: React.FC = () => {
                       <Input
                         id="simulationNotes"
                         placeholder="Adicione observações sobre esta simulação..."
-                        value
+                        value={simulationNotes}
+                        onChange={(e) => setSimulationNotes(e.target.value)}
+                        className="h-20"
+                      />
+                    </div>
+                    
+                    <div className="flex flex-col sm:flex-row gap-3 pt-4">
+                      <Button 
+                        variant="outline" 
+                        onClick={() => setActiveTab('financing')}
+                        className="flex-1"
+                      >
+                        Voltar
+                      </Button>
+                      
+                      <Button 
+                        variant="outline" 
+                        onClick={saveSimulation}
+                        className="flex-1 bg-blue-50 text-blue-700 border-blue-200 hover:bg-blue-100 hover:text-blue-800"
+                      >
+                        <FileText className="h-4 w-4 mr-2" />
+                        Salvar Simulação
+                      </Button>
+                      
+                      <Button 
+                        variant="outline" 
+                        onClick={generatePDF}
+                        className="flex-1 bg-green-50 text-green-700 border-green-200 hover:bg-green-100 hover:text-green-800"
+                      >
+                        <Download className="h-4 w-4 mr-2" />
+                        Salvar em PDF
+                      </Button>
+                    </div>
+                  </TabsContent>
+                  
+                  <TabsContent value="details" className="pt-4 space-y-6">
+                    <div className="space-y-6">
+                      <Card className="overflow-hidden">
+                        <CardContent className="p-6">
+                          <div className="space-y-4">
+                            <h3 className="text-lg font-semibold flex items-center">
+                              <DollarSign className="h-5 w-5 mr-2 text-blue-600" />
+                              Custos de Aquisição
+                            </h3>
+                            
+                            <div className="space-y-2">
+                              <div className="flex justify-between py-1 border-b border-gray-100">
+                                <span className="text-gray-600">Preço de Compra</span>
+                                <span className="font-medium">{formatCurrency(initialValues.auctionPrice)}</span>
+                              </div>
+                              
+                              <div className="flex justify-between py-1 border-b border-gray-100">
+                                <span className="text-gray-600">Comissão do Leiloeiro</span>
+                                <span className="font-medium">
+                                  {formatCurrency(initialValues.auctionPrice * (acquisitionCosts.auctioneerCommission / 100))}
+                                  <span className="text-gray-400 text-sm ml-1">({acquisitionCosts.auctioneerCommission}%)</span>
+                                </span>
+                              </div>
+                              
+                              <div className="flex justify-between py-1 border-b border-gray-100">
+                                <span className="text-gray-600">ITBI</span>
+                                <span className="font-medium">
+                                  {formatCurrency(initialValues.auctionPrice * (acquisitionCosts.itbiTax / 100))}
+                                  <span className="text-gray-400 text-sm ml-1">({acquisitionCosts.itbiTax}%)</span>
+                                </span>
+                              </div>
+                              
+                              <div className="flex justify-between py-1 border-b border-gray-100">
+                                <span className="text-gray-600">Taxas de Registro</span>
+                                <span className="font-medium">{formatCurrency(acquisitionCosts.registryFees)}</span>
+                              </div>
+                              
+                              <div className="flex justify-between py-1 border-b border-gray-100">
+                                <span className="text-gray-600">Oficial de Posse</span>
+                                <span className="font-medium">{formatCurrency(acquisitionCosts.possessionOfficer)}</span>
+                              </div>
+                              
+                              <div className="flex justify-between py-1 border-b border-gray-100">
+                                <span className="text-gray-600">Emissão de Escritura</span>
+                                <span className="font-medium">{formatCurrency(acquisitionCosts.deedIssuance)}</span>
+                              </div>
+                              
+                              <div className="flex justify-between py-1 border-b border-gray-100">
+                                <span className="text-gray-600">Honorários Advocatícios</span>
+                                <span className="font-medium">{formatCurrency(acquisitionCosts.legalFees)}</span>
+                              </div>
+                              
+                              <div className="flex justify-between py-2 mt-1">
+                                <span className="text-base font-semibold">Total Custos de Aquisição</span>
+                                <span className="text-base font-semibold">{formatCurrency(results.totalAcquisitionCosts)}</span>
+                              </div>
+                            </div>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    </div>
+                  </TabsContent>
+                </Tabs>
+              </div>
+            )}
+          </TabsContent>
+        </Tabs>
+      </Card>
+    </div>
+  );
+};
+
+export default ModernCalculator;
