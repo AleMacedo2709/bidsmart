@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { Gavel, Calendar, MapPin, Search, Filter, Eye } from 'lucide-react';
+import { Gavel, Calendar, MapPin, Search, Filter, Eye, Home, Building, DollarSign, Briefcase, Clock } from 'lucide-react';
 import { mockAuctions } from '@/data/mockData';
 import AppLayout from '@/components/layout/AppLayout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -15,11 +15,21 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/components/ui/dialog";
 
 const Auctions = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [filterOpen, setFilterOpen] = useState(false);
   const [selectedLocations, setSelectedLocations] = useState<string[]>([]);
+  const [selectedAuction, setSelectedAuction] = useState<typeof mockAuctions[0] | null>(null);
+  const [dialogOpen, setDialogOpen] = useState(false);
   const { toast } = useToast();
   
   // Extract unique locations from auctions
@@ -36,12 +46,14 @@ const Auctions = () => {
     return matchesSearch && matchesLocation;
   });
 
-  const handleViewDetails = (auctionId: string) => {
-    // In a real application, this would navigate to a details page
-    // For now, we'll just show a toast notification
+  const handleViewDetails = (auction: typeof mockAuctions[0]) => {
+    setSelectedAuction(auction);
+    setDialogOpen(true);
+    
+    // Manter o toast para consistência com o comportamento anterior
     toast({
       title: "Detalhes do Leilão",
-      description: `Visualizando detalhes do leilão ${auctionId}`,
+      description: `Visualizando detalhes do leilão ${auction.id}`,
     });
   };
 
@@ -58,6 +70,7 @@ const Auctions = () => {
   return (
     <AppLayout>
       <div className="container mx-auto px-6 py-8">
+        {/* Header section with title and search */}
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8">
           <div>
             <h1 className="text-3xl font-bold flex items-center gap-2">
@@ -108,6 +121,7 @@ const Auctions = () => {
           </div>
         </div>
 
+        {/* Active filters section */}
         {selectedLocations.length > 0 && (
           <div className="flex gap-2 mb-4 flex-wrap">
             <span className="text-sm text-gray-500 mt-1">Filtros:</span>
@@ -200,7 +214,10 @@ const Auctions = () => {
                   </div>
                   
                   <div className="mt-6 flex justify-end">
-                    <Button onClick={() => handleViewDetails(auction.id)} className="flex items-center gap-2">
+                    <Button 
+                      onClick={() => handleViewDetails(auction)} 
+                      className="flex items-center gap-2"
+                    >
                       <Eye className="h-4 w-4" />
                       Ver Detalhes
                     </Button>
@@ -219,6 +236,133 @@ const Auctions = () => {
           </div>
         )}
       </div>
+
+      {/* Auction Details Dialog */}
+      <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+        <DialogContent className="sm:max-w-[700px]">
+          {selectedAuction && (
+            <>
+              <DialogHeader>
+                <DialogTitle className="flex items-center gap-2 text-xl">
+                  <Gavel className="h-5 w-5 text-blue-500" />
+                  {selectedAuction.name}
+                </DialogTitle>
+                <DialogDescription>
+                  Informações detalhadas sobre o leilão
+                </DialogDescription>
+              </DialogHeader>
+
+              <div className="grid gap-4 my-4">
+                <div className="flex flex-col gap-4 p-4 border rounded-lg">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="flex items-center gap-2">
+                      <Calendar className="h-5 w-5 text-blue-500" />
+                      <div>
+                        <p className="text-sm text-gray-500">Data do Leilão</p>
+                        <p className="font-medium">{selectedAuction.date}</p>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <MapPin className="h-5 w-5 text-blue-500" />
+                      <div>
+                        <p className="text-sm text-gray-500">Localização</p>
+                        <p className="font-medium">{selectedAuction.location}</p>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Home className="h-5 w-5 text-blue-500" />
+                      <div>
+                        <p className="text-sm text-gray-500">Total de Imóveis</p>
+                        <p className="font-medium">{selectedAuction.properties} imóveis</p>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Clock className="h-5 w-5 text-blue-500" />
+                      <div>
+                        <p className="text-sm text-gray-500">Horário</p>
+                        <p className="font-medium">14:00 (horário de Brasília)</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="p-4 border rounded-lg">
+                  <h3 className="font-medium mb-2 flex items-center gap-2">
+                    <Building className="h-4 w-4 text-blue-500" />
+                    Distribuição de Imóveis
+                  </h3>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-3">
+                    <div className="p-3 bg-blue-50 rounded-md">
+                      <p className="text-sm text-blue-800">Apartamentos</p>
+                      <p className="font-medium">{Math.floor(selectedAuction.properties * 0.6)} unidades</p>
+                      <p className="text-sm text-gray-500">R$ {(300000).toLocaleString('pt-BR')} (média)</p>
+                    </div>
+                    <div className="p-3 bg-green-50 rounded-md">
+                      <p className="text-sm text-green-800">Casas</p>
+                      <p className="font-medium">{Math.floor(selectedAuction.properties * 0.3)} unidades</p>
+                      <p className="text-sm text-gray-500">R$ {(450000).toLocaleString('pt-BR')} (média)</p>
+                    </div>
+                    <div className="p-3 bg-amber-50 rounded-md">
+                      <p className="text-sm text-amber-800">Terrenos</p>
+                      <p className="font-medium">{Math.floor(selectedAuction.properties * 0.1)} unidades</p>
+                      <p className="text-sm text-gray-500">R$ {(180000).toLocaleString('pt-BR')} (média)</p>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="p-4 border rounded-lg">
+                  <h3 className="font-medium mb-2 flex items-center gap-2">
+                    <Briefcase className="h-4 w-4 text-blue-500" />
+                    Informações do Leiloeiro
+                  </h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <p className="text-sm text-gray-500">Leiloeiro Responsável</p>
+                      <p className="font-medium">Carlos Eduardo Santos</p>
+                    </div>
+                    <div>
+                      <p className="text-sm text-gray-500">Contato</p>
+                      <p className="font-medium">(11) 98765-4321</p>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="p-4 border rounded-lg">
+                  <h3 className="font-medium mb-2 flex items-center gap-2">
+                    <DollarSign className="h-4 w-4 text-blue-500" />
+                    Condições
+                  </h3>
+                  <div className="space-y-2 text-sm">
+                    <p>• Os imóveis serão vendidos no estado físico e de ocupação em que se encontram.</p>
+                    <p>• A comissão do leiloeiro, a ser paga pelo arrematante, será de 5% sobre o valor da arrematação.</p>
+                    <p>• O pagamento poderá ser à vista ou financiado em até 420 meses, sujeito à aprovação de crédito.</p>
+                  </div>
+                </div>
+              </div>
+
+              <DialogFooter>
+                <Button
+                  variant="outline"
+                  onClick={() => setDialogOpen(false)}
+                >
+                  Fechar
+                </Button>
+                <Button
+                  onClick={() => {
+                    toast({
+                      title: "Inscrição Confirmada",
+                      description: "Você será notificado sobre este leilão",
+                    });
+                    setDialogOpen(false);
+                  }}
+                >
+                  Inscrever-me no Leilão
+                </Button>
+              </DialogFooter>
+            </>
+          )}
+        </DialogContent>
+      </Dialog>
     </AppLayout>
   );
 };
