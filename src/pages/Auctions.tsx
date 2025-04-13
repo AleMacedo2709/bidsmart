@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { Gavel, Calendar, MapPin, Search, Filter, Eye, Home, Building, DollarSign, Briefcase, Clock, Plus } from 'lucide-react';
 import { mockAuctions } from '@/data/mockData';
-import AppLayout from '@/components/layout/AppLayout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -140,7 +139,7 @@ const Auctions = () => {
   };
 
   return (
-    <AppLayout>
+    <div className="h-full overflow-auto">
       <div className="container mx-auto px-6 py-8">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8">
           <div>
@@ -756,7 +755,7 @@ const Auctions = () => {
           </Form>
         </DialogContent>
       </Dialog>
-    </AppLayout>
+    </div>
   );
 };
 

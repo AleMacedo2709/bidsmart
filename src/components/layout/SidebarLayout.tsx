@@ -21,7 +21,8 @@ import {
   Info, 
   Menu as MenuIcon, 
   X,
-  Database 
+  Database,
+  Gavel
 } from 'lucide-react';
 import { useAuth } from '@/components/auth/AuthProvider';
 import { Button } from '@/components/ui/button';
@@ -88,6 +89,15 @@ const SidebarLayout: React.FC<SidebarLayoutProps> = ({ children }) => {
                         <Link to="/imoveis" className="flex items-center gap-2 text-white">
                           <Building2 className="h-5 w-5" />
                           <span>Imóveis</span>
+                        </Link>
+                      </SidebarMenuButton>
+                    </SidebarMenuItem>
+                    
+                    <SidebarMenuItem>
+                      <SidebarMenuButton asChild isActive={isActive('/leiloes')} onClick={() => isMobile && setMobileSidebarOpen(false)}>
+                        <Link to="/leiloes" className="flex items-center gap-2 text-white">
+                          <Gavel className="h-5 w-5" />
+                          <span>Leilões</span>
                         </Link>
                       </SidebarMenuButton>
                     </SidebarMenuItem>
