@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -9,7 +10,8 @@ import {
   FileDown, 
   FileUp, 
   ShieldCheck, 
-  AlertCircle 
+  AlertCircle,
+  Download
 } from 'lucide-react';
 import { verifyDatabaseIntegrity } from '@/lib/storage/integrity';
 
@@ -17,6 +19,7 @@ const BackupPage: React.FC = () => {
   const { encryptionKey } = useAuth();
   const [isExporting, setIsExporting] = useState(false);
   const [isImporting, setIsImporting] = useState(false);
+  const [isExportingExcel, setIsExportingExcel] = useState(false);
 
   const handleExport = async () => {
     if (!encryptionKey) {
@@ -52,6 +55,56 @@ const BackupPage: React.FC = () => {
       });
     } finally {
       setIsExporting(false);
+    }
+  };
+
+  const handleExportExcel = async () => {
+    if (!encryptionKey) {
+      toast({
+        title: "Erro de Exportação",
+        description: "Chave de criptografia não disponível.",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    try {
+      setIsExportingExcel(true);
+      
+      // Import the XLSX library dynamically to reduce initial load time
+      const XLSX = await import('xlsx');
+      
+      // Get properties data
+      const propertiesData = await exportStoreData('properties', encryptionKey);
+      const parsedData = JSON.parse(propertiesData);
+      
+      // Create a workbook
+      const wb = XLSX.utils.book_new();
+      
+      // Convert data to worksheet
+      const ws = XLSX.utils.json_to_sheet(parsedData);
+      
+      // Add worksheet to workbook
+      XLSX.utils.book_append_sheet(wb, ws, "Imóveis");
+      
+      // Generate Excel file
+      const timestamp = new Date().toISOString().replace(/:/g, '-');
+      XLSX.writeFile(wb, `bidsmart-imoveis-${timestamp}.xlsx`);
+      
+      toast({
+        title: "Excel Exportado",
+        description: "Os dados foram exportados para Excel com sucesso.",
+        variant: "default"
+      });
+    } catch (error) {
+      console.error("Erro na exportação para Excel:", error);
+      toast({
+        title: "Erro na Exportação Excel",
+        description: "Não foi possível exportar os dados para Excel.",
+        variant: "destructive"
+      });
+    } finally {
+      setIsExportingExcel(false);
     }
   };
 
@@ -118,7 +171,7 @@ const BackupPage: React.FC = () => {
           <ShieldCheck className="text-primary" /> Backup de Dados
         </h1>
 
-        <div className="grid md:grid-cols-2 gap-6">
+        <div className="grid md:grid-cols-3 gap-6">
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
@@ -135,6 +188,27 @@ const BackupPage: React.FC = () => {
                 className="w-full"
               >
                 Exportar Backup
+              </Button>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Download className="text-primary" /> Exportar Excel
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-muted-foreground mb-4">
+                Exporte seus imóveis em formato Excel para análise.
+              </p>
+              <Button 
+                onClick={handleExportExcel} 
+                isLoading={isExportingExcel}
+                variant="outline"
+                className="w-full"
+              >
+                Exportar para Excel
               </Button>
             </CardContent>
           </Card>

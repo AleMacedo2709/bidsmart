@@ -14,10 +14,22 @@ const About = React.lazy(() => import('@/pages/About'));
 const Backup = React.lazy(() => import('@/pages/Backup'));
 const Auth = React.lazy(() => import('@/pages/Auth'));
 const Auctions = React.lazy(() => import('@/pages/Auctions'));
+const Index = React.lazy(() => import('@/pages/Index'));
+const NotFound = React.lazy(() => import('@/pages/NotFound'));
 
 const AppRoutes: React.FC = () => {
   return (
     <Routes>
+      {/* Public routes */}
+      <Route 
+        path="/" 
+        element={
+          <Suspense fallback={<div className="flex items-center justify-center h-screen"><Skeleton className="h-32 w-32 rounded-full" /></div>}>
+            <Index />
+          </Suspense>
+        } 
+      />
+      
       {/* Authentication route - should not be protected */}
       <Route 
         path="/auth" 
@@ -41,6 +53,7 @@ const AppRoutes: React.FC = () => {
           </ProtectedRoute>
         } 
       />
+      
       <Route 
         path="/imoveis/*" 
         element={
@@ -53,6 +66,7 @@ const AppRoutes: React.FC = () => {
           </ProtectedRoute>
         } 
       />
+      
       <Route 
         path="/calculator" 
         element={
@@ -65,6 +79,7 @@ const AppRoutes: React.FC = () => {
           </ProtectedRoute>
         } 
       />
+      
       <Route 
         path="/financas" 
         element={
@@ -77,6 +92,7 @@ const AppRoutes: React.FC = () => {
           </ProtectedRoute>
         } 
       />
+      
       <Route 
         path="/about" 
         element={
@@ -89,6 +105,7 @@ const AppRoutes: React.FC = () => {
           </ProtectedRoute>
         } 
       />
+      
       <Route 
         path="/backup" 
         element={
@@ -101,6 +118,7 @@ const AppRoutes: React.FC = () => {
           </ProtectedRoute>
         } 
       />
+      
       <Route 
         path="/leiloes" 
         element={
@@ -114,9 +132,15 @@ const AppRoutes: React.FC = () => {
         } 
       />
       
-      {/* Default routes */}
-      <Route path="/" element={<Navigate to="/dashboard" replace />} />
-      <Route path="*" element={<Navigate to="/dashboard" replace />} />
+      {/* Not Found route */}
+      <Route 
+        path="*" 
+        element={
+          <Suspense fallback={<div className="flex items-center justify-center h-screen"><Skeleton className="h-32 w-32 rounded-full" /></div>}>
+            <NotFound />
+          </Suspense>
+        } 
+      />
     </Routes>
   );
 };

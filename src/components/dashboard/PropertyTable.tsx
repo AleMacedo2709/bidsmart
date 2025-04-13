@@ -74,16 +74,41 @@ const PropertyTable: React.FC<PropertyTableProps> = ({
             <TableCell className="text-right">{formatCurrency(property.estimatedValue)}</TableCell>
             <TableCell>
               <div className="flex justify-center gap-2">
-                <Button variant="ghost" size="icon-sm" onClick={() => onView(property.id)} title="Visualizar">
+                <Button 
+                  variant="ghost" 
+                  size="icon-sm" 
+                  onClick={() => onView(property.id)} 
+                  title="Visualizar"
+                  aria-label="Ver detalhes do imóvel"
+                >
                   <Eye className="h-4 w-4" />
                 </Button>
-                <Button variant="ghost" size="icon-sm" onClick={() => onEdit(property.id)} title="Editar">
+                <Button 
+                  variant="ghost" 
+                  size="icon-sm" 
+                  onClick={() => onEdit(property.id)} 
+                  title="Editar"
+                  aria-label="Editar imóvel"
+                >
                   <Edit className="h-4 w-4" />
                 </Button>
-                <Button variant="ghost" size="icon-sm" onClick={() => onShare(property.id)} title="Compartilhar">
+                <Button 
+                  variant="ghost" 
+                  size="icon-sm" 
+                  onClick={() => onShare(property.id)} 
+                  title="Compartilhar"
+                  aria-label="Compartilhar imóvel"
+                >
                   <Share2 className="h-4 w-4" />
                 </Button>
-                <Button variant="ghost" size="icon-sm" onClick={() => onDelete(property.id)} className="text-red-500 hover:text-red-700 hover:bg-red-50" title="Excluir">
+                <Button 
+                  variant="ghost" 
+                  size="icon-sm" 
+                  onClick={() => onDelete(property.id)} 
+                  className="text-red-500 hover:text-red-700 hover:bg-red-50" 
+                  title="Excluir"
+                  aria-label="Excluir imóvel"
+                >
                   <Trash2 className="h-4 w-4" />
                 </Button>
               </div>
