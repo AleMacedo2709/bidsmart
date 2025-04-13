@@ -10,7 +10,7 @@ import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/components/auth/AuthProvider';
 import { storeData } from '@/lib/storage';
-import { DollarSign, ArrowRight, Calculator, Calendar, Info, AlertTriangle, ExternalLink, Download, FilePdf } from 'lucide-react';
+import { DollarSign, ArrowRight, Calculator, Calendar, Info, AlertTriangle, ExternalLink, Download, FileText } from 'lucide-react';
 import { format } from 'date-fns';
 import { cn } from '@/lib/utils';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
@@ -885,7 +885,7 @@ const ModernCalculator: React.FC = () => {
                               onClick={generatePDF}
                               className="w-full bg-blue-600 hover:bg-blue-700 flex items-center justify-center gap-2"
                             >
-                              <FilePdf className="h-4 w-4" />
+                              <FileText className="h-4 w-4" />
                               Salvar em PDF
                             </Button>
                             
