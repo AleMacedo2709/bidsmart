@@ -23,7 +23,7 @@ const StepNavigation: React.FC<StepNavigationProps> = ({
   const isLastStep = currentStep === totalSteps;
 
   return (
-    <div className="flex justify-between items-center mt-6">
+    <div className="flex justify-between items-center w-full">
       {currentStep > 1 ? (
         <Button
           type="button"
@@ -62,7 +62,7 @@ const StepNavigation: React.FC<StepNavigationProps> = ({
           className="flex items-center"
         >
           <Check className="mr-2 h-4 w-4" />
-          Concluir
+          Calcular
         </Button>
       ) : (
         <Button
