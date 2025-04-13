@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { 
@@ -17,7 +16,6 @@ import {
   Building2, 
   Calculator, 
   DollarSign, 
-  Settings, 
   LogOut, 
   Info, 
   Menu as MenuIcon, 
@@ -108,15 +106,6 @@ const SidebarLayout: React.FC<SidebarLayoutProps> = ({ children }) => {
                         <Link to="/financas" className="flex items-center gap-2 text-white">
                           <DollarSign className="h-5 w-5" />
                           <span>Finanças</span>
-                        </Link>
-                      </SidebarMenuButton>
-                    </SidebarMenuItem>
-                    
-                    <SidebarMenuItem>
-                      <SidebarMenuButton asChild isActive={isActive('/settings')} onClick={() => isMobile && setMobileSidebarOpen(false)}>
-                        <Link to="/settings" className="flex items-center gap-2 text-white">
-                          <Settings className="h-5 w-5" />
-                          <span>Configurações</span>
                         </Link>
                       </SidebarMenuButton>
                     </SidebarMenuItem>
