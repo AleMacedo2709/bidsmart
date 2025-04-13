@@ -11,6 +11,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Switch } from "@/components/ui/switch";
 import { Separator } from "@/components/ui/separator";
 import { retrieveSettings, storeSettings } from "@/lib/storage/settings";
+import SidebarLayout from "@/components/layout/SidebarLayout";
 
 // Interfaces for our data structures
 interface Preferences {
