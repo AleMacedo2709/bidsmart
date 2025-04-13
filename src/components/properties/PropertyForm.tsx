@@ -7,6 +7,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/components/auth/AuthProvider';
+import CurrencyInput from '@/components/ui/currency-input';
 import { v4 as uuidv4 } from 'uuid';
 import { 
   Form,
@@ -31,8 +32,8 @@ const propertySchema = z.object({
   type: z.string().min(1, { message: 'Selecione um tipo de imóvel' }),
   status: z.string().min(1, { message: 'Selecione um status' }),
   purchaseDate: z.string().min(1, { message: 'Selecione uma data de compra' }),
-  purchasePrice: z.string().min(1, { message: 'Informe o valor de compra' }),
-  estimatedValue: z.string().min(1, { message: 'Informe o valor estimado' }),
+  purchasePrice: z.number().min(0, { message: 'Informe o valor de compra' }),
+  estimatedValue: z.number().min(0, { message: 'Informe o valor estimado' }),
   notes: z.string().optional(),
 });
 
@@ -55,8 +56,8 @@ const PropertyForm: React.FC = () => {
       type: 'Apartamento',
       status: 'Ativo',
       purchaseDate: new Date().toISOString().split('T')[0],
-      purchasePrice: '',
-      estimatedValue: '',
+      purchasePrice: 0,
+      estimatedValue: 0,
       notes: '',
     },
   });
@@ -302,17 +303,16 @@ const PropertyForm: React.FC = () => {
               name="purchasePrice"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Valor de Compra (R$)</FormLabel>
+                  <FormLabel>Valor de Compra</FormLabel>
                   <FormControl>
                     <div className="relative">
                       <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-gray-500">
                         <Banknote className="h-4 w-4" />
                       </div>
-                      <Input 
-                        type="number" 
-                        placeholder="0,00" 
-                        className="pl-10" 
-                        {...field} 
+                      <CurrencyInput
+                        value={field.value}
+                        onChange={field.onChange}
+                        className="pl-10"
                       />
                     </div>
                   </FormControl>
@@ -327,17 +327,16 @@ const PropertyForm: React.FC = () => {
               name="estimatedValue"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Valor Estimado (R$)</FormLabel>
+                  <FormLabel>Valor Estimado</FormLabel>
                   <FormControl>
                     <div className="relative">
                       <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-gray-500">
                         <Banknote className="h-4 w-4" />
                       </div>
-                      <Input 
-                        type="number" 
-                        placeholder="0,00" 
-                        className="pl-10" 
-                        {...field} 
+                      <CurrencyInput
+                        value={field.value}
+                        onChange={field.onChange}
+                        className="pl-10"
                       />
                     </div>
                   </FormControl>

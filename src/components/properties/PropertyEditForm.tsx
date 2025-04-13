@@ -6,6 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/components/auth/AuthProvider';
+import CurrencyInput from '@/components/ui/currency-input';
 import { 
   Form,
   FormControl,
@@ -30,8 +31,8 @@ const propertySchema = z.object({
   type: z.string().min(1, { message: 'Selecione um tipo de imóvel' }),
   status: z.string().min(1, { message: 'Selecione um status' }),
   purchaseDate: z.string().min(1, { message: 'Selecione uma data de compra' }),
-  purchasePrice: z.coerce.number().min(0, { message: 'O valor de compra deve ser positivo' }),
-  estimatedValue: z.coerce.number().min(0, { message: 'O valor estimado deve ser positivo' }),
+  purchasePrice: z.number().min(0, { message: 'O valor de compra deve ser positivo' }),
+  estimatedValue: z.number().min(0, { message: 'O valor estimado deve ser positivo' }),
   notes: z.string().optional(),
 });
 
@@ -315,17 +316,16 @@ const PropertyEditForm: React.FC<PropertyEditFormProps> = ({ property, onSave, o
               name="purchasePrice"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Valor de Compra (R$)</FormLabel>
+                  <FormLabel>Valor de Compra</FormLabel>
                   <FormControl>
                     <div className="relative">
                       <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-gray-500">
                         <Banknote className="h-4 w-4" />
                       </div>
-                      <Input 
-                        type="number" 
-                        placeholder="0,00" 
-                        className="pl-10" 
-                        {...field} 
+                      <CurrencyInput
+                        value={field.value}
+                        onChange={field.onChange}
+                        className="pl-10"
                       />
                     </div>
                   </FormControl>
@@ -340,17 +340,16 @@ const PropertyEditForm: React.FC<PropertyEditFormProps> = ({ property, onSave, o
               name="estimatedValue"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Valor Estimado (R$)</FormLabel>
+                  <FormLabel>Valor Estimado</FormLabel>
                   <FormControl>
                     <div className="relative">
                       <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-gray-500">
                         <Banknote className="h-4 w-4" />
                       </div>
-                      <Input 
-                        type="number" 
-                        placeholder="0,00" 
-                        className="pl-10" 
-                        {...field} 
+                      <CurrencyInput
+                        value={field.value}
+                        onChange={field.onChange}
+                        className="pl-10"
                       />
                     </div>
                   </FormControl>
