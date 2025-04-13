@@ -59,7 +59,7 @@ const PortfolioPieChart: React.FC<PortfolioPieChartProps> = ({ className }) => {
           Distribuição dos imóveis por status
         </p>
       </div>
-      <div className="w-full h-[250px]">
+      <div className="w-full h-[300px]">
         <ChartContainer config={chartConfig}>
           <ResponsiveContainer width="100%" height="100%">
             <PieChart margin={{ top: 10, right: 10, left: 10, bottom: 10 }}>
@@ -69,7 +69,7 @@ const PortfolioPieChart: React.FC<PortfolioPieChartProps> = ({ className }) => {
                 cy="50%"
                 labelLine={false}
                 label={renderCustomizedLabel}
-                outerRadius={80}
+                outerRadius={120}  // Aumentei de 80 para 120
                 fill="#8884d8"
                 dataKey="value"
                 nameKey="name"
