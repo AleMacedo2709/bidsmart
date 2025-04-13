@@ -22,7 +22,7 @@ const Dashboard = () => {
   return (
     <AppLayout>
       <div className="h-full px-8 py-6">
-        <h1 className="text-3xl font-bold mb-6">Olá, Alessandra macedo</h1>
+        <h1 className="text-3xl font-bold mb-6">Olá, Alessandra Macedo</h1>
         
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           <StatCard 

@@ -30,15 +30,15 @@ const Index = () => {
           <div className="mt-5 max-w-md mx-auto sm:flex sm:justify-center md:mt-8">
             {isAuthenticated ? (
               <Button asChild className="w-full sm:w-auto">
-                <Link to="/dashboard">Go to Dashboard</Link>
+                <Link to="/dashboard">Ir para o Dashboard</Link>
               </Button>
             ) : (
               <div className="space-y-4 sm:space-y-0 sm:mx-auto sm:inline-grid sm:grid-cols-2 sm:gap-5">
                 <Button asChild variant="default">
-                  <Link to="/auth?mode=signup">Get Started</Link>
+                  <Link to="/auth?mode=signup">Começar Agora</Link>
                 </Button>
                 <Button variant="outline" onClick={handleTryDemo}>
-                  Try Demo
+                  Experimentar Demo
                 </Button>
               </div>
             )}
@@ -51,43 +51,43 @@ const Index = () => {
         <div className="max-w-3xl mx-auto space-y-8">
           <div className="text-center">
             <h2 className="text-3xl font-extrabold text-gray-900">
-              Key Features
+              Principais Recursos
             </h2>
             <p className="mt-4 text-lg text-gray-500">
-              Everything you need to manage your auction property investments
+              Tudo o que você precisa para gerenciar seus investimentos em leilões imobiliários
             </p>
           </div>
 
           <div className="grid grid-cols-1 gap-8 sm:grid-cols-2">
             <div className="bg-white shadow rounded-lg p-6">
-              <h3 className="text-lg font-medium text-gray-900">Profit Calculator</h3>
+              <h3 className="text-lg font-medium text-gray-900">Calculadora de Lucro</h3>
               <p className="mt-2 text-sm text-gray-500">
-                Calculate potential profits from your auction property investments
+                Calcule lucros potenciais de seus investimentos em leilões imobiliários
               </p>
             </div>
             <div className="bg-white shadow rounded-lg p-6">
-              <h3 className="text-lg font-medium text-gray-900">Tax Simulator</h3>
+              <h3 className="text-lg font-medium text-gray-900">Simulador de Impostos</h3>
               <p className="mt-2 text-sm text-gray-500">
-                Simulate capital gains tax implications for your property sales
+                Simule implicações de imposto de ganho de capital para suas vendas de imóveis
               </p>
             </div>
             <div className="bg-white shadow rounded-lg p-6">
-              <h3 className="text-lg font-medium text-gray-900">Secure & Private</h3>
+              <h3 className="text-lg font-medium text-gray-900">Seguro e Privado</h3>
               <p className="mt-2 text-sm text-gray-500">
-                All your data is encrypted with AES-256 and stored only on your device
+                Todos os seus dados são criptografados com AES-256 e armazenados apenas no seu dispositivo
               </p>
             </div>
             <div className="bg-white shadow rounded-lg p-6">
-              <h3 className="text-lg font-medium text-gray-900">Works Offline</h3>
+              <h3 className="text-lg font-medium text-gray-900">Funciona Offline</h3>
               <p className="mt-2 text-sm text-gray-500">
-                Full functionality without an internet connection
+                Funcionalidade completa sem conexão com a internet
               </p>
             </div>
           </div>
 
           <div className="text-center pt-4">
             <Button asChild variant="outline">
-              <Link to="/institutional">Learn More</Link>
+              <Link to="/institutional">Saiba Mais</Link>
             </Button>
           </div>
         </div>

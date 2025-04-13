@@ -13,7 +13,7 @@ const About = () => {
     try {
       await verifyDataIntegrity();
     } catch (error) {
-      console.error("Integrity verification error:", error);
+      console.error("Erro de verificação de integridade:", error);
     }
   };
   
@@ -33,7 +33,7 @@ const About = () => {
               <h2 className="text-2xl font-semibold mb-4">Sobre a Empresa</h2>
               <div className="space-y-4">
                 <p>
-                  Auction Estate Guardian é uma ferramenta especializada para investidores e indivíduos
+                  BidSmart é uma ferramenta especializada para investidores e indivíduos
                   que adquirem imóveis através de leilões. Nossa missão é ajudar você
                   a tomar decisões financeiras informadas, mantendo controle total sobre seus dados.
                 </p>
@@ -45,8 +45,8 @@ const About = () => {
                 <div className="pt-4">
                   <h3 className="text-lg font-medium mb-2">Informações de Contato</h3>
                   <div className="space-y-1">
-                    <p><strong>Email:</strong> contact@example.com</p>
-                    <p><strong>Website:</strong> www.example.com</p>
+                    <p><strong>Email:</strong> contato@exemplo.com</p>
+                    <p><strong>Website:</strong> www.exemplo.com</p>
                     <p><strong>Endereço:</strong> Rua Exemplo 123, São Paulo, Brasil</p>
                   </div>
                 </div>

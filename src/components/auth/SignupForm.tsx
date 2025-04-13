@@ -23,8 +23,8 @@ const SignupForm: React.FC = () => {
     
     if (!email || !password || !confirmPassword) {
       toast({
-        title: "Missing Fields",
-        description: "Please fill in all fields",
+        title: "Campos Faltando",
+        description: "Por favor, preencha todos os campos",
         variant: "destructive",
       });
       return;
@@ -32,8 +32,8 @@ const SignupForm: React.FC = () => {
 
     if (password !== confirmPassword) {
       toast({
-        title: "Passwords Don't Match",
-        description: "Please make sure your passwords match",
+        title: "Senhas Não Coincidem",
+        description: "Por favor, verifique se suas senhas coincidem",
         variant: "destructive",
       });
       return;
@@ -41,8 +41,8 @@ const SignupForm: React.FC = () => {
 
     if (password.length < 6) {
       toast({
-        title: "Password Too Short",
-        description: "Password must be at least 6 characters long",
+        title: "Senha Muito Curta",
+        description: "A senha deve ter pelo menos 6 caracteres",
         variant: "destructive",
       });
       return;
@@ -103,9 +103,9 @@ const SignupForm: React.FC = () => {
   return (
     <Card className="w-full max-w-md mx-auto shadow-lg border-opacity-50">
       <CardHeader className="space-y-1">
-        <CardTitle className="text-2xl font-bold text-center">Create Account</CardTitle>
+        <CardTitle className="text-2xl font-bold text-center">Criar Conta</CardTitle>
         <CardDescription className="text-center">
-          Enter your details to create a new account
+          Digite seus dados para criar uma nova conta
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -121,7 +121,7 @@ const SignupForm: React.FC = () => {
               <Input
                 id="email"
                 type="email"
-                placeholder="your@email.com"
+                placeholder="seu@email.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 disabled={isLoading}
@@ -131,7 +131,7 @@ const SignupForm: React.FC = () => {
           </div>
           <div className="space-y-2">
             <Label htmlFor="password" className="text-sm font-medium">
-              Password
+              Senha
             </Label>
             <div className="relative">
               <Input
@@ -154,7 +154,7 @@ const SignupForm: React.FC = () => {
           </div>
           <div className="space-y-2">
             <Label htmlFor="confirmPassword" className="text-sm font-medium">
-              Confirm Password
+              Confirmar Senha
             </Label>
             <div className="relative">
               <Input
@@ -187,11 +187,11 @@ const SignupForm: React.FC = () => {
                     <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                     <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                   </svg>
-                  Creating account...
+                  Criando conta...
                 </span>
               ) : (
                 <span className="flex items-center justify-center">
-                  Create Account <ArrowRight className="ml-2" size={18} />
+                  Criar Conta <ArrowRight className="ml-2" size={18} />
                 </span>
               )}
             </Button>
@@ -203,7 +203,7 @@ const SignupForm: React.FC = () => {
             <div className="w-full border-t border-gray-300"></div>
           </div>
           <div className="relative flex justify-center text-sm">
-            <span className="px-2 bg-white text-gray-500">Or continue with</span>
+            <span className="px-2 bg-white text-gray-500">Ou continue com</span>
           </div>
         </div>
 
@@ -230,9 +230,9 @@ const SignupForm: React.FC = () => {
       </CardContent>
       <CardFooter className="flex justify-center border-t p-6">
         <p className="text-sm text-gray-600">
-          Already have an account?{" "}
+          Já tem uma conta?{" "}
           <a href="#login" className="text-primary font-semibold hover:underline">
-            Sign in
+            Entrar
           </a>
         </p>
       </CardFooter>

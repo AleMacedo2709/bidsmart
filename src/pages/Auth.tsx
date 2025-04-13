@@ -23,18 +23,18 @@ const Auth = () => {
     <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-b from-blue-50 to-white px-4 py-10">
       <div className="text-center mb-6 animate-fade-in">
         <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-3">
-          Welcome to Auction Estate Guardian
+          Bem-vindo ao BidSmart
         </h1>
         <p className="text-gray-600 max-w-md mx-auto">
-          Secure, private, and powerful auction property management.
+          Gestão de leilões imobiliários segura, privada e poderosa.
         </p>
       </div>
 
       <div className="w-full max-w-md">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
           <TabsList className="grid w-full grid-cols-2 mb-6">
-            <TabsTrigger value="login" className="text-sm sm:text-base">Sign In</TabsTrigger>
-            <TabsTrigger value="signup" className="text-sm sm:text-base">Create Account</TabsTrigger>
+            <TabsTrigger value="login" className="text-sm sm:text-base">Entrar</TabsTrigger>
+            <TabsTrigger value="signup" className="text-sm sm:text-base">Criar Conta</TabsTrigger>
           </TabsList>
           <TabsContent value="login" className="animate-fade-in">
             <LoginForm />
@@ -54,10 +54,10 @@ const Auth = () => {
             </svg>
           </div>
           <div>
-            <h2 className="text-xl font-bold text-gray-900 mb-2">Your Data, Your Control</h2>
+            <h2 className="text-xl font-bold text-gray-900 mb-2">Seus Dados, Seu Controle</h2>
             <p className="text-gray-600 text-sm">
-              All your data is encrypted using AES-256 and stored exclusively on your device.
-              We cannot access or view any information you enter into the app.
+              Todos os seus dados são criptografados usando AES-256 e armazenados exclusivamente no seu dispositivo.
+              Nós não podemos acessar ou ver qualquer informação que você inserir no aplicativo.
             </p>
           </div>
         </div>

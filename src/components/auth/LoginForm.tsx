@@ -20,8 +20,8 @@ const LoginForm: React.FC = () => {
     e.preventDefault();
     if (!email || !password) {
       toast({
-        title: "Missing Fields",
-        description: "Please enter both email and password",
+        title: "Campos Faltando",
+        description: "Por favor, preencha o email e a senha",
         variant: "destructive",
       });
       return;
@@ -89,9 +89,9 @@ const LoginForm: React.FC = () => {
   return (
     <Card className="w-full max-w-md mx-auto shadow-lg border-opacity-50">
       <CardHeader className="space-y-1">
-        <CardTitle className="text-2xl font-bold text-center">Sign In</CardTitle>
+        <CardTitle className="text-2xl font-bold text-center">Entrar</CardTitle>
         <CardDescription className="text-center">
-          Enter your credentials to access your account
+          Digite suas credenciais para acessar sua conta
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -107,7 +107,7 @@ const LoginForm: React.FC = () => {
               <Input
                 id="email"
                 type="email"
-                placeholder="your@email.com"
+                placeholder="seu@email.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 disabled={isLoading}
@@ -117,7 +117,7 @@ const LoginForm: React.FC = () => {
           </div>
           <div className="space-y-2">
             <Label htmlFor="password" className="text-sm font-medium">
-              Password
+              Senha
             </Label>
             <div className="relative">
               <Input
@@ -139,7 +139,7 @@ const LoginForm: React.FC = () => {
             </div>
             <div className="text-sm text-right">
               <a href="#" className="text-primary hover:underline">
-                Forgot password?
+                Esqueceu a senha?
               </a>
             </div>
           </div>
@@ -154,11 +154,11 @@ const LoginForm: React.FC = () => {
                   <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                   <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                 </svg>
-                Signing in...
+                Entrando...
               </span>
             ) : (
               <span className="flex items-center justify-center">
-                Sign In <ArrowRight className="ml-2" size={18} />
+                Entrar <ArrowRight className="ml-2" size={18} />
               </span>
             )}
           </Button>
@@ -169,7 +169,7 @@ const LoginForm: React.FC = () => {
             <div className="w-full border-t border-gray-300"></div>
           </div>
           <div className="relative flex justify-center text-sm">
-            <span className="px-2 bg-white text-gray-500">Or continue with</span>
+            <span className="px-2 bg-white text-gray-500">Ou continue com</span>
           </div>
         </div>
 
@@ -196,15 +196,15 @@ const LoginForm: React.FC = () => {
             <svg className="w-5 h-5 mr-2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
               <path d="M12 5C7.58172 5 4 8.58172 4 13C4 17.4183 7.58172 21 12 21C16.4183 21 20 17.4183 20 13C20 8.58172 16.4183 5 12 5ZM2 13C2 7.47715 6.47715 3 12 3C17.5228 3 22 7.47715 22 13C22 18.5228 17.5228 23 12 23C6.47715 23 2 18.5228 2 13Z" fill="#888"/>
             </svg>
-            Try Demo
+            Experimentar Demo
           </Button>
         </div>
       </CardContent>
       <CardFooter className="flex justify-center border-t p-6">
         <p className="text-sm text-gray-600">
-          Don't have an account?{" "}
+          Não tem uma conta?{" "}
           <a href="#signup" className="text-primary font-semibold hover:underline">
-            Sign up
+            Cadastre-se
           </a>
         </p>
       </CardFooter>
