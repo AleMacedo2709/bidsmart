@@ -1,9 +1,26 @@
+
 import React, { useState, useEffect } from 'react';
 import CalculatorWizard from './CalculatorWizard';
 import InitialValues from './InitialValues';
 import StepNavigation from './StepNavigation';
 
-const defaultValues = {
+// Match the expected interface structure from InitialValues component
+type CalculatorValues = {
+  purchasePrice: number;
+  renovationCosts: number;
+  sellingPrice: number;
+  sellingCosts: number;
+  mortgageAmount: number;
+  interestRate: number;
+  monthsHeld: number;
+  taxRate: number;
+  deductions: number;
+  auctionPrice: number;
+  assessedValue: number;
+  resalePrice: number;
+};
+
+const defaultValues: CalculatorValues = {
   purchasePrice: 500000,
   renovationCosts: 50000,
   sellingPrice: 650000,
@@ -14,12 +31,16 @@ const defaultValues = {
   // Default tax information
   taxRate: 15,
   deductions: 10000,
+  // Additional required properties
+  auctionPrice: 450000,
+  assessedValue: 550000,
+  resalePrice: 650000,
 };
 
 const ModernCalculator = () => {
   const [step, setStep] = useState(1);
-  const [values, setValues] = useState(defaultValues);
-  const [calculatedResults, setCalculatedResults] = useState(null);
+  const [values, setValues] = useState<CalculatorValues>(defaultValues);
+  const [calculatedResults, setCalculatedResults] = useState<any>(null);
   
   useEffect(() => {
     // Initialize with default values
@@ -87,22 +108,12 @@ const ModernCalculator = () => {
         )}
         
         {step > 1 && (
-          <CalculatorWizard 
-            step={step} 
-            values={values} 
-            setValues={setValues}
-            setCalculatedResults={setCalculatedResults}
-          />
+          <CalculatorWizard />
         )}
       </div>
       
       <div className="border-t p-4 flex justify-between">
-        <StepNavigation 
-          step={step} 
-          setStep={setStep} 
-          values={values}
-          calculatedResults={calculatedResults}
-        />
+        <StepNavigation />
       </div>
     </div>
   );

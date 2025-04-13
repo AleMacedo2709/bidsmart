@@ -33,8 +33,8 @@ const Properties: React.FC = () => {
 
         <Routes>
           <Route path="adicionar" element={<PropertyForm />} />
-          <Route path=":id" element={<PropertyDetail propertyId={propertyId || ''} />} />
-          <Route path=":id/editar" element={<PropertyEditForm propertyId={propertyId || ''} />} />
+          <Route path=":id" element={<PropertyDetail />} />
+          <Route path=":id/editar" element={<PropertyEditForm />} />
         </Routes>
       </div>
     </div>
