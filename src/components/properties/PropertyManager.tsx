@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -46,7 +45,6 @@ const PropertyManager: React.FC = () => {
   const navigate = useNavigate();
   const { encryptionKey } = useAuth();
 
-  // Apply search filter
   const searchFilteredProperties = searchTerm
     ? properties.filter(property => 
         property.address.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -55,7 +53,6 @@ const PropertyManager: React.FC = () => {
       )
     : properties;
     
-  // Apply status filter
   const filteredProperties = activeFilter !== 'Todos'
     ? searchFilteredProperties.filter(property => 
         activeFilter === 'Ativos' ? property.status === 'Ativo' :
@@ -69,16 +66,10 @@ const PropertyManager: React.FC = () => {
       title: "Adicionar imóvel",
       description: "Você será redirecionado para o formulário de adição de imóvel.",
     });
-    // In a real application, this would navigate to a new property form
     navigate('/imoveis/adicionar');
   };
 
   const handleView = (id: string) => {
-    // Here's where we need to fix the issue
-    // Instead of just showing a toast, we need to ensure the data is being passed correctly
-    // and the navigation is working properly
-    
-    // Store the property data in localStorage for retrieval on the detail page
     const propertyToView = properties.find(prop => prop.id === id);
     if (propertyToView) {
       localStorage.setItem('currentViewProperty', JSON.stringify(propertyToView));
@@ -89,12 +80,19 @@ const PropertyManager: React.FC = () => {
       description: `Visualizando detalhes do imóvel ID: ${id}`,
     });
     
-    // Navigate to the property details page
+    navigate(`/imoveis/${id}`);
+  };
+
+  const handleEdit = (id: string) => {
+    const propertyToEdit = properties.find(prop => prop.id === id);
+    if (propertyToEdit) {
+      localStorage.setItem('currentViewProperty', JSON.stringify(propertyToEdit));
+    }
+    
     navigate(`/imoveis/${id}`);
   };
 
   const handleDelete = (id: string) => {
-    // Remove the property from the state
     setProperties(properties.filter(property => property.id !== id));
     setPropertyToDelete(null);
     
@@ -108,7 +106,6 @@ const PropertyManager: React.FC = () => {
     try {
       setIsExporting(true);
       
-      // Prepare data for Excel export
       const excelData = filteredProperties.map(property => ({
         Endereço: property.address,
         Cidade: property.city,
@@ -122,17 +119,13 @@ const PropertyManager: React.FC = () => {
         Notas: property.notes || ''
       }));
       
-      // Create a new workbook
       const workbook = XLSX.utils.book_new();
       const worksheet = XLSX.utils.json_to_sheet(excelData);
       
-      // Add the worksheet to the workbook
       XLSX.utils.book_append_sheet(workbook, worksheet, 'Imóveis');
       
-      // Generate Excel file
       const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
       
-      // Save the file
       const blob = new Blob([excelBuffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
@@ -231,6 +224,7 @@ const PropertyManager: React.FC = () => {
             properties={filteredProperties}
             onView={handleView}
             onDelete={(id) => setPropertyToDelete(id)}
+            onEdit={handleEdit}
           />
         </div>
       )}

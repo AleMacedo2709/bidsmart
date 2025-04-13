@@ -9,6 +9,7 @@ import { useAuth } from '@/components/auth/AuthProvider';
 import { retrieveData, updateData } from '@/lib/storage';
 import { formatCurrency, formatPercentage, calculateResults } from '@/lib/calculations';
 import PropertyFinanceForm from './PropertyFinanceForm';
+import PropertyEditForm from './PropertyEditForm';
 import { mockProperties } from '@/data/mockData';
 
 interface PropertyDetailProps {
@@ -19,6 +20,7 @@ const PropertyDetail: React.FC<PropertyDetailProps> = ({ propertyId }) => {
   const [property, setProperty] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('details');
+  const [isEditing, setIsEditing] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
   const { encryptionKey } = useAuth();
@@ -79,10 +81,37 @@ const PropertyDetail: React.FC<PropertyDetailProps> = ({ propertyId }) => {
   };
 
   const handleEdit = () => {
-    toast({
-      title: "Editar imóvel",
-      description: "Funcionalidade de edição será implementada em breve.",
-    });
+    setIsEditing(true);
+    setActiveTab('details');
+  };
+
+  const handleCancelEdit = () => {
+    setIsEditing(false);
+  };
+
+  const handleSavePropertyEdit = async (updatedProperty: any) => {
+    try {
+      if (encryptionKey) {
+        await updateData('properties', propertyId, updatedProperty, encryptionKey);
+      }
+      
+      localStorage.setItem('currentViewProperty', JSON.stringify(updatedProperty));
+      
+      setProperty(updatedProperty);
+      setIsEditing(false);
+      
+      toast({
+        title: "Imóvel atualizado",
+        description: "As informações do imóvel foram atualizadas com sucesso.",
+      });
+    } catch (error) {
+      console.error('Erro ao atualizar imóvel:', error);
+      toast({
+        title: "Erro ao atualizar",
+        description: "Não foi possível atualizar as informações do imóvel.",
+        variant: "destructive",
+      });
+    }
   };
 
   const handleFinanceUpdate = async (financialData: any) => {
@@ -155,6 +184,16 @@ const PropertyDetail: React.FC<PropertyDetailProps> = ({ propertyId }) => {
         <p className="text-gray-500">Imóvel não encontrado.</p>
         <Button onClick={handleBack} className="mt-4">Voltar para lista</Button>
       </div>
+    );
+  }
+
+  if (isEditing) {
+    return (
+      <PropertyEditForm 
+        property={property} 
+        onSave={handleSavePropertyEdit} 
+        onCancel={handleCancelEdit} 
+      />
     );
   }
 
