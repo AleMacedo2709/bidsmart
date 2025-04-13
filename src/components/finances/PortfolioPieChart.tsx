@@ -45,7 +45,7 @@ const PortfolioPieChart: React.FC<PortfolioPieChartProps> = ({ className }) => {
         fill="white" 
         textAnchor={x > cx ? 'start' : 'end'} 
         dominantBaseline="central"
-        fontSize={11}
+        fontSize={10}
       >
         {`${value} (${(percent * 100).toFixed(0)}%)`}
       </text>
@@ -54,23 +54,23 @@ const PortfolioPieChart: React.FC<PortfolioPieChartProps> = ({ className }) => {
 
   return (
     <Card className={className}>
-      <CardHeader>
+      <CardHeader className="pb-2">
         <CardTitle>Distribuição do Portfólio</CardTitle>
         <CardDescription>
           Distribuição dos imóveis por status
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <div className="h-[280px] w-full">
+        <div className="h-[250px] w-full">
           <ChartContainer config={chartConfig}>
-            <PieChart margin={{ top: 5, right: 5, left: 5, bottom: 5 }}>
+            <PieChart margin={{ top: 5, right: 0, left: 0, bottom: 5 }}>
               <Pie
                 data={data}
                 cx="50%"
                 cy="45%"
                 labelLine={false}
                 label={renderCustomizedLabel}
-                outerRadius={70}
+                outerRadius={60}
                 fill="#8884d8"
                 dataKey="value"
                 nameKey="name"
@@ -80,7 +80,12 @@ const PortfolioPieChart: React.FC<PortfolioPieChartProps> = ({ className }) => {
                 ))}
               </Pie>
               <ChartTooltip content={<ChartTooltipContent />} />
-              <Legend layout="horizontal" verticalAlign="bottom" align="center" />
+              <Legend 
+                layout="horizontal" 
+                verticalAlign="bottom" 
+                align="center"
+                wrapperStyle={{ fontSize: '10px', paddingTop: '10px' }}
+              />
             </PieChart>
           </ChartContainer>
         </div>
