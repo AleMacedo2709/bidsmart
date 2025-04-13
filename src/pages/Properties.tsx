@@ -1,14 +1,17 @@
 
-import React from 'react';
-import { useLocation } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useLocation, useParams } from 'react-router-dom';
 import SidebarLayout from '@/components/layout/SidebarLayout';
 import PropertyManager from '@/components/properties/PropertyManager';
 import PropertyForm from '@/components/properties/PropertyForm';
+import PropertyDetail from '@/components/properties/PropertyDetail';
 
 const Properties: React.FC = () => {
   const location = useLocation();
+  const params = useParams();
   const isAddRoute = location.pathname === '/imoveis/adicionar';
   const isDetailRoute = location.pathname.match(/^\/imoveis\/[^/]+$/);
+  const propertyId = params.id;
 
   return (
     <SidebarLayout>
@@ -29,11 +32,8 @@ const Properties: React.FC = () => {
           <PropertyForm />
         )}
 
-        {isDetailRoute && (
-          <div className="bg-white rounded-lg border shadow-sm p-6">
-            <h2 className="text-2xl font-bold mb-4">Detalhes do Imóvel</h2>
-            <p className="text-gray-500">Esta página mostrará os detalhes do imóvel selecionado.</p>
-          </div>
+        {isDetailRoute && propertyId && (
+          <PropertyDetail propertyId={propertyId} />
         )}
       </div>
     </SidebarLayout>
