@@ -8,7 +8,6 @@ import Dashboard from "./pages/Dashboard";
 import Calculator from "./pages/Calculator";
 import NotFound from "./pages/NotFound";
 import About from "./pages/About";
-import Settings from "./pages/Settings";
 import Properties from "./pages/Properties";
 import Finances from "./pages/Finances";
 import Auctions from "./pages/Auctions"; // Import the new Auctions page
@@ -26,7 +25,6 @@ const AppRoutes = () => {
       <Route path="/financas" element={<Finances />} />
       <Route path="/leiloes" element={<Auctions />} /> {/* Add the new route */}
       <Route path="/about" element={<About />} />
-      <Route path="/settings" element={<Settings />} />
       <Route path="*" element={<NotFound />} />
     </Routes>
   );
