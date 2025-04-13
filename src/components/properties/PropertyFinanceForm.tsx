@@ -57,7 +57,7 @@ const PropertyFinanceForm: React.FC<PropertyFinanceFormProps> = ({ propertyId, p
   const [isSaving, setIsSaving] = useState(false);
   const [timeOwned, setTimeOwned] = useState(0);
 
-  const defaultValues = {
+  const defaultValues: FinancialFormValues = {
     auctionCommission: property?.finances?.auctionCommission || 0,
     itbiTax: property?.finances?.itbiTax || 0,
     registryFees: property?.finances?.registryFees || 0,
@@ -124,32 +124,23 @@ const PropertyFinanceForm: React.FC<PropertyFinanceFormProps> = ({ propertyId, p
       resalePrice: property.estimatedValue
     };
 
-    const acquisitionCosts = {
-      auctioneerCommission: parseFloat(auctionCommission || 0),
-      itbiTax: parseFloat(itbiTax || 0),
-      registryFees: parseFloat(registryFees || 0),
-      possessionOfficer: parseFloat(possessionOfficer || 0),
-      deedIssuance: parseFloat(deedIssuance || 0),
-      legalFees: parseFloat(legalFees || 0)
-    };
-
     const totalAcquisitionCosts = 
-      parseFloat(auctionCommission || 0) +
-      parseFloat(itbiTax || 0) +
-      parseFloat(registryFees || 0) +
-      parseFloat(possessionOfficer || 0) +
-      parseFloat(deedIssuance || 0) +
-      parseFloat(legalFees || 0);
+      parseFloat(auctionCommission?.toString() || '0') +
+      parseFloat(itbiTax?.toString() || '0') +
+      parseFloat(registryFees?.toString() || '0') +
+      parseFloat(possessionOfficer?.toString() || '0') +
+      parseFloat(deedIssuance?.toString() || '0') +
+      parseFloat(legalFees?.toString() || '0');
     
     setValue('acquisitionCosts', totalAcquisitionCosts);
   }, [auctionCommission, itbiTax, registryFees, possessionOfficer, deedIssuance, legalFees, setValue, property.purchasePrice, property.estimatedValue]);
 
   useEffect(() => {
     const monthlyTotal = 
-      parseFloat(monthlyIptu || 0) +
-      parseFloat(condoFee || 0) +
-      parseFloat(utilities || 0) +
-      parseFloat(maintenance || 0);
+      parseFloat(monthlyIptu?.toString() || '0') +
+      parseFloat(condoFee?.toString() || '0') +
+      parseFloat(utilities?.toString() || '0') +
+      parseFloat(maintenance?.toString() || '0');
     
     const totalMonthlyCosts = monthlyTotal * timeOwned;
     setValue('monthlyCosts', totalMonthlyCosts);
@@ -157,8 +148,8 @@ const PropertyFinanceForm: React.FC<PropertyFinanceFormProps> = ({ propertyId, p
 
   useEffect(() => {
     const monthlyIncome = 
-      parseFloat(rentalIncome || 0) +
-      parseFloat(otherIncome || 0);
+      parseFloat(rentalIncome?.toString() || '0') +
+      parseFloat(otherIncome?.toString() || '0');
     
     const totalIncome = monthlyIncome * timeOwned;
     setValue('income', totalIncome);
@@ -166,9 +157,9 @@ const PropertyFinanceForm: React.FC<PropertyFinanceFormProps> = ({ propertyId, p
 
   useEffect(() => {
     const totalSaleCosts = 
-      parseFloat(brokerCommission || 0) +
-      parseFloat(appraisalFees || 0) +
-      parseFloat(advertisingCosts || 0);
+      parseFloat(brokerCommission?.toString() || '0') +
+      parseFloat(appraisalFees?.toString() || '0') +
+      parseFloat(advertisingCosts?.toString() || '0');
     
     setValue('saleCosts', totalSaleCosts);
   }, [brokerCommission, appraisalFees, advertisingCosts, setValue]);
@@ -237,7 +228,7 @@ const PropertyFinanceForm: React.FC<PropertyFinanceFormProps> = ({ propertyId, p
                     <Label htmlFor="auctionCommission">Comissão do Leiloeiro</Label>
                     <CurrencyInput
                       id="auctionCommission"
-                      value={auctionCommission}
+                      value={auctionCommission || 0}
                       onChange={(value) => handleCurrencyChange('auctionCommission', value)}
                     />
                     {errors.auctionCommission && (
@@ -249,7 +240,7 @@ const PropertyFinanceForm: React.FC<PropertyFinanceFormProps> = ({ propertyId, p
                     <Label htmlFor="itbiTax">ITBI (Imposto de Transmissão)</Label>
                     <CurrencyInput
                       id="itbiTax"
-                      value={itbiTax}
+                      value={itbiTax || 0}
                       onChange={(value) => handleCurrencyChange('itbiTax', value)}
                     />
                     {errors.itbiTax && (
@@ -261,7 +252,7 @@ const PropertyFinanceForm: React.FC<PropertyFinanceFormProps> = ({ propertyId, p
                     <Label htmlFor="registryFees">Taxas de Cartório</Label>
                     <CurrencyInput
                       id="registryFees"
-                      value={registryFees}
+                      value={registryFees || 0}
                       onChange={(value) => handleCurrencyChange('registryFees', value)}
                     />
                     {errors.registryFees && (
@@ -273,7 +264,7 @@ const PropertyFinanceForm: React.FC<PropertyFinanceFormProps> = ({ propertyId, p
                     <Label htmlFor="possessionOfficer">Oficial de Posse</Label>
                     <CurrencyInput
                       id="possessionOfficer"
-                      value={possessionOfficer}
+                      value={possessionOfficer || 0}
                       onChange={(value) => handleCurrencyChange('possessionOfficer', value)}
                     />
                     {errors.possessionOfficer && (
@@ -285,7 +276,7 @@ const PropertyFinanceForm: React.FC<PropertyFinanceFormProps> = ({ propertyId, p
                     <Label htmlFor="deedIssuance">Emissão de Escritura</Label>
                     <CurrencyInput
                       id="deedIssuance"
-                      value={deedIssuance}
+                      value={deedIssuance || 0}
                       onChange={(value) => handleCurrencyChange('deedIssuance', value)}
                     />
                     {errors.deedIssuance && (
@@ -297,7 +288,7 @@ const PropertyFinanceForm: React.FC<PropertyFinanceFormProps> = ({ propertyId, p
                     <Label htmlFor="legalFees">Despesas Jurídicas</Label>
                     <CurrencyInput
                       id="legalFees"
-                      value={legalFees}
+                      value={legalFees || 0}
                       onChange={(value) => handleCurrencyChange('legalFees', value)}
                     />
                     {errors.legalFees && (
@@ -333,7 +324,7 @@ const PropertyFinanceForm: React.FC<PropertyFinanceFormProps> = ({ propertyId, p
                     <Label htmlFor="monthlyIptu">IPTU Mensal</Label>
                     <CurrencyInput
                       id="monthlyIptu"
-                      value={monthlyIptu}
+                      value={monthlyIptu || 0}
                       onChange={(value) => handleCurrencyChange('monthlyIptu', value)}
                     />
                     {errors.monthlyIptu && (
@@ -345,7 +336,7 @@ const PropertyFinanceForm: React.FC<PropertyFinanceFormProps> = ({ propertyId, p
                     <Label htmlFor="condoFee">Taxa de Condomínio</Label>
                     <CurrencyInput
                       id="condoFee"
-                      value={condoFee}
+                      value={condoFee || 0}
                       onChange={(value) => handleCurrencyChange('condoFee', value)}
                     />
                     {errors.condoFee && (
@@ -357,7 +348,7 @@ const PropertyFinanceForm: React.FC<PropertyFinanceFormProps> = ({ propertyId, p
                     <Label htmlFor="utilities">Contas (Água, Luz, etc)</Label>
                     <CurrencyInput
                       id="utilities"
-                      value={utilities}
+                      value={utilities || 0}
                       onChange={(value) => handleCurrencyChange('utilities', value)}
                     />
                     {errors.utilities && (
@@ -369,7 +360,7 @@ const PropertyFinanceForm: React.FC<PropertyFinanceFormProps> = ({ propertyId, p
                     <Label htmlFor="maintenance">Manutenção</Label>
                     <CurrencyInput
                       id="maintenance"
-                      value={maintenance}
+                      value={maintenance || 0}
                       onChange={(value) => handleCurrencyChange('maintenance', value)}
                     />
                     {errors.maintenance && (
@@ -383,10 +374,10 @@ const PropertyFinanceForm: React.FC<PropertyFinanceFormProps> = ({ propertyId, p
                     <span className="font-semibold">Custo Mensal Total:</span>
                     <span className="font-bold">
                       {formatCurrency(
-                        parseFloat(monthlyIptu || 0) +
-                        parseFloat(condoFee || 0) +
-                        parseFloat(utilities || 0) +
-                        parseFloat(maintenance || 0)
+                        parseFloat((monthlyIptu || 0).toString()) +
+                        parseFloat((condoFee || 0).toString()) +
+                        parseFloat((utilities || 0).toString()) +
+                        parseFloat((maintenance || 0).toString())
                       )}
                     </span>
                   </div>
@@ -416,7 +407,7 @@ const PropertyFinanceForm: React.FC<PropertyFinanceFormProps> = ({ propertyId, p
                     <Label htmlFor="rentalIncome">Renda de Aluguel Mensal</Label>
                     <CurrencyInput
                       id="rentalIncome"
-                      value={rentalIncome}
+                      value={rentalIncome || 0}
                       onChange={(value) => handleCurrencyChange('rentalIncome', value)}
                     />
                     {errors.rentalIncome && (
@@ -428,7 +419,7 @@ const PropertyFinanceForm: React.FC<PropertyFinanceFormProps> = ({ propertyId, p
                     <Label htmlFor="otherIncome">Outras Receitas Mensais</Label>
                     <CurrencyInput
                       id="otherIncome"
-                      value={otherIncome}
+                      value={otherIncome || 0}
                       onChange={(value) => handleCurrencyChange('otherIncome', value)}
                     />
                     {errors.otherIncome && (
@@ -442,8 +433,8 @@ const PropertyFinanceForm: React.FC<PropertyFinanceFormProps> = ({ propertyId, p
                     <span className="font-semibold">Receita Mensal Total:</span>
                     <span className="font-bold text-green-600">
                       {formatCurrency(
-                        parseFloat(rentalIncome || 0) +
-                        parseFloat(otherIncome || 0)
+                        parseFloat((rentalIncome || 0).toString()) +
+                        parseFloat((otherIncome || 0).toString())
                       )}
                     </span>
                   </div>
@@ -472,7 +463,7 @@ const PropertyFinanceForm: React.FC<PropertyFinanceFormProps> = ({ propertyId, p
                     <Label htmlFor="brokerCommission">Comissão do Corretor</Label>
                     <CurrencyInput
                       id="brokerCommission"
-                      value={brokerCommission}
+                      value={brokerCommission || 0}
                       onChange={(value) => handleCurrencyChange('brokerCommission', value)}
                     />
                     {errors.brokerCommission && (
@@ -484,7 +475,7 @@ const PropertyFinanceForm: React.FC<PropertyFinanceFormProps> = ({ propertyId, p
                     <Label htmlFor="appraisalFees">Custos de Avaliação</Label>
                     <CurrencyInput
                       id="appraisalFees"
-                      value={appraisalFees}
+                      value={appraisalFees || 0}
                       onChange={(value) => handleCurrencyChange('appraisalFees', value)}
                     />
                     {errors.appraisalFees && (
@@ -496,7 +487,7 @@ const PropertyFinanceForm: React.FC<PropertyFinanceFormProps> = ({ propertyId, p
                     <Label htmlFor="advertisingCosts">Custos de Publicidade</Label>
                     <CurrencyInput
                       id="advertisingCosts"
-                      value={advertisingCosts}
+                      value={advertisingCosts || 0}
                       onChange={(value) => handleCurrencyChange('advertisingCosts', value)}
                     />
                     {errors.advertisingCosts && (
