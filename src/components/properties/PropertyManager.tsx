@@ -89,6 +89,11 @@ const PropertyManager: React.FC = () => {
       localStorage.setItem('currentViewProperty', JSON.stringify(propertyToEdit));
     }
     
+    toast({
+      title: "Editando imóvel",
+      description: `Editando detalhes do imóvel ID: ${id}`,
+    });
+    
     navigate(`/imoveis/${id}`);
   };
 

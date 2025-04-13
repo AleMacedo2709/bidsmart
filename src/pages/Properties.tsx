@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { useLocation, useParams } from 'react-router-dom';
+import { useLocation, useParams, Routes, Route } from 'react-router-dom';
 import PropertyManager from '@/components/properties/PropertyManager';
 import PropertyForm from '@/components/properties/PropertyForm';
 import PropertyDetail from '@/components/properties/PropertyDetail';
@@ -34,6 +34,11 @@ const Properties: React.FC = () => {
         {isDetailRoute && propertyId && (
           <PropertyDetail propertyId={propertyId} />
         )}
+
+        <Routes>
+          <Route path=":id" element={<PropertyDetail propertyId={propertyId || ''} />} />
+          <Route path="adicionar" element={<PropertyForm />} />
+        </Routes>
       </div>
     </div>
   );

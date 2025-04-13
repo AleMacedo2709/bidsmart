@@ -77,6 +77,7 @@ const PropertiesTable: React.FC<PropertyTableProps> = ({ properties, onView, onD
                   size="icon" 
                   onClick={() => onView(property.id)}
                   className="text-blue-600 hover:text-blue-800 hover:bg-blue-100"
+                  title="Visualizar"
                 >
                   <Eye className="h-5 w-5" />
                 </Button>
@@ -85,6 +86,7 @@ const PropertiesTable: React.FC<PropertyTableProps> = ({ properties, onView, onD
                   size="icon" 
                   onClick={() => onEdit(property.id)}
                   className="text-orange-500 hover:text-orange-700 hover:bg-orange-100"
+                  title="Editar"
                 >
                   <Edit className="h-5 w-5" />
                 </Button>
@@ -93,6 +95,7 @@ const PropertiesTable: React.FC<PropertyTableProps> = ({ properties, onView, onD
                   size="icon" 
                   onClick={() => onDelete(property.id)} 
                   className="text-red-500 hover:text-red-700 hover:bg-red-100"
+                  title="Excluir"
                 >
                   <Trash2 className="h-5 w-5" />
                 </Button>
