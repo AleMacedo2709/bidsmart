@@ -2,7 +2,7 @@
 import React from 'react';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
-import { Eye, Trash2 } from 'lucide-react';
+import { Eye, Trash2, Edit } from 'lucide-react';
 import { formatCurrency } from '@/lib/calculations';
 
 interface PropertyTableProps {
@@ -21,9 +21,10 @@ interface PropertyTableProps {
   }[];
   onView: (id: string) => void;
   onDelete: (id: string) => void;
+  onEdit: (id: string) => void;
 }
 
-const PropertiesTable: React.FC<PropertyTableProps> = ({ properties, onView, onDelete }) => {
+const PropertiesTable: React.FC<PropertyTableProps> = ({ properties, onView, onDelete, onEdit }) => {
   // Function to render the status badge with appropriate color
   const renderStatusBadge = (status: string) => {
     switch (status) {
@@ -78,6 +79,14 @@ const PropertiesTable: React.FC<PropertyTableProps> = ({ properties, onView, onD
                   className="text-blue-600 hover:text-blue-800 hover:bg-blue-100"
                 >
                   <Eye className="h-5 w-5" />
+                </Button>
+                <Button 
+                  variant="ghost" 
+                  size="icon" 
+                  onClick={() => onEdit(property.id)}
+                  className="text-orange-500 hover:text-orange-700 hover:bg-orange-100"
+                >
+                  <Edit className="h-5 w-5" />
                 </Button>
                 <Button 
                   variant="ghost" 

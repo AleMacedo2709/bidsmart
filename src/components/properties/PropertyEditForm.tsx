@@ -79,7 +79,7 @@ const PropertyEditForm: React.FC<PropertyEditFormProps> = ({ property, onSave, o
     try {
       setIsSubmitting(true);
 
-      // Prepare updated property data
+      // Prepare updated property data - ensure numbers are properly converted
       const updatedProperty = {
         ...property,
         name: data.name,
