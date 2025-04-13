@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -15,11 +16,15 @@ const Index = () => {
       {/* Hero Section */}
       <div className="flex-1 flex flex-col justify-center px-4 py-12 sm:px-6 lg:px-8">
         <div className="text-center">
-          <h1 className="text-4xl font-extrabold tracking-tight text-gray-900 sm:text-5xl md:text-6xl">
-            <span className="block">BidSmart</span>
-          </h1>
+          <div className="flex justify-center mb-6">
+            <img 
+              src="/lovable-uploads/08ed5091-1137-4b1f-845e-9821bdc77e69.png" 
+              alt="BidSmart Logo" 
+              className="h-24 w-auto sm:h-32"
+            />
+          </div>
           <p className="mt-3 max-w-md mx-auto text-base text-gray-500 sm:text-lg md:mt-5 md:text-xl md:max-w-3xl">
-            Gestão inteligente de leilões imobiliários. 
+            Seu aliado inteligente em leilões. 
             Seguro, privado e poderoso. Todos os seus dados são criptografados e armazenados localmente.
           </p>
           <div className="mt-5 max-w-md mx-auto sm:flex sm:justify-center md:mt-8">

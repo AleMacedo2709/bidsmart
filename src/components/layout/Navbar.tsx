@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -35,8 +36,12 @@ const Navbar: React.FC = () => {
         <div className="flex justify-between h-16">
           <div className="flex">
             <div className="flex-shrink-0 flex items-center">
-              <Link to="/" className="text-xl font-bold text-primary">
-                BidSmart
+              <Link to="/" className="flex items-center">
+                <img 
+                  src="/lovable-uploads/08ed5091-1137-4b1f-845e-9821bdc77e69.png" 
+                  alt="BidSmart Logo" 
+                  className="h-8 w-auto"
+                />
               </Link>
             </div>
             <div className="hidden md:ml-6 md:flex md:space-x-4">

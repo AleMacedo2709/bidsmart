@@ -64,8 +64,12 @@ const SidebarLayout: React.FC<SidebarLayoutProps> = ({ children }) => {
         <div className={`${isMobile ? (mobileSidebarOpen ? 'block' : 'hidden') : 'block'} h-full`}>
           <Sidebar className="h-screen">
             <SidebarHeader className="p-0">
-              <div className="py-3 px-4 bg-blue-700 text-white font-medium">
-                <h3 className="text-md">Menu</h3>
+              <div className="py-3 px-4 bg-blue-700 text-white flex items-center">
+                <img 
+                  src="/lovable-uploads/08ed5091-1137-4b1f-845e-9821bdc77e69.png" 
+                  alt="BidSmart Logo" 
+                  className="h-8 w-auto mr-2"
+                />
               </div>
             </SidebarHeader>
             <SidebarContent className="bg-blue-600 text-white h-full flex flex-col">
@@ -140,7 +144,7 @@ const SidebarLayout: React.FC<SidebarLayoutProps> = ({ children }) => {
               </div>
               
               <div className="p-4 text-xs text-blue-100">
-                © 2025 Arremate Lucro
+                © 2025 BidSmart
               </div>
             </SidebarContent>
           </Sidebar>
