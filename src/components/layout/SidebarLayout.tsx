@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { 
@@ -20,7 +19,8 @@ import {
   LogOut, 
   Info, 
   Menu as MenuIcon, 
-  X 
+  X,
+  Archive 
 } from 'lucide-react';
 import { useAuth } from '@/components/auth/AuthProvider';
 import { Button } from '@/components/ui/button';
@@ -116,6 +116,15 @@ const SidebarLayout: React.FC<SidebarLayoutProps> = ({ children }) => {
                         <Link to="/about" className="flex items-center gap-2 text-white">
                           <Info className="h-5 w-5" />
                           <span>Sobre</span>
+                        </Link>
+                      </SidebarMenuButton>
+                    </SidebarMenuItem>
+                    
+                    <SidebarMenuItem>
+                      <SidebarMenuButton asChild isActive={isActive('/backup')} onClick={() => isMobile && setMobileSidebarOpen(false)}>
+                        <Link to="/backup" className="flex items-center gap-2 text-white">
+                          <Archive className="h-5 w-5" />
+                          <span>Backup</span>
                         </Link>
                       </SidebarMenuButton>
                     </SidebarMenuItem>
