@@ -1,9 +1,22 @@
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import ModernCalculator from '@/components/calculator/ModernCalculator';
 import AppLayout from '@/components/layout/AppLayout';
+import { initializeWithMockData, isFirstTimeUser } from '@/lib/storage/initialization';
 
 const Calculator = () => {
+  useEffect(() => {
+    // Initialize data if needed
+    const checkAndInitialize = async () => {
+      const firstTime = await isFirstTimeUser();
+      if (firstTime) {
+        await initializeWithMockData();
+      }
+    };
+    
+    checkAndInitialize().catch(console.error);
+  }, []);
+
   return (
     <AppLayout>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">

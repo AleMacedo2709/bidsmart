@@ -1,10 +1,11 @@
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useLocation, useParams } from 'react-router-dom';
 import SidebarLayout from '@/components/layout/SidebarLayout';
 import PropertyManager from '@/components/properties/PropertyManager';
 import PropertyForm from '@/components/properties/PropertyForm';
 import PropertyDetail from '@/components/properties/PropertyDetail';
+import { initializeWithMockData, isFirstTimeUser } from '@/lib/storage/initialization';
 
 const Properties: React.FC = () => {
   const location = useLocation();
@@ -12,6 +13,18 @@ const Properties: React.FC = () => {
   const isAddRoute = location.pathname === '/imoveis/adicionar';
   const isDetailRoute = location.pathname.match(/^\/imoveis\/[^/]+$/);
   const propertyId = params.id;
+
+  useEffect(() => {
+    // Initialize data if needed
+    const checkAndInitialize = async () => {
+      const firstTime = await isFirstTimeUser();
+      if (firstTime) {
+        await initializeWithMockData();
+      }
+    };
+    
+    checkAndInitialize().catch(console.error);
+  }, []);
 
   return (
     <SidebarLayout>
