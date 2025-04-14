@@ -33,7 +33,7 @@ const About = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
         <div className="mb-10 text-center">
           <h1 className="page-title">Sobre Nós</h1>
-          <p className="text-gray-600 max-w-2xl mx-auto">
+          <p className="text-gray-500">
             Informações sobre nossa empresa e políticas de privacidade.
           </p>
         </div>
