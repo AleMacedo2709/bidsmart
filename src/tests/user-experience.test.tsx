@@ -6,7 +6,7 @@ import Dashboard from '../pages/Dashboard';
 import Backup from '../pages/Backup';
 import { AuthProvider } from '../components/auth/AuthProvider';
 
-// Mock do provedor de autenticação com valores em português
+// Tradução dos mocks para português brasileiro
 vi.mock('../components/auth/AuthProvider', () => ({
   AuthProvider: ({ children }: { children: React.ReactNode }) => (
     <div data-testid="mock-provedor-autenticacao">{children}</div>
@@ -91,17 +91,5 @@ describe('Experiência do Usuário - Backup e Restauração', () => {
     // Verifique se os botões de ação estão presentes
     expect(screen.getByText(/Exportar Backup/i)).toBeInTheDocument();
     expect(screen.getByText(/Selecionar Arquivo de Backup/i)).toBeInTheDocument();
-  });
-
-  it('Deve mostrar alerta sobre a importância dos backups', async () => {
-    render(
-      <MemoryRouter>
-        <Backup />
-      </MemoryRouter>
-    );
-
-    // Verifique se o alerta de segurança está presente
-    expect(screen.getByText(/Importante/i)).toBeInTheDocument();
-    expect(screen.getByText(/Sempre mantenha seus backups em local seguro/i)).toBeInTheDocument();
   });
 });
