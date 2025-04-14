@@ -1,6 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { mockProperties } from '@/data/mockData';
+import { formatCurrency } from '@/lib/calculations';
 
 const FeaturedProperties: React.FC = () => {
   const [properties, setProperties] = useState<Property[]>([]);
@@ -62,8 +63,8 @@ const FeaturedProperties: React.FC = () => {
               <div>
                 <div className="font-medium">{property.type} - {property.address}</div>
                 <div className="text-sm text-gray-500">
-                  Compra: R$ {property.purchasePrice.toLocaleString('pt-BR')} • 
-                  Estim. Venda: R$ {property.estimatedValue.toLocaleString('pt-BR')}
+                  Compra: {formatCurrency(property.purchasePrice)} • 
+                  Estim. Venda: {formatCurrency(property.estimatedValue)}
                 </div>
               </div>
               <div className={`font-medium ${profitPercentage >= 0 ? 'text-green-500' : 'text-red-500'}`}>
@@ -100,4 +101,3 @@ interface Property {
   estimatedValue: number;
   status: string;
 }
-
