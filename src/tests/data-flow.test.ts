@@ -119,10 +119,10 @@ describe('Fluxo de dados completo', () => {
 
   it('Deve armazenar e recuperar dados corretamente', async () => {
     // Test full data flow: Store -> Retrieve -> Verify
-    const id = await storeData('properties', testProperty, encryptionKey);
+    const id = await (storeData as StorageFunctions['storeData'])('properties', testProperty, encryptionKey);
     expect(id).toBeDefined();
     
-    const retrievedData = await retrieveData('properties', id, encryptionKey);
+    const retrievedData = await (retrieveData as StorageFunctions['retrieveData'])('properties', id, encryptionKey);
     expect(retrievedData).toEqual(expect.objectContaining({
       address: testProperty.address,
       city: testProperty.city
@@ -131,7 +131,7 @@ describe('Fluxo de dados completo', () => {
 
   it('Deve atualizar dados preservando a integridade', async () => {
     // Store initial data
-    const id = await storeData('properties', testProperty, encryptionKey);
+    const id = await (storeData as StorageFunctions['storeData'])('properties', testProperty, encryptionKey);
     
     // Update the data
     const updatedProperty = {
@@ -139,10 +139,10 @@ describe('Fluxo de dados completo', () => {
       estimatedValue: 1000000
     };
     
-    await updateData('properties', id, updatedProperty, encryptionKey);
+    await (updateData as StorageFunctions['updateData'])('properties', id, updatedProperty, encryptionKey);
     
     // Retrieve and verify the update
-    const retrievedData = await retrieveData('properties', id, encryptionKey);
+    const retrievedData = await (retrieveData as StorageFunctions['retrieveData'])('properties', id, encryptionKey);
     expect(retrievedData).toEqual(expect.objectContaining({
       estimatedValue: 1000000
     }));
@@ -150,27 +150,27 @@ describe('Fluxo de dados completo', () => {
 
   it('Deve verificar a integridade da base de dados', async () => {
     // Setup some test data
-    await storeData('properties', testProperty, encryptionKey);
+    await (storeData as StorageFunctions['storeData'])('properties', testProperty, encryptionKey);
     
     // Test database integrity check
-    const integrityResult = await verifyDatabaseIntegrity(encryptionKey);
+    const integrityResult = await (verifyDatabaseIntegrity as StorageFunctions['verifyDatabaseIntegrity'])(encryptionKey);
     expect(integrityResult.valid).toBe(true);
   });
 
   it('Deve exportar e importar dados mantendo a integridade', async () => {
     // Store test data
-    await storeData('properties', testProperty, encryptionKey);
+    await (storeData as StorageFunctions['storeData'])('properties', testProperty, encryptionKey);
     
     // Export data
-    const exportedData = await exportStoreData('properties', encryptionKey);
+    const exportedData = await (exportStoreData as StorageFunctions['exportStoreData'])('properties', encryptionKey);
     expect(exportedData).toBeDefined();
     
     // Clear database and import data back
-    await deleteData('properties', 'test-id');
-    await importStoreData('properties', exportedData, encryptionKey);
+    await (deleteData as StorageFunctions['deleteData'])('properties', 'test-id');
+    await (importStoreData as StorageFunctions['importStoreData'])('properties', exportedData, encryptionKey);
     
     // Verify imported data
-    const allData = await retrieveAllData('properties', encryptionKey);
+    const allData = await (retrieveAllData as StorageFunctions['retrieveAllData'])('properties', encryptionKey);
     expect(allData.length).toBeGreaterThan(0);
   });
 });
