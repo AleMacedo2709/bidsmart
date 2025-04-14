@@ -34,8 +34,9 @@ const Finances: React.FC = () => {
         if (encryptionKey) {
           try {
             const data = await retrieveData('settings', 'financial-settings', encryptionKey);
-            if (data) {
-              setFinancialData(data);
+            if (data && typeof data === 'object') {
+              // Type guard to ensure data is of the correct type
+              setFinancialData(data as typeof mockFinancialData);
             }
           } catch (error) {
             console.error("Error retrieving financial data:", error);
@@ -70,7 +71,7 @@ const Finances: React.FC = () => {
           </div>
         ) : (
           <>
-            <FinancialMetrics data={financialData} />
+            <FinancialMetrics />
             
             <Tabs defaultValue="overview" className="mt-4 sm:mt-6">
               <TabsList className="w-full max-w-md grid grid-cols-3">
@@ -81,19 +82,19 @@ const Finances: React.FC = () => {
               
               <TabsContent value="overview" className="mt-3 sm:mt-4">
                 <div className="w-full bg-card rounded-md p-4">
-                  <InvestmentChart data={financialData.monthlyData} />
+                  <InvestmentChart className="w-full" />
                 </div>
               </TabsContent>
               
               <TabsContent value="roi" className="mt-3 sm:mt-4">
                 <div className="w-full bg-card rounded-md p-4">
-                  <ROIBarChart data={financialData} />
+                  <ROIBarChart className="w-full" />
                 </div>
               </TabsContent>
               
               <TabsContent value="portfolio" className="mt-3 sm:mt-4">
                 <div className="w-full bg-card rounded-md p-4">
-                  <PortfolioPieChart data={financialData} />
+                  <PortfolioPieChart className="w-full" />
                 </div>
               </TabsContent>
             </Tabs>

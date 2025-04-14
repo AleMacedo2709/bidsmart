@@ -4,7 +4,11 @@ import { Card, CardContent } from '@/components/ui/card';
 import { mockFinancialData } from '@/data/mockData';
 import { DollarSign, TrendingUp, BarChart3, Percent } from 'lucide-react';
 
-const FinancialMetrics = () => {
+interface FinancialMetricsProps {
+  className?: string;
+}
+
+const FinancialMetrics: React.FC<FinancialMetricsProps> = ({ className }) => {
   const formatCurrency = (value: number) => {
     return value.toLocaleString('pt-BR', {
       style: 'currency',
@@ -44,7 +48,7 @@ const FinancialMetrics = () => {
   ];
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-4">
+    <div className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-4 ${className}`}>
       {metrics.map((metric, index) => (
         <Card key={index} className="overflow-hidden">
           <CardContent className="p-3 sm:p-4 md:pt-6">
