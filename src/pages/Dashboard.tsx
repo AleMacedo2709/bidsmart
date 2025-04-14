@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { DollarSign, Home, TrendingUp, PercentSquare, List } from 'lucide-react';
 import AppLayout from '@/components/layout/AppLayout';
@@ -25,7 +24,7 @@ const Dashboard = () => {
     <AppLayout>
       <div className="h-full px-8 py-6">
         <div className="flex justify-between items-center mb-6">
-          <h1 className="text-3xl font-bold">Olá, Alessandra Macedo</h1>
+          <h1 className="page-title">Olá, Alessandra Macedo</h1>
           <div className="flex gap-3">
             <Button variant="outline" size="sm" asChild>
               <Link to="/imoveis">Ver Todos Imóveis</Link>
@@ -57,7 +56,7 @@ const Dashboard = () => {
           <StatCard 
             title="Lucro Estimado"
             value={`R$ ${stats.projectedProfit.toLocaleString('pt-BR')}`}
-            subtext={`${stats.profitProjection}% (projeção)`}
+            subtext={`${stats.profitProjection}% (projeção)}`}
             icon={<TrendingUp className="h-6 w-6 text-green-500" />}
             iconBg="bg-green-100"
             isPositive={true}
@@ -103,4 +102,3 @@ const Dashboard = () => {
 };
 
 export default Dashboard;
-

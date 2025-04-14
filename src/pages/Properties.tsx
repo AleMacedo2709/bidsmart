@@ -19,7 +19,7 @@ const Properties: React.FC = () => {
         {!isAddRoute && !isDetailRoute && (
           <>
             <div className="mb-8">
-              <h1 className="text-3xl font-bold">Imóveis</h1>
+              <h1 className="page-title">Imóveis</h1>
               <p className="text-gray-500 mt-2">
                 Gerencie sua carteira de imóveis e acompanhe o desempenho dos seus investimentos.
               </p>
