@@ -9,7 +9,7 @@ import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
 
 const Auth = () => {
-  const [searchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   const initialMode = searchParams.get('mode') === 'signup' ? 'signup' : 'login';
   const [activeTab, setActiveTab] = useState(initialMode);
   const { isAuthenticated } = useAuth();
@@ -20,6 +20,12 @@ const Auth = () => {
       navigate('/dashboard');
     }
   }, [isAuthenticated, navigate]);
+
+  // Update the URL when tab changes
+  const handleTabChange = (value: string) => {
+    setActiveTab(value);
+    setSearchParams({ mode: value });
+  };
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-b from-blue-50 to-white px-4 py-10">
@@ -33,7 +39,7 @@ const Auth = () => {
       </div>
 
       <div className="w-full max-w-md">
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+        <Tabs value={activeTab} onValueChange={handleTabChange} className="w-full">
           <TabsList className="grid w-full grid-cols-2 mb-6">
             <TabsTrigger value="login" className="text-sm sm:text-base">Entrar</TabsTrigger>
             <TabsTrigger value="signup" className="text-sm sm:text-base">Criar Conta</TabsTrigger>

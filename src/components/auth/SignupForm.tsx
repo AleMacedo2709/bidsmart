@@ -7,6 +7,7 @@ import { Label } from '@/components/ui/label';
 import { useAuth } from './AuthProvider';
 import { useToast } from '@/hooks/use-toast';
 import { Eye, EyeOff, User, ArrowRight } from 'lucide-react';
+import { useSearchParams } from 'react-router-dom';
 
 const SignupForm: React.FC = () => {
   const [email, setEmail] = useState('');
@@ -17,6 +18,7 @@ const SignupForm: React.FC = () => {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const { signUp, signInWithGoogle, signInWithGithub, signInWithFacebook } = useAuth();
   const { toast } = useToast();
+  const [, setSearchParams] = useSearchParams();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -98,6 +100,11 @@ const SignupForm: React.FC = () => {
 
   const toggleShowConfirmPassword = () => {
     setShowConfirmPassword(!showConfirmPassword);
+  };
+
+  const handleLoginClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    setSearchParams({ mode: 'login' });
   };
 
   return (
@@ -231,7 +238,7 @@ const SignupForm: React.FC = () => {
       <CardFooter className="flex justify-center border-t p-6">
         <p className="text-sm text-gray-600">
           Já tem uma conta?{" "}
-          <a href="#login" className="text-primary font-semibold hover:underline">
+          <a href="#" onClick={handleLoginClick} className="text-primary font-semibold hover:underline">
             Entrar
           </a>
         </p>
