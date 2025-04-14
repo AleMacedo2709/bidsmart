@@ -10,7 +10,8 @@ import NotFound from "./pages/NotFound";
 import About from "./pages/About";
 import Properties from "./pages/Properties";
 import Finances from "./pages/Finances";
-import Auctions from "./pages/Auctions"; // Import the new Auctions page
+import Auctions from "./pages/Auctions";
+import Backup from "./pages/Backup"; // Import the new Backup page
 
 const AppRoutes = () => {
   return (
@@ -23,7 +24,8 @@ const AppRoutes = () => {
       <Route path="/imoveis/adicionar" element={<Properties />} />
       <Route path="/imoveis/:id" element={<Properties />} />
       <Route path="/financas" element={<Finances />} />
-      <Route path="/leiloes" element={<Auctions />} /> {/* Add the new route */}
+      <Route path="/leiloes" element={<Auctions />} />
+      <Route path="/backup" element={<Backup />} /> {/* Add the new route */}
       <Route path="/about" element={<About />} />
       <Route path="*" element={<NotFound />} />
     </Routes>
