@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useAuth } from '@/components/auth/AuthProvider';
 import { toast } from '@/hooks/use-toast';
 import { exportStoreData, importStoreData } from '@/lib/storage/export-import';
-import { exportEncryptedData, decryptData } from '@/lib/encryption/export';
+import { exportEncryptedData } from '@/lib/encryption/export';
 import { verifyExportedData } from '@/lib/encryption/export';
 import { verifyDatabaseIntegrity } from '@/lib/storage/integrity';
 import { 
@@ -16,6 +16,7 @@ import {
   Download
 } from 'lucide-react';
 import AppLayout from '@/components/layout/AppLayout';
+import { decryptData } from '@/lib/encryption';
 
 const BackupPage: React.FC = () => {
   const { encryptionKey } = useAuth();
@@ -75,28 +76,49 @@ const BackupPage: React.FC = () => {
       // Import the XLSX library dynamically to reduce initial load time
       const XLSX = await import('xlsx');
       
-      // Retrieve property data and decrypt it properly
-      const encryptedPropertiesData = await exportStoreData('properties', encryptionKey);
+      // Get properties data
+      const encryptedData = await exportStoreData('properties', encryptionKey);
       
-      // First, we need to verify and extract the data
-      const validationResult = verifyExportedData(encryptedPropertiesData);
+      // Verify and decrypt the data
+      const validationResult = verifyExportedData(encryptedData);
       if (!validationResult.isValid || !validationResult.data) {
         throw new Error('Invalid data format');
       }
       
-      // Now decrypt the data
-      const decryptedData = await decryptData(validationResult.data, encryptionKey);
+      // Decrypt the data correctly
+      const decryptedRawData = await decryptData(validationResult.data, encryptionKey);
       
-      // Make sure we have an array of properties
-      const propertyData = Array.isArray(decryptedData) ? decryptedData : 
-                          (decryptedData.data && Array.isArray(decryptedData.data)) ? 
-                          decryptedData.data : [];
+      // Extract the actual property data from the nested structure
+      let propertyData = [];
+      if (decryptedRawData && typeof decryptedRawData === 'object') {
+        // Check if we have a data field (from exportStoreData format)
+        if (Array.isArray(decryptedRawData.data)) {
+          propertyData = decryptedRawData.data;
+        } else if (Array.isArray(decryptedRawData)) {
+          propertyData = decryptedRawData;
+        }
+      }
+      
+      if (propertyData.length === 0) {
+        toast({
+          title: "Aviso",
+          description: "Não há imóveis para exportar.",
+          variant: "default"
+        });
+        return;
+      }
+      
+      // Clean data for Excel by removing internal fields
+      const cleanedData = propertyData.map(property => {
+        const { integrityHash, ...cleanProps } = property;
+        return cleanProps;
+      });
       
       // Create a workbook
       const wb = XLSX.utils.book_new();
       
       // Convert data to worksheet
-      const ws = XLSX.utils.json_to_sheet(propertyData);
+      const ws = XLSX.utils.json_to_sheet(cleanedData);
       
       // Add worksheet to workbook
       XLSX.utils.book_append_sheet(wb, ws, "Imóveis");
