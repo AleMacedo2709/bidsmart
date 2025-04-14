@@ -1,7 +1,25 @@
 
-# Instruções para Deployment da Aplicação
+# Instruções para Deployment da Aplicação BidSmart
 
 Este documento contém instruções para o correto deployment da aplicação BidSmart em ambiente de produção, incluindo a configuração de domínio personalizado e certificados SSL.
+
+## Preparação de Ambiente
+
+### 1. Preparando a Aplicação para Build
+Antes de realizar o deploy, certifique-se de que o build de produção está funcionando corretamente:
+
+```bash
+# Instale todas as dependências
+npm install
+
+# Gere o build de produção
+npm run build
+
+# Teste o build localmente
+npm run preview
+```
+
+Certifique-se que a aplicação está funcionando conforme esperado, incluindo o armazenamento local de dados.
 
 ## Configuração de Domínio
 
@@ -12,10 +30,7 @@ Este documento contém instruções para o correto deployment da aplicação Bid
 ### 2. Configuração de DNS
 Para configurar seu domínio para apontar para sua aplicação, você precisará adicionar registros DNS:
 
-1. Acesse o painel de gerenciamento DNS do seu provedor de domínio
-2. Adicione um registro A ou CNAME:
-   
-   **Opção 1: Se estiver usando serviços como Netlify, Vercel ou GitHub Pages:**
+**Opção 1: Se estiver usando serviços como Netlify, Vercel ou GitHub Pages:**
    ```
    Tipo: CNAME
    Nome: @
@@ -23,7 +38,7 @@ Para configurar seu domínio para apontar para sua aplicação, você precisará
    TTL: 3600
    ```
 
-   **Opção 2: Se estiver usando um servidor próprio:**
+**Opção 2: Se estiver usando um servidor próprio:**
    ```
    Tipo: A
    Nome: @
@@ -31,7 +46,7 @@ Para configurar seu domínio para apontar para sua aplicação, você precisará
    TTL: 3600
    ```
 
-3. Se quiser configurar o subdomínio "www", adicione:
+**Para configurar o subdomínio "www":**
    ```
    Tipo: CNAME
    Nome: www
@@ -39,19 +54,23 @@ Para configurar seu domínio para apontar para sua aplicação, você precisará
    TTL: 3600
    ```
 
-### 3. Propagação de DNS
-Após configurar os registros DNS, aguarde a propagação, que pode levar de 24 a 48 horas.
+### 3. Verificação da Propagação de DNS
+Após configurar os registros DNS, você pode verificar a propagação usando ferramentas como:
+- [DNSChecker](https://dnschecker.org/)
+- [whatsmydns.net](https://www.whatsmydns.net/)
+
+A propagação pode levar de 24 a 48 horas.
 
 ## Configuração de Certificados SSL
 
 ### 1. Certificados Let's Encrypt (Gratuito)
 
-**Opção 1: Usando serviços de hospedagem modernos:**
+#### Opção 1: Usando serviços de hospedagem modernos
 A maioria dos serviços como Netlify, Vercel, GitHub Pages e Firebase Hosting oferece SSL automático com Let's Encrypt.
 
-**Opção 2: Configuração manual em servidor:**
+#### Opção 2: Configuração manual em servidor próprio
 
-Se estiver usando um servidor próprio (como Apache ou Nginx), você pode usar Certbot:
+Se estiver usando um servidor próprio (como Apache ou Nginx), use o Certbot:
 
 ```bash
 # Instalação do Certbot no Ubuntu/Debian
@@ -64,15 +83,23 @@ sudo certbot --nginx -d seudominio.com -d www.seudominio.com  # para Nginx
 sudo certbot --apache -d seudominio.com -d www.seudominio.com  # para Apache
 ```
 
-### 2. Certificados Pagos
-Para casos que exigem EV (Extended Validation) ou recursos avançados, recomendamos:
-- DigiCert
-- Comodo SSL
-- GlobalSign
+#### Opção 3: Renovação automática do certificado
+Configure a renovação automática dos certificados Let's Encrypt:
 
-### 3. Configuração HTTPS no Servidor
+```bash
+# Verificar se a renovação automática está funcionando
+sudo certbot renew --dry-run
 
-**Para Nginx:**
+# A renovação geralmente é configurada como um cron job
+sudo crontab -e
+
+# Adicione a linha abaixo para verificar duas vezes por dia
+0 */12 * * * certbot renew --quiet
+```
+
+### 2. Configuração HTTPS no Servidor
+
+#### Para Nginx:
 
 ```nginx
 server {
@@ -98,12 +125,18 @@ server {
     add_header X-Frame-Options SAMEORIGIN;
     add_header X-XSS-Protection "1; mode=block";
 
-    # Local da aplicação
+    # Configuração para uma Single Page Application (SPA)
     root /var/www/bidsmart;
     index index.html;
 
     location / {
         try_files $uri $uri/ /index.html;
+    }
+    
+    # Cache para assets estáticos
+    location ~* \.(js|css|png|jpg|jpeg|gif|ico|svg)$ {
+        expires 30d;
+        add_header Cache-Control "public, no-transform";
     }
 }
 
@@ -115,7 +148,7 @@ server {
 }
 ```
 
-**Para Apache:**
+#### Para Apache:
 
 ```apache
 <VirtualHost *:443>
@@ -148,6 +181,11 @@ server {
         RewriteRule . /index.html [L]
     </Directory>
     
+    # Cache para assets estáticos
+    <FilesMatch "\.(js|css|png|jpg|jpeg|gif|ico|svg)$">
+        Header set Cache-Control "max-age=2592000, public"
+    </FilesMatch>
+    
     ErrorLog ${APACHE_LOG_DIR}/error.log
     CustomLog ${APACHE_LOG_DIR}/access.log combined
 </VirtualHost>
@@ -161,22 +199,43 @@ server {
 </VirtualHost>
 ```
 
-## Verificações Finais
+## Verificação após Deployment
 
-Antes de considerar o deployment concluído, verifique:
+Após o deployment, verifique:
 
 1. **Teste de SSL**: Use [SSL Labs](https://www.ssllabs.com/ssltest/) para verificar a segurança do seu certificado SSL.
-2. **Compressão de Arquivos**: Certifique-se que gzip/brotli está habilitado para melhor performance.
-3. **Headers de Segurança**: Confirme que os headers de segurança estão configurados corretamente.
-4. **Responsividade**: Teste a aplicação em vários dispositivos e tamanhos de tela.
-5. **Integridade dos Dados**: Certifique-se que o IndexedDB está funcionando corretamente em diversos navegadores.
+2. **Verificação de IndexedDB**: Certifique-se que o armazenamento local está funcionando em diferentes navegadores.
+3. **Compressão de Arquivos**: Confirme que gzip/brotli está habilitado para melhor performance.
+4. **Headers de Segurança**: Verifique que os headers de segurança estão configurados corretamente.
+5. **Responsividade**: Teste a aplicação em vários dispositivos e tamanhos de tela.
 
 ## Considerações sobre PWA (Progressive Web App)
 
-Para melhorar a experiência do usuário, considere converter sua aplicação em uma PWA:
+Para melhorar a experiência do usuário, considere ativar as funcionalidades de PWA:
 
-1. Adicione um manifesto adequado (`manifest.json`)
-2. Configure um Service Worker para cache e uso offline
-3. Certifique-se que a aplicação é instalável em dispositivos móveis
+1. Verifique se o manifesto (`manifest.json`) está corretamente configurado
+2. Certifique-se que o Service Worker está configurado para cache e uso offline
+3. Teste se a aplicação é instalável em dispositivos móveis
 
-Estas configurações permitem que usuários instalem a aplicação em seus dispositivos, melhorando a retenção e a experiência do usuário.
+## Monitoramento e Manutenção
+
+### Monitoramento de Erros no Cliente
+Como a aplicação usa armazenamento local, considere implementar um sistema de log de erros do cliente:
+
+```javascript
+window.addEventListener('error', function(event) {
+  // Armazenar logs localmente ou enviar para um serviço de monitoramento
+  console.error('Erro capturado:', event.error);
+});
+```
+
+### Backups Automáticos
+Recomende aos usuários realizar backups regulares usando a funcionalidade de exportação já implementada na aplicação.
+
+## Considerações de Privacidade
+
+Como a aplicação armazena dados sensíveis localmente:
+
+1. Implemente uma política de privacidade clara sobre quais dados são armazenados
+2. Explique aos usuários que os dados são armazenados apenas em seus dispositivos
+3. Forneça instruções sobre como limpar os dados se necessário
