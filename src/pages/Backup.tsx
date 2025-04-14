@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useAuth } from '@/components/auth/AuthProvider';
 import { toast } from '@/hooks/use-toast';
 import { exportStoreData, importStoreData } from '@/lib/storage/export-import';
-import { exportEncryptedData } from '@/lib/encryption/export';
+import { exportEncryptedData, decryptData } from '@/lib/encryption/export';
 import { 
   FileDown, 
   FileUp, 
@@ -73,15 +73,28 @@ const BackupPage: React.FC = () => {
       // Import the XLSX library dynamically to reduce initial load time
       const XLSX = await import('xlsx');
       
-      // Get properties data
-      const propertiesData = await exportStoreData('properties', encryptionKey);
-      const parsedData = JSON.parse(propertiesData);
+      // Retrieve property data and decrypt it properly
+      const encryptedPropertiesData = await exportStoreData('properties', encryptionKey);
+      
+      // First, we need to verify and extract the data
+      const validationResult = verifyExportedData(encryptedPropertiesData);
+      if (!validationResult.isValid || !validationResult.data) {
+        throw new Error('Invalid data format');
+      }
+      
+      // Now decrypt the data
+      const decryptedData = await decryptData(validationResult.data, encryptionKey);
+      
+      // Make sure we have an array of properties
+      const propertyData = Array.isArray(decryptedData) ? decryptedData : 
+                          (decryptedData.data && Array.isArray(decryptedData.data)) ? 
+                          decryptedData.data : [];
       
       // Create a workbook
       const wb = XLSX.utils.book_new();
       
       // Convert data to worksheet
-      const ws = XLSX.utils.json_to_sheet(parsedData);
+      const ws = XLSX.utils.json_to_sheet(propertyData);
       
       // Add worksheet to workbook
       XLSX.utils.book_append_sheet(wb, ws, "Imóveis");

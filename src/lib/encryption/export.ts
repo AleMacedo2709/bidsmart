@@ -3,6 +3,7 @@
  * Utilities for exporting and importing encrypted data
  */
 import { ab2str } from './utils';
+import { decryptData } from './crypto';
 
 // Export encrypted data as a file with additional metadata for integrity
 export const exportEncryptedData = (data: string, filename: string): void => {
@@ -53,3 +54,6 @@ export const verifyExportedData = (fileContent: string): { isValid: boolean; dat
     return { isValid: false };
   }
 }
+
+// Re-export decryptData for convenience
+export { decryptData };
