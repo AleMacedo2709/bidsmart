@@ -1,5 +1,6 @@
+
 import React, { useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/components/auth/AuthProvider';
 import {
@@ -13,10 +14,20 @@ import {
 const Navbar: React.FC = () => {
   const { isAuthenticated, signOut } = useAuth();
   const location = useLocation();
+  const navigate = useNavigate();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const toggleMobileMenu = () => {
     setMobileMenuOpen(!mobileMenuOpen);
+  };
+
+  const handleSignOut = async () => {
+    try {
+      await signOut();
+      navigate('/auth'); // Redirect to auth page after signing out
+    } catch (error) {
+      console.error('Error signing out:', error);
+    }
   };
 
   const navItems = [
@@ -77,7 +88,7 @@ const Navbar: React.FC = () => {
                   <DropdownMenuItem>Profile</DropdownMenuItem>
                   <DropdownMenuItem>Settings</DropdownMenuItem>
                   <DropdownMenuSeparator />
-                  <DropdownMenuItem onClick={() => signOut()}>
+                  <DropdownMenuItem onClick={handleSignOut}>
                     Sign out
                   </DropdownMenuItem>
                 </DropdownMenuContent>
@@ -164,7 +175,7 @@ const Navbar: React.FC = () => {
               <div className="space-y-1">
                 <button
                   onClick={() => {
-                    signOut();
+                    handleSignOut();
                     setMobileMenuOpen(false);
                   }}
                   className="block w-full text-left pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium text-gray-500 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-700"

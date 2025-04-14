@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { 
   Sidebar, 
   SidebarContent, 
@@ -34,6 +34,7 @@ interface SidebarLayoutProps {
 const SidebarLayout: React.FC<SidebarLayoutProps> = ({ children }) => {
   const { signOut } = useAuth();
   const location = useLocation();
+  const navigate = useNavigate();
   const isMobile = useIsMobile();
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
   
@@ -43,6 +44,15 @@ const SidebarLayout: React.FC<SidebarLayoutProps> = ({ children }) => {
 
   const toggleMobileSidebar = () => {
     setMobileSidebarOpen(!mobileSidebarOpen);
+  };
+
+  const handleSignOut = async () => {
+    try {
+      await signOut();
+      navigate('/auth'); // Redirect to auth page after signing out
+    } catch (error) {
+      console.error('Error signing out:', error);
+    }
   };
 
   return (
@@ -135,7 +145,7 @@ const SidebarLayout: React.FC<SidebarLayoutProps> = ({ children }) => {
               
               <div className="p-4 mt-auto">
                 <button 
-                  onClick={signOut}
+                  onClick={handleSignOut}
                   className="flex items-center gap-2 text-white hover:text-blue-200 transition-colors"
                 >
                   <LogOut className="h-5 w-5" />
