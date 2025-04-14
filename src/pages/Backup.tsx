@@ -5,7 +5,9 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useAuth } from '@/components/auth/AuthProvider';
 import { toast } from '@/hooks/use-toast';
 import { exportStoreData, importStoreData } from '@/lib/storage/export-import';
-import { exportEncryptedData, decryptData, verifyExportedData } from '@/lib/encryption/export';
+import { exportEncryptedData, decryptData } from '@/lib/encryption/export';
+import { verifyExportedData } from '@/lib/encryption/export';
+import { verifyDatabaseIntegrity } from '@/lib/storage/integrity';
 import { 
   FileDown, 
   FileUp, 
@@ -13,7 +15,7 @@ import {
   AlertCircle,
   Download
 } from 'lucide-react';
-import { verifyDatabaseIntegrity } from '@/lib/storage/integrity';
+import AppLayout from '@/components/layout/AppLayout';
 
 const BackupPage: React.FC = () => {
   const { encryptionKey } = useAuth();
@@ -175,7 +177,7 @@ const BackupPage: React.FC = () => {
   };
 
   return (
-    <div className="h-full overflow-auto">
+    <AppLayout>
       <div className="container mx-auto px-4 py-8">
         <h1 className="text-3xl font-bold mb-6 flex items-center gap-2 text-[#7E69AB]">
           <ShieldCheck className="text-[#9b87f5]" /> Backup de Dados
@@ -194,7 +196,7 @@ const BackupPage: React.FC = () => {
               </p>
               <Button 
                 onClick={handleExport} 
-                isLoading={isExporting}
+                loading={isExporting}
                 className="w-full bg-[#9b87f5] hover:bg-[#7E69AB]"
               >
                 Exportar Backup
@@ -214,7 +216,7 @@ const BackupPage: React.FC = () => {
               </p>
               <Button 
                 onClick={handleExportExcel} 
-                isLoading={isExportingExcel}
+                loading={isExportingExcel}
                 variant="outline"
                 className="w-full border-[#9b87f5] text-[#7E69AB] hover:bg-[#F1F0FB]"
               >
@@ -249,7 +251,7 @@ const BackupPage: React.FC = () => {
                   <Button 
                     variant="outline" 
                     className="w-full border-[#9b87f5] text-[#7E69AB] hover:bg-[#F1F0FB]" 
-                    isLoading={isImporting}
+                    loading={isImporting}
                     asChild
                   >
                     <span>Selecionar Arquivo de Backup</span>
@@ -271,7 +273,7 @@ const BackupPage: React.FC = () => {
           </div>
         </div>
       </div>
-    </div>
+    </AppLayout>
   );
 };
 
