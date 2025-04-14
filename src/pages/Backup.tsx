@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useAuth } from '@/components/auth/AuthProvider';
 import { toast } from '@/hooks/use-toast';
 import { exportStoreData, importStoreData } from '@/lib/storage/export-import';
-import { exportEncryptedData, decryptData } from '@/lib/encryption/export';
+import { exportEncryptedData, decryptData, verifyExportedData } from '@/lib/encryption/export';
 import { 
   FileDown, 
   FileUp, 
