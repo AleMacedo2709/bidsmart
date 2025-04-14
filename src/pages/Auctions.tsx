@@ -29,6 +29,7 @@ import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import CurrencyInput from '@/components/ui/currency-input';
 
 const Auctions = () => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -588,12 +589,11 @@ const Auctions = () => {
                           name="apartmentValue"
                           render={({ field }) => (
                             <FormItem>
-                              <FormLabel>Valor Médio (R$)</FormLabel>
+                              <FormLabel>Valor Médio</FormLabel>
                               <FormControl>
-                                <Input 
-                                  type="number" 
-                                  {...field}
-                                  onChange={e => field.onChange(parseInt(e.target.value) || 0)}
+                                <CurrencyInput 
+                                  value={field.value} 
+                                  onChange={(value) => field.onChange(value)}
                                 />
                               </FormControl>
                               <FormMessage />
@@ -629,12 +629,11 @@ const Auctions = () => {
                           name="houseValue"
                           render={({ field }) => (
                             <FormItem>
-                              <FormLabel>Valor Médio (R$)</FormLabel>
+                              <FormLabel>Valor Médio</FormLabel>
                               <FormControl>
-                                <Input 
-                                  type="number" 
-                                  {...field}
-                                  onChange={e => field.onChange(parseInt(e.target.value) || 0)}
+                                <CurrencyInput 
+                                  value={field.value} 
+                                  onChange={(value) => field.onChange(value)}
                                 />
                               </FormControl>
                               <FormMessage />
@@ -670,12 +669,11 @@ const Auctions = () => {
                           name="landValue"
                           render={({ field }) => (
                             <FormItem>
-                              <FormLabel>Valor Médio (R$)</FormLabel>
+                              <FormLabel>Valor Médio</FormLabel>
                               <FormControl>
-                                <Input 
-                                  type="number" 
-                                  {...field}
-                                  onChange={e => field.onChange(parseInt(e.target.value) || 0)}
+                                <CurrencyInput 
+                                  value={field.value} 
+                                  onChange={(value) => field.onChange(value)}
                                 />
                               </FormControl>
                               <FormMessage />
