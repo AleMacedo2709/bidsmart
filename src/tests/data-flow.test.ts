@@ -28,7 +28,7 @@ const indexedDBMock = {
   deleteDatabase: vi.fn()
 };
 
-// Test data
+// Dados de teste
 const testProperty = {
   address: 'Av. Paulista, 1000',
   city: 'São Paulo',
@@ -39,6 +39,21 @@ const testProperty = {
   purchasePrice: 850000,
   estimatedValue: 950000
 };
+
+// Definindo tipos para as funções mockadas
+type MockFunction<T = any> = T & { mockImplementation: (fn: any) => any };
+
+// Tipagem para as funções de storage
+interface StorageFunctions {
+  storeData: <T>(store: string, data: T, key: CryptoKey) => Promise<string>;
+  retrieveData: <T>(store: string, id: string, key: CryptoKey) => Promise<T>;
+  updateData: <T>(store: string, id: string, data: T, key: CryptoKey) => Promise<void>;
+  deleteData: (store: string, id: string) => Promise<void>;
+  retrieveAllData: <T>(store: string, key: CryptoKey) => Promise<T[]>;
+  exportStoreData: (store: string, key: CryptoKey) => Promise<string>;
+  importStoreData: (store: string, data: string, key: CryptoKey) => Promise<void>;
+  verifyDatabaseIntegrity: (key: CryptoKey) => Promise<{valid: boolean}>;
+}
 
 describe('Fluxo de dados completo', () => {
   let encryptionKey: CryptoKey;

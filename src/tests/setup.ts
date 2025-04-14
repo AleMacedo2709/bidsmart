@@ -6,7 +6,7 @@
  * para APIs do navegador que não estão disponíveis no ambiente de teste.
  */
 import '@testing-library/jest-dom';
-import { vi } from 'vitest';
+import { vi, afterEach } from 'vitest';
 
 // Mock para a API Web Crypto
 const cryptoMock = {
