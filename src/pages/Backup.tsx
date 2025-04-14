@@ -179,15 +179,15 @@ const BackupPage: React.FC = () => {
   return (
     <AppLayout>
       <div className="container mx-auto px-4 py-8">
-        <h1 className="text-3xl font-bold mb-6 flex items-center gap-2 text-[#7E69AB]">
-          <ShieldCheck className="text-[#9b87f5]" /> Backup de Dados
+        <h1 className="page-title">
+          <ShieldCheck /> Backup de Dados
         </h1>
 
-        <div className="grid md:grid-cols-3 gap-6">
+        <div className="grid md:grid-cols-3 gap-6 mt-6">
           <Card className="shadow-md hover:shadow-lg transition-shadow duration-300">
             <CardHeader className="bg-gradient-to-r from-[#f8f9fa] to-[#F1F0FB] rounded-t-lg border-b">
-              <CardTitle className="flex items-center gap-2 text-[#7E69AB]">
-                <FileDown className="text-[#9b87f5]" /> Exportar Dados
+              <CardTitle className="flex items-center gap-2 text-primary">
+                <FileDown /> Exportar Dados
               </CardTitle>
             </CardHeader>
             <CardContent className="pt-4">
@@ -197,7 +197,7 @@ const BackupPage: React.FC = () => {
               <Button 
                 onClick={handleExport} 
                 isLoading={isExporting}
-                className="w-full bg-[#9b87f5] hover:bg-[#7E69AB]"
+                className="w-full"
               >
                 Exportar Backup
               </Button>
@@ -206,8 +206,8 @@ const BackupPage: React.FC = () => {
 
           <Card className="shadow-md hover:shadow-lg transition-shadow duration-300">
             <CardHeader className="bg-gradient-to-r from-[#f8f9fa] to-[#F1F0FB] rounded-t-lg border-b">
-              <CardTitle className="flex items-center gap-2 text-[#7E69AB]">
-                <Download className="text-[#9b87f5]" /> Exportar Excel
+              <CardTitle className="flex items-center gap-2 text-primary">
+                <Download /> Exportar Excel
               </CardTitle>
             </CardHeader>
             <CardContent className="pt-4">
@@ -218,7 +218,7 @@ const BackupPage: React.FC = () => {
                 onClick={handleExportExcel} 
                 isLoading={isExportingExcel}
                 variant="outline"
-                className="w-full border-[#9b87f5] text-[#7E69AB] hover:bg-[#F1F0FB]"
+                className="w-full border-primary text-primary hover:bg-primary/10"
               >
                 Exportar para Excel
               </Button>
@@ -227,8 +227,8 @@ const BackupPage: React.FC = () => {
 
           <Card className="shadow-md hover:shadow-lg transition-shadow duration-300">
             <CardHeader className="bg-gradient-to-r from-[#f8f9fa] to-[#F1F0FB] rounded-t-lg border-b">
-              <CardTitle className="flex items-center gap-2 text-[#7E69AB]">
-                <FileUp className="text-[#9b87f5]" /> Importar Dados
+              <CardTitle className="flex items-center gap-2 text-primary">
+                <FileUp /> Importar Dados
               </CardTitle>
             </CardHeader>
             <CardContent className="pt-4">
@@ -250,7 +250,7 @@ const BackupPage: React.FC = () => {
                 >
                   <Button 
                     variant="outline" 
-                    className="w-full border-[#9b87f5] text-[#7E69AB] hover:bg-[#F1F0FB]" 
+                    className="w-full border-primary text-primary hover:bg-primary/10" 
                     isLoading={isImporting}
                     asChild
                   >
@@ -262,11 +262,11 @@ const BackupPage: React.FC = () => {
           </Card>
         </div>
 
-        <div className="mt-8 bg-[#F1F0FB] border border-[#D6BCFA] rounded-lg p-4 flex items-center gap-4 shadow-sm">
-          <AlertCircle className="text-[#9b87f5]" />
+        <div className="mt-8 bg-primary/5 border border-primary/20 rounded-lg p-4 flex items-center gap-4 shadow-sm">
+          <AlertCircle className="text-primary" />
           <div>
-            <h3 className="font-semibold text-[#6E59A5]">Importante</h3>
-            <p className="text-[#7E69AB] text-sm">
+            <h3 className="font-semibold text-primary">Importante</h3>
+            <p className="text-primary/80 text-sm">
               Sempre mantenha seus backups em local seguro. Em caso de perda de dispositivo, 
               você precisará deste arquivo para recuperar seus dados.
             </p>

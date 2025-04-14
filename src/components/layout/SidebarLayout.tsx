@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { 
@@ -71,7 +72,7 @@ const SidebarLayout: React.FC<SidebarLayoutProps> = ({ children }) => {
                 />
               </div>
             </SidebarHeader>
-            <SidebarContent className="bg-blue-600 text-white h-full flex flex-col">
+            <SidebarContent className="bg-primary text-primary-foreground h-full flex flex-col">
               <SidebarGroup className="flex-grow">
                 <SidebarGroupContent>
                   <SidebarMenu>
