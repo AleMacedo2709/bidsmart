@@ -196,7 +196,7 @@ const BackupPage: React.FC = () => {
               </p>
               <Button 
                 onClick={handleExport} 
-                loading={isExporting}
+                isLoading={isExporting}
                 className="w-full bg-[#9b87f5] hover:bg-[#7E69AB]"
               >
                 Exportar Backup
@@ -216,7 +216,7 @@ const BackupPage: React.FC = () => {
               </p>
               <Button 
                 onClick={handleExportExcel} 
-                loading={isExportingExcel}
+                isLoading={isExportingExcel}
                 variant="outline"
                 className="w-full border-[#9b87f5] text-[#7E69AB] hover:bg-[#F1F0FB]"
               >
@@ -251,7 +251,7 @@ const BackupPage: React.FC = () => {
                   <Button 
                     variant="outline" 
                     className="w-full border-[#9b87f5] text-[#7E69AB] hover:bg-[#F1F0FB]" 
-                    loading={isImporting}
+                    isLoading={isImporting}
                     asChild
                   >
                     <span>Selecionar Arquivo de Backup</span>
