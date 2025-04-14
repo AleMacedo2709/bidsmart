@@ -31,9 +31,9 @@ const About = () => {
   return (
     <AppLayout>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
-        <div className="mb-10 text-center">
+        <div className="mb-10 text-left">  {/* Changed text-center to text-left */}
           <h1 className="page-title">Sobre Nós</h1>
-          <p className="text-gray-500">
+          <p className="text-gray-500 text-left">  {/* Added text-left */}
             Informações sobre nossa empresa e políticas de privacidade.
           </p>
         </div>
